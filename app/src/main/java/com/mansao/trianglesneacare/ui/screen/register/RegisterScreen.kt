@@ -64,7 +64,7 @@ fun RegisterScreen(
 
         is RegisterUiState.Error -> {
             Toast.makeText(context, uiState.msg, Toast.LENGTH_SHORT).show()
-//            registerViewModel.getUiState()
+            registerViewModel.getUiState()
         }
     }
 }

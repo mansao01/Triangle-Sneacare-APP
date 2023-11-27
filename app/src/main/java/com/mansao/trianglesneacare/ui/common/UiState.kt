@@ -1,13 +1,7 @@
 package com.mansao.trianglesneacare.ui.common
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.DarkMode
-import androidx.compose.material.icons.filled.LightMode
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.paging.PagingData
 import com.mansao.trianglesneacare.data.network.response.LoginResponse
 import com.mansao.trianglesneacare.data.network.response.RegisterResponse
-import kotlinx.coroutines.flow.Flow
 
 sealed interface RegisterUiState {
     object StandBy : RegisterUiState
