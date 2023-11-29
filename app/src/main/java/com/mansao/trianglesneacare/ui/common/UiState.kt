@@ -19,3 +19,9 @@ sealed interface LoginUiState {
 
 }
 
+sealed interface HomeUiState {
+    object Loading : HomeUiState
+//    data class Success(val registerResponse: RegisterResponse) : HomeUiState
+    data class Error(val msg: String) : HomeUiState
+
+}
