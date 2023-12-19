@@ -62,6 +62,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.mansao.trianglesneacare.R
+import com.mansao.trianglesneacare.data.network.request.LoginRequest
 import com.mansao.trianglesneacare.ui.common.LoginUiState
 import com.mansao.trianglesneacare.ui.components.LoadingScreen
 import kotlin.math.roundToInt
@@ -87,13 +88,13 @@ fun LoginScreen(
 
                 Toast.makeText(
                     context,
-                    "Welcome ${uiState.loginResponse.loginResult.name}",
+                    "Welcome ${uiState.loginResponse.user.name}",
                     Toast.LENGTH_LONG
                 ).show()
                 navigateToHome()
             }
 
-            Log.d("LoginScreen", uiState.loginResponse.loginResult.token)
+            Log.d("LoginScreen", uiState.loginResponse.accessToken)
         }
 
         is LoginUiState.Error -> {
@@ -268,8 +269,7 @@ fun LoginComponent(
                         email.isEmpty() -> isEmailEmpty = true
                         password.isEmpty() -> isPasswordEmpty = true
                         else -> {
-                            TODO()
-//                            login action
+                          loginViewModel.login(LoginRequest(email, password))
                         }
                     }
                 },

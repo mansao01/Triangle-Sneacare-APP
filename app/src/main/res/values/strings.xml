@@ -15,4 +15,6 @@
     <string name="story_app">Story App</string>
     <string name="add_story">Add Story</string>
     <string name="story_location">Stories location</string>
+    <string name="address">address</string>
+    <string name="phone">phone number</string>
 </resources>

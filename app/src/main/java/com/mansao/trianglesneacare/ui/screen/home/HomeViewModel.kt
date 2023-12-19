@@ -14,4 +14,5 @@ class HomeViewModel @Inject constructor(private val appRepositoryImpl: AppReposi
     ViewModel() {
     var uiState: HomeUiState by mutableStateOf(HomeUiState.Loading)
         private set
+
 }

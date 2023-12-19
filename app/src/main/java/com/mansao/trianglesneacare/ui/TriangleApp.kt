@@ -20,12 +20,14 @@ fun TriangleApp(
     navController: NavHostController = rememberNavController(),
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
-    NavHost(navController = navController, startDestination = Screen.Register.route) {
+    NavHost(navController = navController, startDestination = Screen.Login.route) {
         composable(Screen.Register.route) {
             val registerViewModel: RegisterViewModel = hiltViewModel()
             RegisterScreen(
                 uiState = registerViewModel.uiState,
-                navigateToLogin = { navController.navigate(Screen.Register.route) })
+                navigateToLogin = {
+                    navController.navigate(Screen.Login.route)
+                })
         }
         composable(Screen.Login.route) {
             val loginViewModel: LoginViewModel = hiltViewModel()
