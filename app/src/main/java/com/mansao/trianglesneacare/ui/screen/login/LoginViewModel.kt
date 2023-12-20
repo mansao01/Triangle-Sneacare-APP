@@ -28,6 +28,10 @@ class LoginViewModel @Inject constructor(
             uiState = LoginUiState.Loading
             uiState = try {
                 val result = appRepositoryImpl.login(loginRequest)
+                appRepositoryImpl.saveIsLoginState(true)
+                appRepositoryImpl.saveUsername(result.user.name)
+                result.user.role.role?.let { appRepositoryImpl.saveRole(it) }
+                appRepositoryImpl.saveAccessToken(result.accessToken)
                 LoginUiState.Success(result)
             } catch (e: Exception) {
                 LoginUiState.Error(e.toString())

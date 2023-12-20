@@ -9,6 +9,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.mansao.trianglesneacare.ui.navigation.Screen
+import com.mansao.trianglesneacare.ui.screen.admin.AdminHomeScreen
+import com.mansao.trianglesneacare.ui.screen.customer.CustomerHomeScreen
 import com.mansao.trianglesneacare.ui.screen.login.LoginScreen
 import com.mansao.trianglesneacare.ui.screen.login.LoginViewModel
 import com.mansao.trianglesneacare.ui.screen.register.RegisterScreen
@@ -32,14 +34,21 @@ fun TriangleApp(
         composable(Screen.Login.route) {
             val loginViewModel: LoginViewModel = hiltViewModel()
             LoginScreen(uiState = loginViewModel.uiState,
-                navigateToHome = {
-                    navController.navigate(Screen.Home.route)
-                }, navigateToRegister = {
+                navigateToAdminHome = {
+                    navController.navigate(Screen.AdminHome.route)
+                },
+                navigateToCustomerHome = {
+                    navController.navigate(Screen.CustomerHome.route)
+                },
+                navigateToRegister = {
                     navController.navigate(Screen.Register.route)
                 })
         }
-        composable(Screen.Home.route) {
-
+        composable(Screen.AdminHome.route) {
+            AdminHomeScreen()
+        }
+        composable(Screen.CustomerHome.route){
+            CustomerHomeScreen()
         }
 
     }

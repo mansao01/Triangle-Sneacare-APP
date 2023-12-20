@@ -1,4 +1,4 @@
-package com.mansao.trianglesneacare.ui.screen.home
+package com.mansao.trianglesneacare.ui.screen.customer.home
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf

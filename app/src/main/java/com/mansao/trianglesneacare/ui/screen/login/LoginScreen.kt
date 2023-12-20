@@ -71,14 +71,14 @@ import kotlin.math.roundToInt
 fun LoginScreen(
     uiState: LoginUiState,
     loginViewModel: LoginViewModel = hiltViewModel(),
-    navigateToHome: () -> Unit,
+    navigateToAdminHome: () -> Unit,
+    navigateToCustomerHome: () -> Unit,
     navigateToRegister: () -> Unit
 ) {
     val context = LocalContext.current
     when (uiState) {
         is LoginUiState.StandBy -> LoginComponent(
             loginViewModel = loginViewModel,
-            navigateToHome = navigateToHome,
             navigateToRegister = navigateToRegister
         )
 
@@ -91,7 +91,10 @@ fun LoginScreen(
                     "Welcome ${uiState.loginResponse.user.name}",
                     Toast.LENGTH_LONG
                 ).show()
-                navigateToHome()
+                when (uiState.loginResponse.user.role.role) {
+                    "admin" -> navigateToAdminHome()
+                    "customer" -> navigateToCustomerHome()
+                }
             }
 
             Log.d("LoginScreen", uiState.loginResponse.accessToken)
@@ -110,7 +113,6 @@ fun LoginScreen(
 fun LoginComponent(
     loginViewModel: LoginViewModel,
     modifier: Modifier = Modifier,
-    navigateToHome: () -> Unit,
     navigateToRegister: () -> Unit
 
 ) {
@@ -269,7 +271,7 @@ fun LoginComponent(
                         email.isEmpty() -> isEmailEmpty = true
                         password.isEmpty() -> isPasswordEmpty = true
                         else -> {
-                          loginViewModel.login(LoginRequest(email, password))
+                            loginViewModel.login(LoginRequest(email, password))
                         }
                     }
                 },

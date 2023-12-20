@@ -5,14 +5,14 @@ import com.google.gson.annotations.SerializedName
 data class User(
 
     @field:SerializedName("role")
-    val role: Role? = null,
+    val role: Role,
 
     @field:SerializedName("name")
-    val name: String? = null,
+    val name: String,
 
     @field:SerializedName("id")
-    val id: Int? = null,
+    val id: Int,
 
     @field:SerializedName("email")
-    val email: String? = null
+    val email: String
 )
