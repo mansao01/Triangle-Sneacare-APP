@@ -128,7 +128,7 @@ fun LoginComponent(
     val transition = rememberInfiniteTransition(label = "transition")
     val offsetX by remember { mutableFloatStateOf(0f) }
 
-    val animatableOffset = remember { Animatable(0f) }
+    val animateTableOffset = remember { Animatable(0f) }
 
     val scale by transition.animateFloat(
         initialValue = 1f,
@@ -140,8 +140,8 @@ fun LoginComponent(
         label = "scale"
     )
 
-    LaunchedEffect(animatableOffset) {
-        animatableOffset.animateTo(
+    LaunchedEffect(animateTableOffset) {
+        animateTableOffset.animateTo(
             targetValue = 50f,
             animationSpec = infiniteRepeatable(
                 animation = keyframes {
@@ -177,18 +177,17 @@ fun LoginComponent(
                         IntOffset(offsetX.roundToInt(), 0)
                     }
                     .graphicsLayer {
-                        translationX = animatableOffset.value.dp.toPx()
+                        translationX = animateTableOffset.value.dp.toPx()
                     }
             ) {
                 Text(
-                    text = stringResource(R.string.story_app),
+                    text = stringResource(R.string.triangle),
                     fontSize = 26.sp,
                     modifier = Modifier
                         .padding(horizontal = 32.dp)
 
                 )
             }
-
 
             Text(
                 text = stringResource(R.string.login),

@@ -4,14 +4,21 @@ import com.mansao.trianglesneacare.data.network.ApiService
 import com.mansao.trianglesneacare.data.network.request.LoginRequest
 import com.mansao.trianglesneacare.data.network.request.RegisterRequest
 import com.mansao.trianglesneacare.data.network.response.LoginResponse
+import com.mansao.trianglesneacare.data.network.response.OnlyMsgResponse
+import com.mansao.trianglesneacare.data.network.response.ProfileResponse
 import com.mansao.trianglesneacare.data.network.response.RegisterResponse
 import com.mansao.trianglesneacare.data.preferences.AppPreferences
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 interface AppRepository {
+    //    network
     suspend fun register(registerRequest: RegisterRequest): RegisterResponse
     suspend fun login(loginRequest: LoginRequest): LoginResponse
+    suspend fun getProfile(token: String): ProfileResponse
+    suspend fun logout(token: String): OnlyMsgResponse
+
+    //    preferences
     suspend fun saveAccessToken(token: String)
     suspend fun saveIsLoginState(isLogin: Boolean)
     suspend fun saveUsername(name: String)
@@ -29,12 +36,17 @@ class AppRepositoryImpl @Inject constructor(
     private val apiService: ApiService,
     private val appPreferences: AppPreferences
 ) : AppRepository {
+    //    network
     override suspend fun register(registerRequest: RegisterRequest): RegisterResponse =
         apiService.register(registerRequest)
 
     override suspend fun login(loginRequest: LoginRequest): LoginResponse =
         apiService.login(loginRequest)
 
+    override suspend fun getProfile(token: String): ProfileResponse = apiService.getProfile(token)
+    override suspend fun logout(token: String): OnlyMsgResponse = apiService.logout(token)
+
+    //    preferences
     override suspend fun saveAccessToken(token: String) = appPreferences.saveAccessToken(token)
 
     override suspend fun saveIsLoginState(isLogin: Boolean) =

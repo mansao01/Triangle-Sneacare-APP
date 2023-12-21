@@ -9,8 +9,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.mansao.trianglesneacare.ui.navigation.Screen
-import com.mansao.trianglesneacare.ui.screen.admin.AdminHomeScreen
-import com.mansao.trianglesneacare.ui.screen.customer.CustomerHomeScreen
+import com.mansao.trianglesneacare.ui.screen.section.admin.AdminHomeScreen
+import com.mansao.trianglesneacare.ui.screen.section.customer.home.CustomerHomeScreen
+import com.mansao.trianglesneacare.ui.screen.section.customer.home.HomeViewModel
+import com.mansao.trianglesneacare.ui.screen.section.driver.DriverHomeScreen
 import com.mansao.trianglesneacare.ui.screen.login.LoginScreen
 import com.mansao.trianglesneacare.ui.screen.login.LoginViewModel
 import com.mansao.trianglesneacare.ui.screen.register.RegisterScreen
@@ -20,9 +22,10 @@ import com.mansao.trianglesneacare.ui.screen.register.RegisterViewModel
 @Composable
 fun TriangleApp(
     navController: NavHostController = rememberNavController(),
+    startDestination: String
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
-    NavHost(navController = navController, startDestination = Screen.Login.route) {
+    NavHost(navController = navController, startDestination = startDestination) {
         composable(Screen.Register.route) {
             val registerViewModel: RegisterViewModel = hiltViewModel()
             RegisterScreen(
@@ -44,11 +47,22 @@ fun TriangleApp(
                     navController.navigate(Screen.Register.route)
                 })
         }
+
+//        admin ui
         composable(Screen.AdminHome.route) {
-            AdminHomeScreen()
+            val homeViewModel: HomeViewModel = hiltViewModel()
+            AdminHomeScreen(homeViewModel.uiState)
         }
-        composable(Screen.CustomerHome.route){
-            CustomerHomeScreen()
+
+//        customer ui
+        composable(Screen.CustomerHome.route) {
+            val homeViewModel: HomeViewModel = hiltViewModel()
+            CustomerHomeScreen(homeViewModel.uiState)
+        }
+//        driver ui
+        composable(Screen.DriverHome.route) {
+            val homeViewModel: HomeViewModel = hiltViewModel()
+            DriverHomeScreen(homeViewModel.uiState)
         }
 
     }

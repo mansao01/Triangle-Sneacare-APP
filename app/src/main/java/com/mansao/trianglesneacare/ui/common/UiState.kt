@@ -1,6 +1,7 @@
 package com.mansao.trianglesneacare.ui.common
 
 import com.mansao.trianglesneacare.data.network.response.LoginResponse
+import com.mansao.trianglesneacare.data.network.response.ProfileResponse
 import com.mansao.trianglesneacare.data.network.response.RegisterResponse
 
 sealed interface RegisterUiState {
@@ -21,7 +22,7 @@ sealed interface LoginUiState {
 
 sealed interface HomeUiState {
     object Loading : HomeUiState
-//    data class Success(val registerResponse: RegisterResponse) : HomeUiState
+    data class Success(val profile:ProfileResponse) : HomeUiState
     data class Error(val msg: String) : HomeUiState
 
 }
