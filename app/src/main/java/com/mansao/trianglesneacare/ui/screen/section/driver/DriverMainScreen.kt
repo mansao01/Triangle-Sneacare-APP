@@ -1,4 +1,4 @@
-package com.mansao.trianglesneacare.ui.screen.section.admin
+package com.mansao.trianglesneacare.ui.screen.section.driver
 
 import android.widget.Toast
 import androidx.compose.material3.Text
@@ -8,7 +8,7 @@ import com.mansao.trianglesneacare.ui.common.HomeUiState
 import com.mansao.trianglesneacare.ui.components.LoadingScreen
 
 @Composable
-fun AdminHomeScreen(
+fun DriverMainScreen(
     uiState: HomeUiState
 ) {
     val context = LocalContext.current

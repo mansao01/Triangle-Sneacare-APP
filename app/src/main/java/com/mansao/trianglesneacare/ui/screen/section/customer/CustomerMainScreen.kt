@@ -1,4 +1,4 @@
-package com.mansao.trianglesneacare.ui.screen.section.driver
+package com.mansao.trianglesneacare.ui.screen.section.customer
 
 import android.widget.Toast
 import androidx.compose.material3.Text
@@ -8,7 +8,8 @@ import com.mansao.trianglesneacare.ui.common.HomeUiState
 import com.mansao.trianglesneacare.ui.components.LoadingScreen
 
 @Composable
-fun DriverHomeScreen(    uiState: HomeUiState
+fun CustomerMainScreen(
+    uiState: HomeUiState
 ) {
     val context = LocalContext.current
     when (uiState) {

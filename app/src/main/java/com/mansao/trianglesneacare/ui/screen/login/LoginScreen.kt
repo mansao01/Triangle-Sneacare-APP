@@ -71,8 +71,9 @@ import kotlin.math.roundToInt
 fun LoginScreen(
     uiState: LoginUiState,
     loginViewModel: LoginViewModel = hiltViewModel(),
-    navigateToAdminHome: () -> Unit,
-    navigateToCustomerHome: () -> Unit,
+    navigateToAdminMain: () -> Unit,
+    navigateToCustomerMain: () -> Unit,
+    navigateToDriverMain: () -> Unit,
     navigateToRegister: () -> Unit
 ) {
     val context = LocalContext.current
@@ -92,8 +93,9 @@ fun LoginScreen(
                     Toast.LENGTH_LONG
                 ).show()
                 when (uiState.loginResponse.user.role.role) {
-                    "admin" -> navigateToAdminHome()
-                    "customer" -> navigateToCustomerHome()
+                    "admin" -> navigateToAdminMain()
+                    "customer" -> navigateToCustomerMain()
+                    "driver" -> navigateToDriverMain()
                 }
             }
 

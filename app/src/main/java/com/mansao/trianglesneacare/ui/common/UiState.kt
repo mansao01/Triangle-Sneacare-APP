@@ -20,6 +20,13 @@ sealed interface LoginUiState {
 
 }
 
+
+sealed interface ProfileUiState {
+    object Loading : ProfileUiState
+    data class Success(val profile: ProfileResponse) : ProfileUiState
+    data class Error(val msg: String) : ProfileUiState
+
+}
 sealed interface HomeUiState {
     object Loading : HomeUiState
     data class Success(val profile:ProfileResponse) : HomeUiState

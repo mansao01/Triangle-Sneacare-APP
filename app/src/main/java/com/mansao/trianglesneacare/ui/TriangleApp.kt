@@ -9,14 +9,16 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.mansao.trianglesneacare.ui.navigation.Screen
-import com.mansao.trianglesneacare.ui.screen.section.admin.AdminHomeScreen
-import com.mansao.trianglesneacare.ui.screen.section.customer.home.CustomerHomeScreen
 import com.mansao.trianglesneacare.ui.screen.section.customer.home.HomeViewModel
-import com.mansao.trianglesneacare.ui.screen.section.driver.DriverHomeScreen
 import com.mansao.trianglesneacare.ui.screen.login.LoginScreen
 import com.mansao.trianglesneacare.ui.screen.login.LoginViewModel
+import com.mansao.trianglesneacare.ui.screen.profile.ProfileScreen
+import com.mansao.trianglesneacare.ui.screen.profile.ProfileViewModel
 import com.mansao.trianglesneacare.ui.screen.register.RegisterScreen
 import com.mansao.trianglesneacare.ui.screen.register.RegisterViewModel
+import com.mansao.trianglesneacare.ui.screen.section.admin.AdminMainScreen
+import com.mansao.trianglesneacare.ui.screen.section.customer.CustomerMainScreen
+import com.mansao.trianglesneacare.ui.screen.section.driver.DriverMainScreen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -26,6 +28,8 @@ fun TriangleApp(
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     NavHost(navController = navController, startDestination = startDestination) {
+
+//        common ui (used each role)
         composable(Screen.Register.route) {
             val registerViewModel: RegisterViewModel = hiltViewModel()
             RegisterScreen(
@@ -37,32 +41,40 @@ fun TriangleApp(
         composable(Screen.Login.route) {
             val loginViewModel: LoginViewModel = hiltViewModel()
             LoginScreen(uiState = loginViewModel.uiState,
-                navigateToAdminHome = {
-                    navController.navigate(Screen.AdminHome.route)
+                navigateToAdminMain = {
+                    navController.navigate(Screen.AdminMain.route)
                 },
-                navigateToCustomerHome = {
-                    navController.navigate(Screen.CustomerHome.route)
+                navigateToCustomerMain = {
+                    navController.navigate(Screen.CustomerMain.route)
+                },
+                navigateToDriverMain = {
+                    navController.navigate(Screen.DriverMain.route)
                 },
                 navigateToRegister = {
                     navController.navigate(Screen.Register.route)
                 })
         }
 
+        composable(Screen.Profile.route) {
+            val profileViewModel: ProfileViewModel = hiltViewModel()
+            ProfileScreen(uiState = profileViewModel.uiState)
+        }
+
 //        admin ui
-        composable(Screen.AdminHome.route) {
+        composable(Screen.AdminMain.route) {
             val homeViewModel: HomeViewModel = hiltViewModel()
-            AdminHomeScreen(homeViewModel.uiState)
+            AdminMainScreen(homeViewModel.uiState)
         }
 
 //        customer ui
-        composable(Screen.CustomerHome.route) {
+        composable(Screen.CustomerMain.route) {
             val homeViewModel: HomeViewModel = hiltViewModel()
-            CustomerHomeScreen(homeViewModel.uiState)
+            CustomerMainScreen(homeViewModel.uiState)
         }
 //        driver ui
-        composable(Screen.DriverHome.route) {
+        composable(Screen.DriverMain.route) {
             val homeViewModel: HomeViewModel = hiltViewModel()
-            DriverHomeScreen(homeViewModel.uiState)
+            DriverMainScreen(homeViewModel.uiState)
         }
 
     }

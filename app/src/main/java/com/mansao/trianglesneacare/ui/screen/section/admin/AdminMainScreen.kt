@@ -1,15 +1,14 @@
-package com.mansao.trianglesneacare.ui.screen.section.customer.home
+package com.mansao.trianglesneacare.ui.screen.section.admin
 
 import android.widget.Toast
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.mansao.trianglesneacare.ui.common.HomeUiState
 import com.mansao.trianglesneacare.ui.components.LoadingScreen
 
 @Composable
-fun CustomerHomeScreen(
+fun AdminMainScreen(
     uiState: HomeUiState
 ) {
     val context = LocalContext.current

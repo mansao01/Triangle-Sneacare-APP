@@ -1,13 +1,19 @@
 package com.mansao.trianglesneacare.ui.navigation
 
 sealed class Screen(val route: String) {
+//    common
     object Login : Screen("login")
     object Register : Screen("register")
-    object AdminHome : Screen("adminHome")
-    object CustomerHome : Screen("customerHome")
+    object Profile : Screen("profile")
 
-    object DriverHome : Screen("DriverHome")
+//    admin
+    object AdminMain : Screen("adminMain")
+
+//    customer
+    object CustomerMain : Screen("customerMain")
 
 
+//driver
+    object DriverMain : Screen("driverMain")
 
 }
