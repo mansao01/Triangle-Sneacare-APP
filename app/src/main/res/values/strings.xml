@@ -18,4 +18,6 @@
     <string name="address">address</string>
     <string name="phone">phone number</string>
     <string name="triangle">Triangle Sneacare</string>
+    <string name="home">Home</string>
+    <string name="profile">Profile</string>
 </resources>

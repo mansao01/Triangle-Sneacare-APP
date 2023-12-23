@@ -8,6 +8,7 @@ sealed class Screen(val route: String) {
 
 //    admin
     object AdminMain : Screen("adminMain")
+    object AdminHome : Screen("adminHome")
 
 //    customer
     object CustomerMain : Screen("customerMain")
