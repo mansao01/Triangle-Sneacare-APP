@@ -64,7 +64,7 @@ fun AdminBottomBar(
         mutableIntStateOf(0)
     }
     NavigationBar {
-        BottomNavigationItem().bottomNavigationItem().forEachIndexed { index, navigationItem ->
+        BottomNavigationItem().adminBottomNavigationItem().forEachIndexed { index, navigationItem ->
             NavigationBarItem(
                 selected = index == navigationSelectedItem,
                 label = {

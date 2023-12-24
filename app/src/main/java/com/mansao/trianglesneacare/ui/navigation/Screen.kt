@@ -12,6 +12,7 @@ sealed class Screen(val route: String) {
 
 //    customer
     object CustomerMain : Screen("customerMain")
+    object CustomerCart : Screen("customerCart")
 
 
 //driver
