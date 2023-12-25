@@ -12,10 +12,13 @@ sealed class Screen(val route: String) {
 
 //    customer
     object CustomerMain : Screen("customerMain")
+    object CustomerHome : Screen("customerHome")
     object CustomerCart : Screen("customerCart")
 
 
 //driver
     object DriverMain : Screen("driverMain")
+    object DriverHome : Screen("driverHome")
+    object DriverMap : Screen("driverMap")
 
 }

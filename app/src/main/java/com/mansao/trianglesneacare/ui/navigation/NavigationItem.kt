@@ -3,6 +3,7 @@ package com.mansao.trianglesneacare.ui.navigation
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Map
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.ui.graphics.vector.ImageVector
 
@@ -37,13 +38,39 @@ data class BottomNavigationItem(
             BottomNavigationItem(
                 title = "Home",
                 icon = Icons.Filled.Home,
-                screen = Screen.AdminHome.route,
+                screen = Screen.CustomerHome.route,
                 contentDescription = "Home"
             ),BottomNavigationItem(
                 title = "Cart",
                 icon = Icons.Filled.ShoppingCart,
                 screen = Screen.CustomerCart.route,
                 contentDescription = "Home"
+            ),
+            BottomNavigationItem(
+                title = "Profile",
+                icon = Icons.Filled.AccountCircle,
+                screen = Screen.Profile.route,
+                contentDescription = "Profile"
+            ),
+        )
+
+    }
+
+    fun driverBottomNavigationItem(): List<BottomNavigationItem> {
+        return listOf(
+
+            BottomNavigationItem(
+                title = "Home",
+                icon = Icons.Filled.Home,
+                screen = Screen.DriverHome.route,
+                contentDescription = "Home"
+            ),
+
+            BottomNavigationItem(
+                title = "Map",
+                icon = Icons.Filled.Map,
+                screen = Screen.DriverMap.route,
+                contentDescription = "Map"
             ),
             BottomNavigationItem(
                 title = "Profile",

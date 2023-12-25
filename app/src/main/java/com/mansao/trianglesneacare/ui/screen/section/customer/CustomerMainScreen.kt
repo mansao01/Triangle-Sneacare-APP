@@ -25,6 +25,7 @@ import com.mansao.trianglesneacare.ui.navigation.Screen
 import com.mansao.trianglesneacare.ui.screen.profile.ProfileScreen
 import com.mansao.trianglesneacare.ui.screen.profile.ProfileViewModel
 import com.mansao.trianglesneacare.ui.screen.section.customer.cart.CartScreen
+import com.mansao.trianglesneacare.ui.screen.section.customer.home.CustomerHomeScreen
 
 @Composable
 fun CustomerMainScreen(
@@ -44,8 +45,8 @@ fun CustomerMainScreen(
                 navController = navController,
                 startDestination = Screen.AdminHome.route,
             ) {
-                composable(Screen.AdminHome.route) {
-                    CustomerMainScreen()
+                composable(Screen.CustomerHome.route) {
+                    CustomerHomeScreen()
                 }
                 composable(Screen.CustomerCart.route){
                     CartScreen()
