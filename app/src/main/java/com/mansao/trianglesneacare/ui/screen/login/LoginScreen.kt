@@ -113,7 +113,7 @@ fun LoginScreen(
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalAnimationApi::class)
 @Composable
-fun LoginComponent(
+fun OldLoginComponent(
     loginViewModel: LoginViewModel,
     modifier: Modifier = Modifier,
     navigateToRegister: () -> Unit
@@ -290,7 +290,10 @@ fun LoginComponent(
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun LoginScreen2() {
+fun LoginComponent(
+    loginViewModel: LoginViewModel,
+    navigateToRegister: () -> Unit
+) {
     var email by remember { mutableStateOf("") }
     var isEmailEmpty by remember { mutableStateOf(false) }
 
@@ -355,6 +358,38 @@ fun LoginScreen2() {
                 .align(Alignment.CenterHorizontally)
                 .padding(top = 16.dp)
         )
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(
+                text = "Register",
+                textDecoration = TextDecoration.Underline,
+                style = MaterialTheme.typography.bodySmall,
+                color = if (isEmailEmpty || isPasswordEmpty) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary,
+                modifier = Modifier
+                    .padding(start = 52.dp)
+                    .clickable { navigateToRegister() }
+            )
+
+            Button(
+                onClick = {
+                    when {
+                        email.isEmpty() -> isEmailEmpty = true
+                        password.isEmpty() -> isPasswordEmpty = true
+                        else -> {
+                            loginViewModel.login(LoginRequest(email, password))
+                        }
+                    }
+                },
+                modifier = Modifier
+                    .padding(top = 18.dp)
+                    .padding(end = 52.dp)
+            ) {
+                Text(text = "login")
+            }
+        }
 
     }
 
