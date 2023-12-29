@@ -43,7 +43,7 @@ fun CustomerMainScreen(
         ) {
             NavHost(
                 navController = navController,
-                startDestination = Screen.AdminHome.route,
+                startDestination = Screen.CustomerHome.route,
             ) {
                 composable(Screen.CustomerHome.route) {
                     CustomerHomeScreen()

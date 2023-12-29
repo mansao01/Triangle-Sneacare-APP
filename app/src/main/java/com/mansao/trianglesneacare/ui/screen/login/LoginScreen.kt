@@ -64,7 +64,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.mansao.trianglesneacare.R
 import com.mansao.trianglesneacare.data.network.request.LoginRequest
 import com.mansao.trianglesneacare.ui.common.LoginUiState
-import com.mansao.trianglesneacare.ui.components.HeaderText
 import com.mansao.trianglesneacare.ui.components.LoadingScreen
 import kotlin.math.roundToInt
 
@@ -111,13 +110,12 @@ fun LoginScreen(
 
 }
 
-@OptIn(ExperimentalComposeUiApi::class, ExperimentalAnimationApi::class)
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun OldLoginComponent(
+fun LoginComponent(
     loginViewModel: LoginViewModel,
     modifier: Modifier = Modifier,
     navigateToRegister: () -> Unit
-
 ) {
     var email by remember { mutableStateOf("") }
     var isEmailEmpty by remember { mutableStateOf(false) }
@@ -188,7 +186,6 @@ fun OldLoginComponent(
                     fontSize = 26.sp,
                     modifier = Modifier
                         .padding(horizontal = 32.dp)
-
                 )
             }
 
@@ -221,6 +218,7 @@ fun OldLoginComponent(
                 .align(Alignment.CenterHorizontally)
                 .padding(top = 16.dp)
         )
+
         OutlinedTextField(
             value = password,
             onValueChange = { password = it },
@@ -258,7 +256,7 @@ fun OldLoginComponent(
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(
-                text = "Register",
+                text = stringResource(id = R.string.login),
                 textDecoration = TextDecoration.Underline,
                 style = MaterialTheme.typography.bodySmall,
                 color = if (isEmailEmpty || isPasswordEmpty) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary,
@@ -281,118 +279,10 @@ fun OldLoginComponent(
                     .padding(top = 18.dp)
                     .padding(end = 52.dp)
             ) {
-                Text(text = "login")
+                Text(text = stringResource(id = R.string.login))
             }
         }
     }
-
-}
-
-@OptIn(ExperimentalComposeUiApi::class)
-@Composable
-fun LoginComponent(
-    loginViewModel: LoginViewModel,
-    navigateToRegister: () -> Unit
-) {
-    var email by remember { mutableStateOf("") }
-    var isEmailEmpty by remember { mutableStateOf(false) }
-
-    var password by remember { mutableStateOf("") }
-    var isPasswordEmpty by remember { mutableStateOf(false) }
-
-    val keyboardController = LocalSoftwareKeyboardController.current
-    var passwordVisibility by remember { mutableStateOf(false) }
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.fillMaxSize()
-    ) {
-
-        HeaderText(text = stringResource(id = R.string.login))
-        OutlinedTextField(
-            value = email,
-            onValueChange = { email = it.trim() },
-            label = { Text(text = stringResource(R.string.enter_your_email)) },
-            placeholder = { Text(text = stringResource(R.string.email)) },
-            leadingIcon = { Icon(imageVector = Icons.Outlined.Email, contentDescription = null) },
-            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Email),
-            singleLine = true,
-            keyboardActions = KeyboardActions(
-                onDone = {
-                    if (isEmailValid(email)) {
-                        keyboardController?.hide()
-                    }
-                }
-            ),
-            isError = isEmailEmpty,
-            modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .padding(top = 16.dp)
-        )
-        OutlinedTextField(
-            value = password,
-            onValueChange = { password = it },
-            label = { Text(text = stringResource(R.string.enter_your_password)) },
-            placeholder = { Text(text = stringResource(R.string.password)) },
-            leadingIcon = { Icon(imageVector = Icons.Outlined.Lock, contentDescription = null) },
-            singleLine = true,
-            visualTransformation = if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
-            isError = isPasswordEmpty,
-            trailingIcon = {
-                IconButton(
-                    onClick = { passwordVisibility = !passwordVisibility },
-                    modifier = Modifier
-                        .align(Alignment.End)
-                        .padding(end = 16.dp)
-                ) {
-                    Icon(
-                        imageVector = if (passwordVisibility) Icons.Default.VisibilityOff else Icons.Default.Visibility,
-                        contentDescription = if (passwordVisibility) {
-                            stringResource(R.string.hide_password)
-                        } else {
-                            stringResource(R.string.show_password)
-                        }
-                    )
-                }
-            },
-            modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .padding(top = 16.dp)
-        )
-        Row(
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text(
-                text = "Register",
-                textDecoration = TextDecoration.Underline,
-                style = MaterialTheme.typography.bodySmall,
-                color = if (isEmailEmpty || isPasswordEmpty) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary,
-                modifier = Modifier
-                    .padding(start = 52.dp)
-                    .clickable { navigateToRegister() }
-            )
-
-            Button(
-                onClick = {
-                    when {
-                        email.isEmpty() -> isEmailEmpty = true
-                        password.isEmpty() -> isPasswordEmpty = true
-                        else -> {
-                            loginViewModel.login(LoginRequest(email, password))
-                        }
-                    }
-                },
-                modifier = Modifier
-                    .padding(top = 18.dp)
-                    .padding(end = 52.dp)
-            ) {
-                Text(text = "login")
-            }
-        }
-
-    }
-
 }
 
 private fun isEmailValid(email: String): Boolean {
