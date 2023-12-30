@@ -2,7 +2,6 @@ package com.mansao.trianglesneacare.ui.screen.login
 
 import android.util.Log
 import android.widget.Toast
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode

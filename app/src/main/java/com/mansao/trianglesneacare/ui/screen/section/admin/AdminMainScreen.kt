@@ -24,6 +24,7 @@ import com.mansao.trianglesneacare.ui.navigation.BottomNavigationItem
 import com.mansao.trianglesneacare.ui.navigation.Screen
 import com.mansao.trianglesneacare.ui.screen.profile.ProfileScreen
 import com.mansao.trianglesneacare.ui.screen.profile.ProfileViewModel
+import com.mansao.trianglesneacare.ui.screen.section.admin.driverManagement.DriverManagementScreen
 import com.mansao.trianglesneacare.ui.screen.section.admin.home.AdminHomeScreen
 
 @Composable
@@ -46,6 +47,9 @@ fun AdminMainScreen(
             ) {
                 composable(Screen.AdminHome.route) {
                     AdminHomeScreen()
+                }
+                composable(Screen.DriverManagement.route){
+                    DriverManagementScreen()
                 }
                 composable(Screen.Profile.route) {
                     val profileViewModel: ProfileViewModel = hiltViewModel()

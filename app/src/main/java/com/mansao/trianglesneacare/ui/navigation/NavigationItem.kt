@@ -4,6 +4,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Map
+import androidx.compose.material.icons.filled.Motorcycle
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.ui.graphics.vector.ImageVector
 
@@ -21,6 +22,12 @@ data class BottomNavigationItem(
                 icon = Icons.Filled.Home,
                 screen = Screen.AdminHome.route,
                 contentDescription = "Home"
+            ),
+            BottomNavigationItem(
+                title = "Driver management",
+                icon = Icons.Filled.Motorcycle,
+                screen = Screen.DriverManagement.route,
+                contentDescription = "Driver management"
             ),
             BottomNavigationItem(
                 title = "Profile",
