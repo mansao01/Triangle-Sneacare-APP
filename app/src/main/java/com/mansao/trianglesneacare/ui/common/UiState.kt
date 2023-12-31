@@ -27,17 +27,26 @@ sealed interface ProfileUiState {
     data class Error(val msg: String) : ProfileUiState
 
 }
+
+//admin section
 sealed interface AdminHomeUiState {
     object Loading : AdminHomeUiState
-    data class Success(val profile:ProfileResponse) : AdminHomeUiState
+    data class Success(val profile: ProfileResponse) : AdminHomeUiState
     data class Error(val msg: String) : AdminHomeUiState
 
+}
+
+sealed interface DriverManagementUiState {
+    object StandBy : DriverManagementUiState
+    object Loading : DriverManagementUiState
+    data class Success(val registerResponse: RegisterResponse) : DriverManagementUiState
+    data class Error(val msg: String) : DriverManagementUiState
 }
 
 
 sealed interface CustomerHomeUiState {
     object Loading : CustomerHomeUiState
-    data class Success(val profile:ProfileResponse) : CustomerHomeUiState
+    data class Success(val profile: ProfileResponse) : CustomerHomeUiState
     data class Error(val msg: String) : CustomerHomeUiState
 
 }
@@ -45,7 +54,7 @@ sealed interface CustomerHomeUiState {
 
 sealed interface DriverHomeUiState {
     object Loading : DriverHomeUiState
-    data class Success(val profile:ProfileResponse) : DriverHomeUiState
+    data class Success(val profile: ProfileResponse) : DriverHomeUiState
     data class Error(val msg: String) : DriverHomeUiState
 
 }
