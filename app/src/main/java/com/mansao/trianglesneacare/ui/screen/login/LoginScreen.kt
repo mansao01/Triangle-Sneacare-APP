@@ -38,6 +38,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -62,6 +63,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.mansao.trianglesneacare.R
 import com.mansao.trianglesneacare.data.network.request.LoginRequest
+import com.mansao.trianglesneacare.ui.AuthViewModel
 import com.mansao.trianglesneacare.ui.common.LoginUiState
 import com.mansao.trianglesneacare.ui.components.LoadingScreen
 import kotlin.math.roundToInt
@@ -73,39 +75,47 @@ fun LoginScreen(
     navigateToAdminMain: () -> Unit,
     navigateToCustomerMain: () -> Unit,
     navigateToDriverMain: () -> Unit,
-    navigateToRegister: () -> Unit
+    navigateToRegister: () -> Unit,
+    authViewModel: AuthViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
-    when (uiState) {
-        is LoginUiState.StandBy -> LoginComponent(
-            loginViewModel = loginViewModel,
-            navigateToRegister = navigateToRegister
-        )
+    val isLogin by authViewModel.loginState.collectAsState()
 
-        is LoginUiState.Loading -> LoadingScreen()
-        is LoginUiState.Success -> {
-            LaunchedEffect(Unit) {
+    if (isLogin){
+        LoadingScreen()
+    }else{
+        when (uiState) {
+            is LoginUiState.StandBy -> LoginComponent(
+                loginViewModel = loginViewModel,
+                navigateToRegister = navigateToRegister
+            )
 
-                Toast.makeText(
-                    context,
-                    "Welcome ${uiState.loginResponse.user.name}",
-                    Toast.LENGTH_LONG
-                ).show()
-                when (uiState.loginResponse.user.role.role) {
-                    "admin" -> navigateToAdminMain()
-                    "customer" -> navigateToCustomerMain()
-                    "driver" -> navigateToDriverMain()
+            is LoginUiState.Loading -> LoadingScreen()
+            is LoginUiState.Success -> {
+                LaunchedEffect(Unit) {
+
+                    Toast.makeText(
+                        context,
+                        "Welcome ${uiState.loginResponse.user.name}",
+                        Toast.LENGTH_LONG
+                    ).show()
+                    when (uiState.loginResponse.user.role.role) {
+                        "admin" -> navigateToAdminMain()
+                        "customer" -> navigateToCustomerMain()
+                        "driver" -> navigateToDriverMain()
+                    }
                 }
+
+                Log.d("LoginScreen", uiState.loginResponse.accessToken)
             }
 
-            Log.d("LoginScreen", uiState.loginResponse.accessToken)
-        }
-
-        is LoginUiState.Error -> {
-            Toast.makeText(context, uiState.msg, Toast.LENGTH_SHORT).show()
-            loginViewModel.getUiState()
+            is LoginUiState.Error -> {
+                Toast.makeText(context, uiState.msg, Toast.LENGTH_SHORT).show()
+                loginViewModel.getUiState()
+            }
         }
     }
+
 
 }
 
@@ -255,7 +265,7 @@ fun LoginComponent(
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(
-                text = stringResource(id = R.string.login),
+                text = stringResource(id = R.string.register),
                 textDecoration = TextDecoration.Underline,
                 style = MaterialTheme.typography.bodySmall,
                 color = if (isEmailEmpty || isPasswordEmpty) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary,

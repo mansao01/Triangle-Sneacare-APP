@@ -16,7 +16,7 @@ import javax.inject.Inject
 @HiltViewModel
 class AuthViewModel @Inject constructor(private val appRepositoryImpl: AppRepositoryImpl) :
     ViewModel() {
-    private val _startDestination: MutableState<String> = mutableStateOf(Screen.CustomerMain.route)
+    private val _startDestination: MutableState<String> = mutableStateOf(Screen.Login.route)
     val startDestination: State<String> = _startDestination
 
     private val _isLoading: MutableState<Boolean> = mutableStateOf(true)
@@ -27,7 +27,6 @@ class AuthViewModel @Inject constructor(private val appRepositoryImpl: AppReposi
 
     private val _role: MutableState<String> = mutableStateOf("admin")
     val role: State<String> = _role
-
 
     init {
         viewModelScope.launch {

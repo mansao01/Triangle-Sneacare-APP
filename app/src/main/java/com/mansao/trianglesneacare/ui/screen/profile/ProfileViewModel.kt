@@ -34,4 +34,13 @@ class ProfileViewModel @Inject constructor(private val appRepositoryImpl: AppRep
         }
     }
 
+    fun logout() {
+        viewModelScope.launch {
+            appRepositoryImpl.clearToken()
+            appRepositoryImpl.clearRoleName()
+            appRepositoryImpl.clearUsername()
+            appRepositoryImpl.saveIsLoginState(false)
+        }
+    }
+
 }

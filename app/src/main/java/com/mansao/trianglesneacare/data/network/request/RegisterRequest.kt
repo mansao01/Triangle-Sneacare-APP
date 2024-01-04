@@ -5,6 +5,12 @@ data class RegisterRequest(
     val email: String,
     val password: String,
     val address: String,
-    val phone:String,
+    val phone: String,
     val roleId: Int = 1
 )
+
+/* notes : role id
+* 1 -> customer
+* 3 -> admin
+* 4 -> driver
+* */
