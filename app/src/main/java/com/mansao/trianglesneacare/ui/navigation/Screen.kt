@@ -6,19 +6,18 @@ sealed class Screen(val route: String) {
     object Register : Screen("register")
     object Profile : Screen("profile")
 
+    object Main :Screen("main")
+
 //    admin
-    object AdminMain : Screen("adminMain")
     object AdminHome : Screen("adminHome")
     object DriverManagement : Screen("driverManagement")
 
 //    customer
-    object CustomerMain : Screen("customerMain")
     object CustomerHome : Screen("customerHome")
     object CustomerCart : Screen("customerCart")
 
 
 //driver
-    object DriverMain : Screen("driverMain")
     object DriverHome : Screen("driverHome")
     object DriverMap : Screen("driverMap")
 

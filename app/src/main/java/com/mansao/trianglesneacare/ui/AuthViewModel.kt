@@ -30,15 +30,11 @@ class AuthViewModel @Inject constructor(private val appRepositoryImpl: AppReposi
 
     init {
         viewModelScope.launch {
-            appRepositoryImpl.getLoginState().collect() { isLogin ->
+            appRepositoryImpl.getLoginState().collect { isLogin ->
                 _loginState.value = isLogin
                 if (isLogin) {
                     _role.value = appRepositoryImpl.getRole().toString()
-                    when (_role.value) {
-                        "admin" -> _startDestination.value = Screen.AdminMain.route
-                        "customer" -> _startDestination.value = Screen.CustomerMain.route
-                        "driver" -> _startDestination.value = Screen.DriverMain.route
-                    }
+                    _startDestination.value = Screen.Main.route
                 } else {
                     _startDestination.value = Screen.Login.route
                 }

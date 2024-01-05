@@ -11,9 +11,7 @@ import com.mansao.trianglesneacare.ui.screen.login.LoginScreen
 import com.mansao.trianglesneacare.ui.screen.login.LoginViewModel
 import com.mansao.trianglesneacare.ui.screen.register.RegisterScreen
 import com.mansao.trianglesneacare.ui.screen.register.RegisterViewModel
-import com.mansao.trianglesneacare.ui.screen.section.admin.AdminMainScreen
-import com.mansao.trianglesneacare.ui.screen.section.customer.CustomerMainScreen
-import com.mansao.trianglesneacare.ui.screen.section.driver.DriverMainScreen
+import com.mansao.trianglesneacare.ui.screen.section.MainScreen
 
 @Composable
 fun TriangleApp(
@@ -22,7 +20,6 @@ fun TriangleApp(
 ) {
     NavHost(navController = navController, startDestination = startDestination) {
 
-//        common ui (used each role)
         composable(Screen.Register.route) {
             val registerViewModel: RegisterViewModel = hiltViewModel()
             RegisterScreen(
@@ -48,20 +45,10 @@ fun TriangleApp(
                 })
         }
 
-
-//        admin ui
-        composable(Screen.AdminMain.route) {
-            AdminMainScreen()
+        composable(Screen.Main.route){
+            MainScreen()
         }
 
-//        customer ui
-        composable(Screen.CustomerMain.route) {
-            CustomerMainScreen()
-        }
-//        driver ui
-        composable(Screen.DriverMain.route) {
-            DriverMainScreen()
-        }
 
     }
 }
