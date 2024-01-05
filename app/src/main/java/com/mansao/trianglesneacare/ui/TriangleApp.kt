@@ -31,14 +31,8 @@ fun TriangleApp(
         composable(Screen.Login.route) {
             val loginViewModel: LoginViewModel = hiltViewModel()
             LoginScreen(uiState = loginViewModel.uiState,
-                navigateToAdminMain = {
-                    navController.navigate(Screen.AdminMain.route)
-                },
-                navigateToCustomerMain = {
-                    navController.navigate(Screen.CustomerMain.route)
-                },
-                navigateToDriverMain = {
-                    navController.navigate(Screen.DriverMain.route)
+                navigateToMain = {
+                    navController.navigate(Screen.Main.route)
                 },
                 navigateToRegister = {
                     navController.navigate(Screen.Register.route)
