@@ -2,7 +2,7 @@
 <resources>
 
     <style name="Theme.Triangle.MyCustomTheme" parent="Theme.SplashScreen">
-        <item name="windowSplashScreenBackground">#FFFFFF</item>
+        <item name="windowSplashScreenBackground">#F5F5F5</item>
         <item name="windowSplashScreenAnimatedIcon">@drawable/triangle_logo</item>
         <item name="postSplashScreenTheme">@style/Theme.TriangleSneacare</item>
     </style>
