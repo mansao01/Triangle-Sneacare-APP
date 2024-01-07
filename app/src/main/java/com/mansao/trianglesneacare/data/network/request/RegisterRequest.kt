@@ -11,6 +11,6 @@ data class RegisterRequest(
 
 /* notes : role id
 * 1 -> customer
-* 3 -> admin
-* 4 -> driver
+* 2 -> admin
+* 3 -> driver
 * */

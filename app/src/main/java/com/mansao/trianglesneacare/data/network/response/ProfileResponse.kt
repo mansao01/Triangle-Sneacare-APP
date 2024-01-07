@@ -29,7 +29,7 @@ data class Profile(
 	val name: String,
 
 	@field:SerializedName("id")
-	val id: Int,
+	val id: String,
 
 	@field:SerializedName("email")
 	val email: String
