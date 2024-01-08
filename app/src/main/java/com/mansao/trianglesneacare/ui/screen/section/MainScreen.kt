@@ -20,6 +20,7 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.mansao.trianglesneacare.R
 import com.mansao.trianglesneacare.ui.AuthViewModel
@@ -43,6 +44,9 @@ fun MainScreen(
 ) {
     val role = authViewModel.role.value
 
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
+
     val startDestination = when (role) {
         stringResource(id = R.string.customer) -> Screen.CustomerHome.route
         stringResource(id = R.string.admin) -> Screen.AdminHome.route
@@ -52,7 +56,9 @@ fun MainScreen(
 
     Scaffold(
         bottomBar = {
-            MainBottomBar(navController = navController, role = role)
+            if (currentRoute != Screen.DriverRegistration.route) {
+                MainBottomBar(navController = navController, role = role)
+            }
         }
     ) {
         Surface(
