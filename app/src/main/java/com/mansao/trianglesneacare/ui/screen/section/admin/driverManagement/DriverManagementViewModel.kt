@@ -6,7 +6,6 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mansao.trianglesneacare.data.AppRepositoryImpl
-import com.mansao.trianglesneacare.data.network.request.RegisterRequest
 import com.mansao.trianglesneacare.ui.common.DriverManagementUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -15,14 +14,17 @@ import javax.inject.Inject
 @HiltViewModel
 class DriverManagementViewModel @Inject constructor(private val appRepositoryImpl: AppRepositoryImpl) :
     ViewModel() {
-    var uiState: DriverManagementUiState by mutableStateOf(DriverManagementUiState.StandBy)
+    var uiState: DriverManagementUiState by mutableStateOf(DriverManagementUiState.Loading)
         private set
 
-    fun registerDriver(registerRequest: RegisterRequest) {
+    init {
+        getDrivers()
+    }
+    private fun getDrivers() {
         viewModelScope.launch {
             uiState = DriverManagementUiState.Loading
             uiState = try {
-                val result = appRepositoryImpl.register(registerRequest)
+                val result = appRepositoryImpl.getDrivers()
                 DriverManagementUiState.Success(result)
             } catch (e: Exception) {
                 DriverManagementUiState.Error(e.toString())

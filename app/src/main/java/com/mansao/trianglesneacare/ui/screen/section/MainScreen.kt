@@ -28,6 +28,8 @@ import com.mansao.trianglesneacare.ui.navigation.Screen
 import com.mansao.trianglesneacare.ui.screen.profile.ProfileScreen
 import com.mansao.trianglesneacare.ui.screen.profile.ProfileViewModel
 import com.mansao.trianglesneacare.ui.screen.section.admin.driverManagement.DriverManagementScreen
+import com.mansao.trianglesneacare.ui.screen.section.admin.driverManagement.DriverManagementViewModel
+import com.mansao.trianglesneacare.ui.screen.section.admin.driverRegistrarion.DriverRegistrationScreen
 import com.mansao.trianglesneacare.ui.screen.section.admin.home.AdminHomeScreen
 import com.mansao.trianglesneacare.ui.screen.section.customer.cart.CartScreen
 import com.mansao.trianglesneacare.ui.screen.section.customer.home.CustomerHomeScreen
@@ -41,7 +43,7 @@ fun MainScreen(
 ) {
     val role = authViewModel.role.value
 
-    val startDestination = when(role) {
+    val startDestination = when (role) {
         stringResource(id = R.string.customer) -> Screen.CustomerHome.route
         stringResource(id = R.string.admin) -> Screen.AdminHome.route
         else -> Screen.DriverHome.route
@@ -80,11 +82,21 @@ fun MainScreen(
                     AdminHomeScreen()
                 }
                 composable(Screen.DriverManagement.route) {
-                    DriverManagementScreen()
+                    val driverManagementViewModel: DriverManagementViewModel = hiltViewModel()
+                    DriverManagementScreen(
+                        driverManagementViewModel.uiState,
+                        navigateToDriverRegistration = {
+                            navController.navigate(Screen.DriverRegistration.route)
+                        }
+                    )
                 }
                 composable(Screen.Profile.route) {
                     val profileViewModel: ProfileViewModel = hiltViewModel()
                     ProfileScreen(uiState = profileViewModel.uiState)
+                }
+
+                composable(Screen.DriverRegistration.route) {
+                    DriverRegistrationScreen()
                 }
 
 //                driver

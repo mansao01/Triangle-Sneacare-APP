@@ -7,5 +7,6 @@ object ApiConst {
     const val LOGIN = "login"
     const val REGISTER = "register"
     const val PROFILE = "profile"
+    const val DRIVERS = "drivers"
     const val LOGOUT = "logout"
 }
