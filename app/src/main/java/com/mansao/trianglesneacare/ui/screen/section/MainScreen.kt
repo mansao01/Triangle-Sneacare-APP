@@ -57,9 +57,9 @@ fun MainScreen(
 
     Scaffold(
         bottomBar = {
-            if (currentRoute != Screen.DriverRegistration.route) {
-                MainBottomBar(navController = navController, role = role)
-            }
+//            if (currentRoute != Screen.DriverRegistration.route) {
+            MainBottomBar(navController = navController, role = role)
+//            }
         }
     ) {
         Surface(
@@ -107,7 +107,8 @@ fun MainScreen(
                     DriverRegistrationScreen(
                         driverRegistrationViewModel.uiState,
                         navigateToDriverManagement = {
-//                            navController.navigate(Screen.DriverManagement.route)
+                            navController.popBackStack()
+                            navController.navigate(Screen.DriverManagement.route)
                         })
                 }
 

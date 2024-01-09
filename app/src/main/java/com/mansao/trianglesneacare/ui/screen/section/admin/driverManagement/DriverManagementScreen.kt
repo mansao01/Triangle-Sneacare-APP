@@ -12,8 +12,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.mansao.trianglesneacare.data.network.response.DriversItem
 import com.mansao.trianglesneacare.ui.common.DriverManagementUiState
 import com.mansao.trianglesneacare.ui.components.LoadingScreen
@@ -21,10 +23,14 @@ import com.mansao.trianglesneacare.ui.components.LoadingScreen
 @Composable
 fun DriverManagementScreen(
     uiState: DriverManagementUiState,
-    navigateToDriverRegistration: () -> Unit
+    navigateToDriverRegistration: () -> Unit,
+    driverManagementViewModel: DriverManagementViewModel = hiltViewModel()
 
 ) {
     val context = LocalContext.current
+    LaunchedEffect(key1 = Unit ){
+        driverManagementViewModel.getDrivers()
+    }
     when (uiState) {
         is DriverManagementUiState.Loading -> LoadingScreen()
         is DriverManagementUiState.Success -> DriverManagementComponent(
