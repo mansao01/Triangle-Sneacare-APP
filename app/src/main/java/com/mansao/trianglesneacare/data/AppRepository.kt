@@ -1,20 +1,33 @@
 package com.mansao.trianglesneacare.data
 
 import com.mansao.trianglesneacare.data.network.ApiService
+import com.mansao.trianglesneacare.data.network.request.DriverRegisterRequest
 import com.mansao.trianglesneacare.data.network.request.LoginRequest
 import com.mansao.trianglesneacare.data.network.request.RegisterRequest
 import com.mansao.trianglesneacare.data.network.response.GetDriversResponse
 import com.mansao.trianglesneacare.data.network.response.LoginResponse
 import com.mansao.trianglesneacare.data.network.response.OnlyMsgResponse
 import com.mansao.trianglesneacare.data.network.response.ProfileResponse
+import com.mansao.trianglesneacare.data.network.response.RegisterDriverResponse
 import com.mansao.trianglesneacare.data.network.response.RegisterResponse
 import com.mansao.trianglesneacare.data.preferences.AppPreferences
 import kotlinx.coroutines.flow.Flow
+import retrofit2.http.Part
+import java.io.File
 import javax.inject.Inject
 
 interface AppRepository {
     //    network
     suspend fun register(registerRequest: RegisterRequest): RegisterResponse
+    suspend fun registerDriver(
+        name: String,
+        email: String,
+        password: String,
+        address: String,
+        phone: String,
+        file: File? = null
+    ): RegisterDriverResponse
+
     suspend fun login(loginRequest: LoginRequest): LoginResponse
     suspend fun getProfile(token: String): ProfileResponse
     suspend fun getDrivers(): GetDriversResponse
@@ -41,6 +54,17 @@ class AppRepositoryImpl @Inject constructor(
     //    network
     override suspend fun register(registerRequest: RegisterRequest): RegisterResponse =
         apiService.register(registerRequest)
+
+    override suspend fun registerDriver(
+        name: String,
+        email: String,
+        password: String,
+        address: String,
+        phone: String,
+        file: File?
+    ): RegisterDriverResponse {
+        return apiService.registerDriver(name, email, password, address, phone)
+    }
 
     override suspend fun login(loginRequest: LoginRequest): LoginResponse =
         apiService.login(loginRequest)

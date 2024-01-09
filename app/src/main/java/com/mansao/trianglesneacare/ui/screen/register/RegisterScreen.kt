@@ -42,6 +42,7 @@ import com.mansao.trianglesneacare.R
 import com.mansao.trianglesneacare.data.network.request.RegisterRequest
 import com.mansao.trianglesneacare.ui.common.RegisterUiState
 import com.mansao.trianglesneacare.ui.components.LoadingScreen
+import com.mansao.trianglesneacare.utils.CommonUtils
 
 @Composable
 fun RegisterScreen(
@@ -132,7 +133,7 @@ fun RegisterComponent(
             singleLine = true,
             keyboardActions = KeyboardActions(
                 onDone = {
-                    if (isEmailValid(email)) {
+                    if (CommonUtils.isEmailValid(email)) {
                         keyboardController?.hide()
                     }
                 }
@@ -232,6 +233,4 @@ fun RegisterComponent(
     }
 }
 
-private fun isEmailValid(email: String): Boolean {
-    return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
-}
+

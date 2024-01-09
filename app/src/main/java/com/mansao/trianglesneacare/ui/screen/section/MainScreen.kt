@@ -31,6 +31,7 @@ import com.mansao.trianglesneacare.ui.screen.profile.ProfileViewModel
 import com.mansao.trianglesneacare.ui.screen.section.admin.driverManagement.DriverManagementScreen
 import com.mansao.trianglesneacare.ui.screen.section.admin.driverManagement.DriverManagementViewModel
 import com.mansao.trianglesneacare.ui.screen.section.admin.driverRegistrarion.DriverRegistrationScreen
+import com.mansao.trianglesneacare.ui.screen.section.admin.driverRegistrarion.DriverRegistrationViewModel
 import com.mansao.trianglesneacare.ui.screen.section.admin.home.AdminHomeScreen
 import com.mansao.trianglesneacare.ui.screen.section.customer.cart.CartScreen
 import com.mansao.trianglesneacare.ui.screen.section.customer.home.CustomerHomeScreen
@@ -102,7 +103,12 @@ fun MainScreen(
                 }
 
                 composable(Screen.DriverRegistration.route) {
-                    DriverRegistrationScreen()
+                    val driverRegistrationViewModel: DriverRegistrationViewModel = hiltViewModel()
+                    DriverRegistrationScreen(
+                        driverRegistrationViewModel.uiState,
+                        navigateToDriverManagement = {
+//                            navController.navigate(Screen.DriverManagement.route)
+                        })
                 }
 
 //                driver
