@@ -103,9 +103,7 @@ fun MainScreen(
                 }
 
                 composable(Screen.DriverRegistration.route) {
-                    val driverRegistrationViewModel: DriverRegistrationViewModel = hiltViewModel()
                     DriverRegistrationScreen(
-                        driverRegistrationViewModel.uiState,
                         navigateToDriverManagement = {
                             navController.popBackStack()
                             navController.navigate(Screen.DriverManagement.route)

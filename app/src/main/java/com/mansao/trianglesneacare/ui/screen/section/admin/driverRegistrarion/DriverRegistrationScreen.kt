@@ -24,12 +24,18 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -47,33 +53,19 @@ import com.mansao.trianglesneacare.ui.common.DriverRegistrationUiState
 import com.mansao.trianglesneacare.ui.components.HeaderText
 import com.mansao.trianglesneacare.ui.components.LoadingScreen
 import com.mansao.trianglesneacare.utils.CommonUtils
+import kotlinx.coroutines.launch
 
 @Composable
 fun DriverRegistrationScreen(
-    uiState: DriverRegistrationUiState,
     driverRegistrationViewModel: DriverRegistrationViewModel = hiltViewModel(),
     navigateToDriverManagement: () -> Unit
 ) {
-    val context = LocalContext.current
-    when (uiState) {
-        is DriverRegistrationUiState.Standby -> DriverRegisterComponent(
-            driverRegistrationViewModel = driverRegistrationViewModel,
-            navigateToDriverManagement = navigateToDriverManagement
-        )
-
-        is DriverRegistrationUiState.Loading -> LoadingScreen()
-        is DriverRegistrationUiState.Success -> {
-            navigateToDriverManagement()
-            Toast.makeText(context, uiState.registerResponse.msg, Toast.LENGTH_SHORT).show()
-        }
-
-        is DriverRegistrationUiState.Error -> Toast.makeText(
-            context,
-            uiState.msg,
-            Toast.LENGTH_SHORT
-        ).show()
-    }
-
+    val uiState = driverRegistrationViewModel.uiState
+    DriverRegisterComponent(
+        driverRegistrationViewModel = driverRegistrationViewModel,
+        navigateToDriverManagement = { navigateToDriverManagement() },
+        uiState = uiState
+    )
 
 }
 
@@ -82,8 +74,27 @@ fun DriverRegistrationScreen(
 fun DriverRegisterComponent(
     driverRegistrationViewModel: DriverRegistrationViewModel,
     navigateToDriverManagement: () -> Unit,
+    uiState: DriverRegistrationUiState,
     modifier: Modifier = Modifier
 ) {
+    val snackbarHostState = remember {
+        SnackbarHostState()
+    }
+    when(uiState){
+        is DriverRegistrationUiState.Standby -> {}
+        is DriverRegistrationUiState.Loading -> LoadingScreen()
+        is DriverRegistrationUiState.Success ->{
+            LaunchedEffect(key1 = Unit ){
+                snackbarHostState.showSnackbar(message = uiState.registerResponse.msg)
+            }
+        }
+        is DriverRegistrationUiState.Error ->{
+            LaunchedEffect(key1 = Unit ){
+                snackbarHostState.showSnackbar(message = uiState.msg)
+            }
+        }
+    }
+
     var name by remember { mutableStateOf("") }
     var isNameEmpty by remember { mutableStateOf(false) }
 
@@ -103,7 +114,8 @@ fun DriverRegisterComponent(
     var passwordVisibility by remember { mutableStateOf(false) }
 
     Scaffold(
-        topBar = { DriverRegistrationTopBar(navigateToDriverManagement = navigateToDriverManagement) }
+        topBar = { DriverRegistrationTopBar(navigateToDriverManagement = navigateToDriverManagement) },
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
     ) { scaffoldPadding ->
         Surface(
             modifier = Modifier.padding(scaffoldPadding)
@@ -269,7 +281,7 @@ fun DriverRegisterComponent(
 fun DriverRegistrationTopBar(
     navigateToDriverManagement: () -> Unit
 ) {
-    LargeTopAppBar(title = { HeaderText(text = "Driver Register") },
+    TopAppBar(title = { HeaderText(text = "Driver Register") },
         navigationIcon = {
             IconButton(
                 onClick = { navigateToDriverManagement() }

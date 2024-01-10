@@ -18,7 +18,7 @@ import javax.inject.Inject
 class DriverRegistrationViewModel @Inject constructor(private val appRepositoryImpl: AppRepositoryImpl) :
     ViewModel() {
     var uiState: DriverRegistrationUiState by mutableStateOf(DriverRegistrationUiState.Standby)
-        private set
+
 
     fun registerAsDriver(
         name: String,
