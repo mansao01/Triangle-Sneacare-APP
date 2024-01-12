@@ -1,6 +1,5 @@
 package com.mansao.trianglesneacare.ui.screen.login
 
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -29,7 +28,6 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -60,50 +58,50 @@ import androidx.navigation.compose.rememberNavController
 import com.mansao.trianglesneacare.R
 import com.mansao.trianglesneacare.data.network.request.LoginRequest
 import com.mansao.trianglesneacare.ui.AuthViewModel
-import com.mansao.trianglesneacare.ui.common.LoginUiState
+import com.mansao.trianglesneacare.ui.common.UiState
 import com.mansao.trianglesneacare.ui.components.LoadingScreen
 import com.mansao.trianglesneacare.ui.navigation.Screen
 import com.mansao.trianglesneacare.ui.theme.Roboto
 
 @Composable
 fun LoginScreen(
-    uiState: LoginUiState,
     loginViewModel: LoginViewModel = hiltViewModel(),
     navigateToMain: () -> Unit,
     navigateToRegister: () -> Unit,
     authViewModel: AuthViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
-    val isLogin by authViewModel.loginState.collectAsState()
-
-    if (isLogin) {
-        LoadingScreen()
-    } else {
-        when (uiState) {
-            is LoginUiState.StandBy -> LoginComponentNew(
+    authViewModel.loginState.collectAsState().value.let { isLogin ->
+        if (isLogin) {
+            LoadingScreen()
+        } else {
+            LoginComponentNew(
                 loginViewModel = loginViewModel,
                 navigateToRegister = navigateToRegister
             )
+            loginViewModel.uiState.collectAsState(initial = UiState.Standby).value.let { uiState ->
+                when (uiState) {
+                    is UiState.Loading -> LoadingScreen()
+                    is UiState.Success -> {
+                        navigateToMain()
+                        Toast.makeText(
+                            context,
+                            "Welcome ${uiState.data.user.name}",
+                            Toast.LENGTH_SHORT
+                        )
+                            .show()
+                    }
 
-            is LoginUiState.Loading -> LoadingScreen()
-            is LoginUiState.Success -> {
-                LaunchedEffect(Unit) {
-
-                    Toast.makeText(
+                    is UiState.Error -> Toast.makeText(
                         context,
-                        "Welcome ${uiState.loginResponse.user.name}",
-                        Toast.LENGTH_LONG
+                        uiState.errorMessage,
+                        Toast.LENGTH_SHORT
                     ).show()
 
-                    navigateToMain()
+                    UiState.Standby -> {
+//                        nothing
+                    }
                 }
-
-                Log.d("LoginScreen", uiState.loginResponse.accessToken)
-            }
-
-            is LoginUiState.Error -> {
-                Toast.makeText(context, uiState.msg, Toast.LENGTH_SHORT).show()
-                loginViewModel.getUiState()
             }
         }
     }
@@ -309,6 +307,8 @@ private fun isEmailValid(email: String): Boolean {
 @Composable
 fun NewLoginComponentPreview() {
     val loginViewModel: LoginViewModel = hiltViewModel()
-    val navController:NavHostController = rememberNavController()
-    LoginComponentNew(loginViewModel, navigateToRegister = {navController.navigate(Screen.Register.route)})
+    val navController: NavHostController = rememberNavController()
+    LoginComponentNew(
+        loginViewModel,
+        navigateToRegister = { navController.navigate(Screen.Register.route) })
 }

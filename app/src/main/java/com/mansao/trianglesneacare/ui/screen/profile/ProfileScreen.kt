@@ -8,7 +8,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.mansao.trianglesneacare.R
 import com.mansao.trianglesneacare.data.network.response.ProfileResponse
 import com.mansao.trianglesneacare.ui.common.ProfileUiState
 import com.mansao.trianglesneacare.ui.components.LoadingScreen
@@ -38,7 +40,7 @@ fun ProfileComponent(
     Column(modifier = Modifier.fillMaxSize()) {
         Text(text = profile.toString())
         Button(onClick = { viewModel.logout() }) {
-            Text(text = "logout")
+            Text(text = stringResource(R.string.logout))
         }
     }
 }

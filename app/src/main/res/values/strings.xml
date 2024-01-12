@@ -24,4 +24,5 @@
     <string name="customer">customer</string>
     <string name="admin">admin</string>
     <string name="driver">driver</string>
+    <string name="logout">logout</string>
 </resources>

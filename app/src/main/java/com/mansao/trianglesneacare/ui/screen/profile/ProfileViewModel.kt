@@ -35,6 +35,7 @@ class ProfileViewModel @Inject constructor(private val appRepositoryImpl: AppRep
     }
 
     fun logout() {
+        uiState = ProfileUiState.Loading
         viewModelScope.launch {
             appRepositoryImpl.clearToken()
             appRepositoryImpl.clearRoleName()

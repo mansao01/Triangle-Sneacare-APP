@@ -81,12 +81,6 @@ fun RegisterComponent(
     var name by remember { mutableStateOf("") }
     var isNameEmpty by remember { mutableStateOf(false) }
 
-    var address by remember { mutableStateOf("") }
-    var isAddressEmpty by remember { mutableStateOf(false) }
-
-    var phone by remember { mutableStateOf("") }
-    var isPhoneEmpty by remember { mutableStateOf(false) }
-
     var email by remember { mutableStateOf("") }
     var isEmailEmpty by remember { mutableStateOf(false) }
 
@@ -174,33 +168,6 @@ fun RegisterComponent(
                 .padding(top = 16.dp)
         )
 
-        OutlinedTextField(
-            value = address,
-            onValueChange = { address = it.trim() },
-            label = { Text(text = stringResource(R.string.address)) },
-            placeholder = { Text(text = stringResource(R.string.address)) },
-            leadingIcon = { Icon(imageVector = Icons.Outlined.Home, contentDescription = null) },
-            singleLine = true,
-            isError = isNameEmpty,
-            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Password),
-            modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .padding(top = 16.dp)
-        )
-
-        OutlinedTextField(
-            value = phone,
-            onValueChange = { phone = it.trim() },
-            label = { Text(text = stringResource(R.string.phone)) },
-            placeholder = { Text(text = stringResource(R.string.phone)) },
-            leadingIcon = { Icon(imageVector = Icons.Outlined.Phone, contentDescription = null) },
-            singleLine = true,
-            isError = isNameEmpty,
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-            modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .padding(top = 16.dp)
-        )
 
         Button(
             onClick = {
@@ -208,16 +175,12 @@ fun RegisterComponent(
                     name.isEmpty() -> isNameEmpty = true
                     email.isEmpty() -> isEmailEmpty = true
                     password.isEmpty() -> isPasswordEmpty = true
-                    address.isEmpty() -> isAddressEmpty = true
-                    phone.isEmpty() -> isPhoneEmpty = true
                     else -> {
                         registerViewModel.register(
                             RegisterRequest(
                                 name,
                                 email,
                                 password,
-                                address,
-                                phone
                             )
                         )
                     }
