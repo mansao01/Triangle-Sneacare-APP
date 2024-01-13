@@ -2,6 +2,7 @@ package com.mansao.trianglesneacare.ui.screen.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.gson.Gson
 import com.mansao.trianglesneacare.data.AppRepositoryImpl
 import com.mansao.trianglesneacare.data.network.request.LoginRequest
 import com.mansao.trianglesneacare.data.network.response.LoginResponse
@@ -23,10 +24,9 @@ class LoginViewModel @Inject constructor(
         MutableStateFlow(UiState.Standby)
     val uiState: StateFlow<UiState<LoginResponse>> = _uiState
 
-
-    fun setStandbyState() {
-        _uiState.value = UiState.Standby
-    }
+    private val _showDialog: MutableStateFlow<Boolean> =
+        MutableStateFlow(false)
+    val showDialog: StateFlow<Boolean> = _showDialog
 
     private fun setLoadingState() {
         _uiState.value = UiState.Loading
@@ -54,7 +54,18 @@ class LoginViewModel @Inject constructor(
                     }
                     else -> "An unexpected error occurred"
                 }
-                _uiState.value = UiState.Error(errorMessage)
+                val gson = Gson()
+                val jsonObject = gson.fromJson(errorMessage, Map::class.java) as Map<*, *>
+                val msg = jsonObject["msg"]
+                if (msg.toString() == "Please verify your email first, check your email"){
+                    _showDialog.value = true
+                    _uiState.value = UiState.Error(msg.toString())
+
+                }else{
+                    _uiState.value = UiState.Error(msg.toString())
+
+                }
+
             }
         }
     }

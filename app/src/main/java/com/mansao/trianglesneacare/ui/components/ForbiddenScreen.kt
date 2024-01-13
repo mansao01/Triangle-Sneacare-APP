@@ -7,7 +7,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -18,18 +18,19 @@ import com.airbnb.lottie.compose.rememberLottieComposition
 import com.mansao.trianglesneacare.R
 
 @Composable
-fun ForbiddenScreen(openDialog: Boolean, modifier: Modifier = Modifier) {
-    val dialogState = remember { mutableStateOf(openDialog) }
+fun ForbiddenScreen() {
+    val dialogState = rememberSaveable { mutableStateOf(true) }
     val composition by
     rememberLottieComposition(spec = LottieCompositionSpec.RawRes(R.raw.no_acceess))
     if (dialogState.value) {
         AlertDialog(
-            onDismissRequest = { /*TODO*/ },
+            onDismissRequest = { dialogState.value = false },
             confirmButton = {
                 Text(
                     text = stringResource(R.string.confirm),
-                    modifier = modifier.clickable { dialogState.value = !dialogState.value }
+                    modifier = Modifier.clickable { dialogState.value = false }
                 )
+
             },
             icon = {
                 LottieAnimation(
@@ -44,3 +45,4 @@ fun ForbiddenScreen(openDialog: Boolean, modifier: Modifier = Modifier) {
         )
     }
 }
+
