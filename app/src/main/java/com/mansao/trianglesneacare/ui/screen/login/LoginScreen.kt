@@ -74,16 +74,11 @@ fun LoginScreen(
     val context = LocalContext.current
 
 
-    loginViewModel.showDialog.collectAsState().value.let { showDialog ->
-        if (showDialog) {
-            ForbiddenScreen()
-        }
-    }
     authViewModel.loginState.collectAsState().value.let { isLogin ->
         if (isLogin) {
             LoadingScreen()
         } else {
-            LoginComponentNew(
+            LoginComponent(
                 loginViewModel = loginViewModel,
                 navigateToRegister = navigateToRegister
             )
@@ -122,7 +117,7 @@ fun LoginScreen(
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun LoginComponentNew(
+fun LoginComponent(
     loginViewModel: LoginViewModel,
     navigateToRegister: () -> Unit
 ) {
@@ -319,7 +314,7 @@ private fun isEmailValid(email: String): Boolean {
 fun NewLoginComponentPreview() {
     val loginViewModel: LoginViewModel = hiltViewModel()
     val navController: NavHostController = rememberNavController()
-    LoginComponentNew(
+    LoginComponent(
         loginViewModel,
         navigateToRegister = { navController.navigate(Screen.Register.route) })
 }

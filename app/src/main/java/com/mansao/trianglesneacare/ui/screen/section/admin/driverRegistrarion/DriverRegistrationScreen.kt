@@ -256,7 +256,6 @@ fun DriverRegisterComponent(
                 )
 
                 OutlinedButton(
-
                     modifier = modifier
                         .padding(top = 18.dp)
                         .padding(end = 52.dp)

@@ -28,4 +28,6 @@
     <string name="confirm">confirm</string>
     <string name="email_not_verified">Your email is not verified, please check your email</string>
     <string name="please_verify_your_email">Please verify your email</string>
+    <string name="signup_notes">To complete your signup, click the link in that email</string>
+    <string name="we_sent_an_email_to">We sent an email to %1$s</string>
 </resources>

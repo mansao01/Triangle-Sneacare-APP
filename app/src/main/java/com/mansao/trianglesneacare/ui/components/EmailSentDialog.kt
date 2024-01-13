@@ -1,5 +1,7 @@
 package com.mansao.trianglesneacare.ui.components
 
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -8,6 +10,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
@@ -40,7 +44,16 @@ fun EmailSentDialog(
             Text(text = stringResource(R.string.please_verify_your_email))
         },
         text = {
-            Text(text = "We sent an email to $email")
+            Column {
+                Text(
+                    text = stringResource(R.string.we_sent_an_email_to, email),
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
+                Text(
+                    text = stringResource(R.string.signup_notes),
+                    style = TextStyle(fontWeight = FontWeight.Bold)
+                )
+            }
         }
     )
 

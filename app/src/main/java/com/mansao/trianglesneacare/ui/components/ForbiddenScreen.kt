@@ -3,6 +3,7 @@ package com.mansao.trianglesneacare.ui.components
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -26,11 +27,12 @@ fun ForbiddenScreen() {
         AlertDialog(
             onDismissRequest = { dialogState.value = false },
             confirmButton = {
-                Text(
-                    text = stringResource(R.string.confirm),
-                    modifier = Modifier.clickable { dialogState.value = false }
-                )
-
+                Button(onClick = { dialogState.value = false}) {
+                    Text(
+                        text = stringResource(R.string.confirm),
+                        modifier = Modifier.clickable { dialogState.value = false }
+                    )
+                }
             },
             icon = {
                 LottieAnimation(

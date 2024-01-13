@@ -1,37 +1,61 @@
 package com.mansao.trianglesneacare.ui.screen.register
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.gson.Gson
 import com.mansao.trianglesneacare.data.AppRepositoryImpl
 import com.mansao.trianglesneacare.data.network.request.RegisterRequest
-import com.mansao.trianglesneacare.ui.common.RegisterUiState
+import com.mansao.trianglesneacare.data.network.response.RegisterResponse
+import com.mansao.trianglesneacare.ui.common.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
+import java.io.IOException
 import javax.inject.Inject
 
 @HiltViewModel
 class RegisterViewModel @Inject constructor(
     private val appRepositoryImpl: AppRepositoryImpl
 ) : ViewModel() {
-    var uiState: RegisterUiState by mutableStateOf(RegisterUiState.StandBy)
-        private set
 
-    fun getUiState() {
-        uiState = RegisterUiState.StandBy
+
+    private var _uiState:MutableStateFlow<UiState<RegisterResponse>> = MutableStateFlow(UiState.Standby)
+    val uiState:StateFlow<UiState<RegisterResponse>> = _uiState
+
+    private fun setLoadingState() {
+        _uiState.value = UiState.Loading
     }
-
-
     fun register(registerRequest: RegisterRequest) {
+        setLoadingState()
         viewModelScope.launch {
-            uiState = RegisterUiState.Loading
-            uiState = try {
+            try {
                 val result = appRepositoryImpl.register(registerRequest)
-                RegisterUiState.Success(result)
-            } catch (e: Exception) {
-                RegisterUiState.Error(e.toString())
+                _uiState.value = UiState.Success(result)
+            }catch (e:Exception){
+                val errorMessage = when (e) {
+                    is IOException -> """
+                        {"msg": "Service unavailable"}
+                    """.trimIndent()
+                    is HttpException -> {
+                        when (e.code()) {
+                            400 -> e.response()?.errorBody()?.string().toString()
+                            // Add more cases for specific HTTP error codes if needed
+                            else ->  """
+                                {"msg": "Error code ${e.message()}"}
+                            """.trimIndent()
+                        }
+                    }
+                    else -> """
+                        {"msg": "Service unavailable"}
+                    """.trimIndent()
+                }
+                val gson = Gson()
+                val jsonObject = gson.fromJson(errorMessage, Map::class.java) as Map<*, *>
+                val msg = jsonObject["msg"]
+
+                _uiState.value = UiState.Error(msg.toString())
             }
         }
     }
