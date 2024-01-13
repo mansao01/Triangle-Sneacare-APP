@@ -10,10 +10,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material.icons.outlined.Email
-import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material.icons.outlined.Person
-import androidx.compose.material.icons.outlined.Phone
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -21,7 +19,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -41,6 +38,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.mansao.trianglesneacare.R
 import com.mansao.trianglesneacare.data.network.request.RegisterRequest
 import com.mansao.trianglesneacare.ui.common.RegisterUiState
+import com.mansao.trianglesneacare.ui.components.EmailSentDialog
 import com.mansao.trianglesneacare.ui.components.LoadingScreen
 import com.mansao.trianglesneacare.utils.CommonUtils
 
@@ -60,11 +58,12 @@ fun RegisterScreen(
 
         is RegisterUiState.Loading -> LoadingScreen()
         is RegisterUiState.Success -> {
-            LaunchedEffect(key1 = Unit) {
-                Toast.makeText(context, uiState.registerResponse.msg, Toast.LENGTH_SHORT).show()
-                navigateToLogin()
-            }
+            EmailSentDialog(
+                navigateToLogin = { navigateToLogin() },
+                email = uiState.registerResponse.user.email
+            )
         }
+
         is RegisterUiState.Error -> {
             Toast.makeText(context, uiState.msg, Toast.LENGTH_SHORT).show()
             registerViewModel.getUiState()

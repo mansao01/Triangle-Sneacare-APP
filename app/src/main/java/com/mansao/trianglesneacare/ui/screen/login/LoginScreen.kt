@@ -107,7 +107,6 @@ fun LoginScreen(
                                 Toast.makeText(context, uiState.errorMessage, Toast.LENGTH_SHORT)
                                     .show()
                             }
-
                         }
                     }
 

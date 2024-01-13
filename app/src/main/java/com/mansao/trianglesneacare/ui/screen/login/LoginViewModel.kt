@@ -44,15 +44,21 @@ class LoginViewModel @Inject constructor(
                 _uiState.value = UiState.Success(result)
             } catch (e: Exception) {
                 val errorMessage = when (e) {
-                    is IOException -> "Network error occurred"
+                    is IOException -> """
+                        {"msg": "Service unavailable"}
+                    """.trimIndent()
                     is HttpException -> {
                         when (e.code()) {
                             400 -> e.response()?.errorBody()?.string().toString()
                             // Add more cases for specific HTTP error codes if needed
-                            else -> "HTTP error: ${e.code()}"
+                            else ->  """
+                                {"msg": "Error code ${e.message()}"}
+                            """.trimIndent()
                         }
                     }
-                    else -> "An unexpected error occurred"
+                    else -> """
+                        {"msg": "Service unavailable"}
+                    """.trimIndent()
                 }
                 val gson = Gson()
                 val jsonObject = gson.fromJson(errorMessage, Map::class.java) as Map<*, *>
