@@ -25,7 +25,8 @@ fun TriangleApp(
                 uiState = registerViewModel.uiState,
                 navigateToLogin = {
                     navController.navigate(Screen.Login.route)
-                })
+                }
+            )
         }
         composable(Screen.Login.route) {
             LoginScreen(
@@ -37,7 +38,7 @@ fun TriangleApp(
                 })
         }
 
-        composable(Screen.Main.route){
+        composable(Screen.Main.route) {
             MainScreen()
         }
 

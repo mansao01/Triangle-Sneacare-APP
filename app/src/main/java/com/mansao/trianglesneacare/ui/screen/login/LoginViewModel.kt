@@ -18,33 +18,16 @@ import javax.inject.Inject
 class LoginViewModel @Inject constructor(
     private val appRepositoryImpl: AppRepositoryImpl
 ) : ViewModel() {
-//    var uiState: LoginUiState by mutableStateOf(LoginUiState.StandBy)
-//        private set
 
     private val _uiState: MutableStateFlow<UiState<LoginResponse>> =
         MutableStateFlow(UiState.Standby)
     val uiState: StateFlow<UiState<LoginResponse>> = _uiState
 
 
-//    fun getUiState() {
-//        uiState = LoginUiState.StandBy
-//    }
+    fun setStandbyState() {
+        _uiState.value = UiState.Standby
+    }
 
-    //    fun login(loginRequest: LoginRequest) {
-//        viewModelScope.launch {
-//            uiState = LoginUiState.Loading
-//            uiState = try {
-//                val result = appRepositoryImpl.login(loginRequest)
-//                appRepositoryImpl.saveIsLoginState(true)
-//                appRepositoryImpl.saveUsername(result.user.name)
-//                result.user.role.role?.let { appRepositoryImpl.saveRole(it) }
-//                appRepositoryImpl.saveAccessToken(result.accessToken)
-//                LoginUiState.Success(result)
-//            } catch (e: Exception) {
-//                LoginUiState.Error(e.toString())
-//            }
-//        }
-//    }
     private fun setLoadingState() {
         _uiState.value = UiState.Loading
     }
@@ -73,7 +56,6 @@ class LoginViewModel @Inject constructor(
                 }
                 _uiState.value = UiState.Error(errorMessage)
             }
-
         }
     }
 }

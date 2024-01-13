@@ -28,6 +28,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -55,10 +56,12 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.google.gson.Gson
 import com.mansao.trianglesneacare.R
 import com.mansao.trianglesneacare.data.network.request.LoginRequest
 import com.mansao.trianglesneacare.ui.AuthViewModel
 import com.mansao.trianglesneacare.ui.common.UiState
+import com.mansao.trianglesneacare.ui.components.ForbiddenScreen
 import com.mansao.trianglesneacare.ui.components.LoadingScreen
 import com.mansao.trianglesneacare.ui.navigation.Screen
 import com.mansao.trianglesneacare.ui.theme.Roboto
@@ -71,6 +74,16 @@ fun LoginScreen(
     authViewModel: AuthViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
+    val dialogState = remember { mutableStateOf(false) }
+
+    DisposableEffect(dialogState.value) {
+        onDispose {
+            // Dismiss the dialog when the composable is disposed (e.g., when navigating back)
+            if (dialogState.value) {
+                dialogState.value = false
+            }
+        }
+    }
     authViewModel.loginState.collectAsState().value.let { isLogin ->
         if (isLogin) {
             LoadingScreen()
@@ -88,18 +101,27 @@ fun LoginScreen(
                             context,
                             "Welcome ${uiState.data.user.name}",
                             Toast.LENGTH_SHORT
-                        )
-                            .show()
+                        ).show()
                     }
 
-                    is UiState.Error -> Toast.makeText(
-                        context,
-                        uiState.errorMessage,
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    is UiState.Error -> {
+                        dialogState.value = true
+                        val jsonResponse = uiState.errorMessage
+                        val gson = Gson()
+                        val jsonObject = gson.fromJson(jsonResponse, Map::class.java) as Map<*, *>
+                        val msg = jsonObject["msg"]
+                        if (msg.toString() == "Please verify your email first, check your email") {
+                            ForbiddenScreen(
+                                openDialog = dialogState.value,
+                                modifier = Modifier.clickable {
+                                    loginViewModel.setStandbyState()
+                                    dialogState.value = false
+                                })
+                        }
+                    }
 
                     UiState.Standby -> {
-//                        nothing
+                        Toast.makeText(context, "Standby", Toast.LENGTH_SHORT).show()
                     }
                 }
             }

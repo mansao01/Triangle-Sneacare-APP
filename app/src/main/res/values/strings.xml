@@ -25,4 +25,6 @@
     <string name="admin">admin</string>
     <string name="driver">driver</string>
     <string name="logout">logout</string>
+    <string name="confirm">confirm</string>
+    <string name="email_not_verified">Your email is not verified, please check your email</string>
 </resources>
