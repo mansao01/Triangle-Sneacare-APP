@@ -29,7 +29,7 @@ object AppModule {
             .addInterceptor(loggingInterceptor)
             .build()
         return Retrofit.Builder()
-            .baseUrl(ApiConst.LOCAL_BASE_URL)
+            .baseUrl(ApiConst.PRODUCTION_BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .client(client)
             .build()

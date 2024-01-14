@@ -40,6 +40,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -52,6 +53,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -104,7 +106,7 @@ fun DriverRegisterComponent(
     uiState: DriverRegistrationUiState,
     modifier: Modifier = Modifier
 ) {
-    var isLoading by remember { mutableStateOf(false) }
+    var isLoading by rememberSaveable { mutableStateOf(false) }
     val snackbarHostState = remember {
         SnackbarHostState()
     }
@@ -188,7 +190,7 @@ fun DriverRegisterComponent(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
+                    .padding(horizontal = 30.dp)
                     .verticalScroll(rememberScrollState())
             ) {
                 DisplaySelectedImage(
@@ -374,7 +376,8 @@ fun RegisterButton(
     password: String,
     address: String,
     phone: String,
-    isLoading: Boolean
+    isLoading: Boolean,
+    modifier: Modifier = Modifier
 ) {
     var buttonSize by remember { mutableStateOf(DpSize.Zero) }
     val density = LocalDensity.current
@@ -386,7 +389,7 @@ fun RegisterButton(
         CameraUtils.rotateFile(file)
     }
 
-    Button(
+    OutlinedButton(
         onClick = {
             rotatedFile?.let {
                 driverRegistrationViewModel.registerAsDriver(
@@ -400,7 +403,7 @@ fun RegisterButton(
             }
         },
         enabled = isButtonEnable,
-        modifier = Modifier
+        modifier = modifier
             .padding(top = 18.dp)
             .fillMaxWidth()
             .then(
@@ -423,7 +426,7 @@ fun RegisterButton(
                     .aspectRatio(1f)
             )
         } else {
-            Text(stringResource(id = R.string.register))
+            Text(text = stringResource(id = R.string.register))
         }
     }
 }
