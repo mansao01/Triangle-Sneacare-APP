@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardActions
@@ -12,16 +13,20 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.Email
 import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -42,13 +47,13 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.mansao.trianglesneacare.R
 import com.mansao.trianglesneacare.data.network.request.RegisterRequest
 import com.mansao.trianglesneacare.ui.common.UiState
 import com.mansao.trianglesneacare.ui.components.EmailSentDialog
+import com.mansao.trianglesneacare.ui.components.HeaderText
 import com.mansao.trianglesneacare.utils.CommonUtils
 
 @Composable
@@ -62,10 +67,16 @@ fun RegisterScreen(
         mutableStateOf(false)
     }
 
+    RegisterComponent(
+        registerViewModel = registerViewModel,
+        isLoading = isLoading,
+        navigateToLogin = navigateToLogin,
+        modifier = modifier,
+    )
+
     registerViewModel.uiState.collectAsState(initial = UiState.Standby).value.let { uiState ->
         when (uiState) {
             is UiState.Standby -> {}
-
             is UiState.Loading -> isLoading = true
             is UiState.Success -> {
                 EmailSentDialog(
@@ -80,14 +91,7 @@ fun RegisterScreen(
                 isLoading = false
             }
         }
-
-
     }
-    RegisterComponent(
-        registerViewModel = registerViewModel,
-        isLoading = isLoading,
-        modifier = modifier,
-    )
 }
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -95,6 +99,7 @@ fun RegisterScreen(
 fun RegisterComponent(
     registerViewModel: RegisterViewModel,
     isLoading: Boolean,
+    navigateToLogin: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     var name by remember { mutableStateOf("") }
@@ -112,129 +117,159 @@ fun RegisterComponent(
     var buttonSize by remember { mutableStateOf(DpSize.Zero) }
     val density = LocalDensity.current
 
-    Column(
-        modifier
-            .fillMaxSize()
-            .padding(horizontal = 16.dp)
-    ) {
-        Text(
-            text = stringResource(R.string.register),
-            color = MaterialTheme.colorScheme.primary,
-            fontSize = 36.sp,
-            modifier = Modifier
-                .padding(horizontal = 32.dp)
-                .padding(top = 48.dp)
-        )
+    Scaffold(
+        topBar = { RegisterTopBar(navigateToLogin = navigateToLogin) }
+    ) { scaffoldPadding ->
+        Surface(modifier = Modifier.padding(scaffoldPadding)) {
+            Column(
+                modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 30.dp)
+            ) {
+                HeaderText(text = stringResource(R.string.registration_title))
 
-        OutlinedTextField(
-            value = name,
-            onValueChange = { name = it.trim() },
-            label = { Text(text = stringResource(R.string.name)) },
-            placeholder = { Text(text = stringResource(R.string.name)) },
-            leadingIcon = { Icon(imageVector = Icons.Outlined.Person, contentDescription = null) },
-            singleLine = true,
-            isError = isNameEmpty,
-            modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .padding(top = 16.dp)
-        )
-
-        OutlinedTextField(
-            value = email,
-            onValueChange = { email = it.trim() },
-            label = { Text(text = stringResource(R.string.enter_your_email)) },
-            placeholder = { Text(text = stringResource(R.string.email)) },
-            leadingIcon = { Icon(imageVector = Icons.Outlined.Email, contentDescription = null) },
-            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Email),
-            singleLine = true,
-            keyboardActions = KeyboardActions(
-                onDone = {
-                    if (CommonUtils.isEmailValid(email)) {
-                        keyboardController?.hide()
-                    }
-                }
-            ),
-            isError = isEmailEmpty,
-            modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .padding(top = 16.dp)
-        )
-        OutlinedTextField(
-            value = password,
-            onValueChange = { password = it },
-            label = { Text(text = stringResource(R.string.enter_your_password)) },
-            placeholder = { Text(text = stringResource(R.string.password)) },
-            leadingIcon = { Icon(imageVector = Icons.Outlined.Lock, contentDescription = null) },
-            singleLine = true,
-            visualTransformation = if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
-            isError = isPasswordEmpty,
-            trailingIcon = {
-                IconButton(
-                    onClick = { passwordVisibility = !passwordVisibility },
-                    modifier = Modifier
-                        .align(Alignment.End)
-                        .padding(end = 16.dp)
-                ) {
-                    Icon(
-                        imageVector = if (passwordVisibility) Icons.Default.VisibilityOff else Icons.Default.Visibility,
-                        contentDescription = if (passwordVisibility) {
-                            stringResource(R.string.hide_password)
-                        } else {
-                            stringResource(R.string.show_password)
-                        }
-                    )
-                }
-            },
-            modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .padding(top = 16.dp)
-        )
-
-        OutlinedButton(
-            onClick = {
-                when {
-                    name.isEmpty() -> isNameEmpty = true
-                    email.isEmpty() -> isEmailEmpty = true
-                    password.isEmpty() -> isPasswordEmpty = true
-                    else -> {
-                        registerViewModel.register(
-                            RegisterRequest(
-                                name,
-                                email,
-                                password,
-                            )
+                OutlinedTextField(
+                    value = name,
+                    onValueChange = { name = it.trim() },
+                    label = { Text(text = stringResource(R.string.name)) },
+                    placeholder = { Text(text = stringResource(R.string.name)) },
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Icons.Outlined.Person,
+                            contentDescription = null
                         )
+                    },
+                    singleLine = true,
+                    isError = isNameEmpty,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.CenterHorizontally)
+                        .padding(top = 16.dp)
+                )
+
+                OutlinedTextField(
+                    value = email,
+                    onValueChange = { email = it.trim() },
+                    label = { Text(text = stringResource(R.string.enter_your_email)) },
+                    placeholder = { Text(text = stringResource(R.string.email)) },
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Icons.Outlined.Email,
+                            contentDescription = null
+                        )
+                    },
+                    keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Email),
+                    singleLine = true,
+                    keyboardActions = KeyboardActions(
+                        onDone = {
+                            if (CommonUtils.isEmailValid(email)) {
+                                keyboardController?.hide()
+                            }
+                        }
+                    ),
+                    isError = isEmailEmpty,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.CenterHorizontally)
+                        .padding(top = 16.dp)
+                )
+                OutlinedTextField(
+                    value = password,
+                    onValueChange = { password = it },
+                    label = { Text(text = stringResource(R.string.enter_your_password)) },
+                    placeholder = { Text(text = stringResource(R.string.password)) },
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Icons.Outlined.Lock,
+                            contentDescription = null
+                        )
+                    },
+                    singleLine = true,
+                    visualTransformation = if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
+                    isError = isPasswordEmpty,
+                    trailingIcon = {
+                        IconButton(
+                            onClick = { passwordVisibility = !passwordVisibility },
+                            modifier = Modifier
+                                .align(Alignment.End)
+                                .padding(end = 16.dp)
+                        ) {
+                            Icon(
+                                imageVector = if (passwordVisibility) Icons.Default.VisibilityOff else Icons.Default.Visibility,
+                                contentDescription = if (passwordVisibility) {
+                                    stringResource(R.string.hide_password)
+                                } else {
+                                    stringResource(R.string.show_password)
+                                }
+                            )
+                        }
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.CenterHorizontally)
+                        .padding(top = 16.dp)
+                )
+
+                Button(
+                    onClick = {
+                        when {
+                            name.isEmpty() -> isNameEmpty = true
+                            email.isEmpty() -> isEmailEmpty = true
+                            password.isEmpty() -> isPasswordEmpty = true
+                            else -> {
+                                registerViewModel.register(
+                                    RegisterRequest(
+                                        name,
+                                        email,
+                                        password,
+                                    )
+                                )
+                            }
+                        }
+                    },
+                    modifier = modifier
+                        .padding(top = 18.dp)
+                        .fillMaxWidth()
+                        .then(
+                            if (buttonSize != DpSize.Zero) Modifier.size(buttonSize) else Modifier
+                        )
+                        .onSizeChanged { newSize ->
+                            if (buttonSize == DpSize.Zero) {
+                                buttonSize = with(density) {
+                                    newSize
+                                        .toSize()
+                                        .toDpSize()
+                                }
+                            }
+                        },
+                ) {
+                    if (isLoading) {
+                        CircularProgressIndicator(
+                            modifier = Modifier
+                                .fillMaxHeight()
+                                .aspectRatio(1f)
+                        )
+                    } else {
+                        Text(text = stringResource(id = R.string.register))
                     }
                 }
-            },
-            modifier = modifier
-                .padding(top = 18.dp)
-                .padding(end = 52.dp)
-                .align(Alignment.End)
-                .then(
-                    if (buttonSize != DpSize.Zero) Modifier.size(buttonSize) else Modifier
-                )
-                .onSizeChanged { newSize ->
-                    if (buttonSize == DpSize.Zero) {
-                        buttonSize = with(density) {
-                            newSize
-                                .toSize()
-                                .toDpSize()
-                        }
-                    }
-                },
-        ) {
-            if (isLoading) {
-                CircularProgressIndicator(
-                    modifier = Modifier
-                        .fillMaxHeight()
-                        .aspectRatio(1f)
-                )
-            }else{
-                Text(text = "Register")
             }
         }
     }
+
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun RegisterTopBar(
+    navigateToLogin: () -> Unit
+) {
+    TopAppBar(title = { }, navigationIcon = {
+        IconButton(onClick = { navigateToLogin() }) {
+            Icon(imageVector = Icons.Outlined.ArrowBack, contentDescription = null)
+        }
+    })
+
 }
 
 

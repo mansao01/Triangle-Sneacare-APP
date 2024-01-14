@@ -20,6 +20,7 @@ fun TriangleApp(
         composable(Screen.Register.route) {
             RegisterScreen(
                 navigateToLogin = {
+                    navController.popBackStack()
                     navController.navigate(Screen.Login.route)
                 }
             )
