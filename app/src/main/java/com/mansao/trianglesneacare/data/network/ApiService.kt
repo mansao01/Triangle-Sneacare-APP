@@ -8,13 +8,13 @@ import com.mansao.trianglesneacare.data.network.response.OnlyMsgResponse
 import com.mansao.trianglesneacare.data.network.response.ProfileResponse
 import com.mansao.trianglesneacare.data.network.response.RegisterDriverResponse
 import com.mansao.trianglesneacare.data.network.response.RegisterResponse
+import okhttp3.MultipartBody
 import retrofit2.http.Body
-import retrofit2.http.Field
-import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
 import retrofit2.http.Header
+import retrofit2.http.Multipart
 import retrofit2.http.POST
-import java.io.File
+import retrofit2.http.Part
 
 interface ApiService {
     @POST(ApiConst.REGISTER)
@@ -22,15 +22,15 @@ interface ApiService {
         @Body registerRequestBody: RegisterRequest
     ): RegisterResponse
 
-    @FormUrlEncoded
+    @Multipart
     @POST(ApiConst.REGISTER_DRIVER)
     suspend fun registerDriver(
-        @Field("name") name: String,
-        @Field("email") email: String,
-        @Field("password") password: String,
-        @Field("address") address: String,
-        @Field("phone") phone: String,
-        @Field("image") image:File
+        @Part("name") name: String,
+        @Part("email") email: String,
+        @Part("password") password: String,
+        @Part("address") address: String,
+        @Part("phone") phone: String,
+        @Part image: MultipartBody.Part
     ): RegisterDriverResponse
 
     @POST(ApiConst.LOGIN)

@@ -12,6 +12,10 @@ import com.mansao.trianglesneacare.data.network.response.RegisterResponse
 import com.mansao.trianglesneacare.data.preferences.AppPreferences
 import com.mansao.trianglesneacare.utils.CameraUtils
 import kotlinx.coroutines.flow.Flow
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.File
 import javax.inject.Inject
 
@@ -63,7 +67,25 @@ class AppRepositoryImpl @Inject constructor(
         file: File
     ): RegisterDriverResponse {
         val compressedFile = CameraUtils.reduceFileImage(file)
-        return apiService.registerDriver(name, email, password, address, phone, compressedFile)
+        val nameBody = name.toRequestBody("text/plain".toMediaType())
+        val emailBody = name.toRequestBody("text/plain".toMediaType())
+        val passwordBody = name.toRequestBody("text/plain".toMediaType())
+        val addressBody = name.toRequestBody("text/plain".toMediaType())
+        val phoneBody = name.toRequestBody("text/plain".toMediaType())
+        val requestImageFile = compressedFile.asRequestBody("image/jpeg".toMediaType())
+        val imageMultipart: MultipartBody.Part = MultipartBody.Part.createFormData(
+            "image",
+            file.name,
+            requestImageFile
+        )
+        return apiService.registerDriver(
+            name,
+            email,
+            password,
+            address,
+            phone,
+            imageMultipart
+        )
     }
 
     override suspend fun login(loginRequest: LoginRequest): LoginResponse =

@@ -7,6 +7,7 @@ import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResultLauncher
@@ -39,7 +40,6 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -126,6 +126,7 @@ fun DriverRegisterComponent(
             LaunchedEffect(key1 = Unit) {
                 snackbarHostState.showSnackbar(message = uiState.msg)
                 isLoading = false
+                Log.d("Error register", uiState.msg)
             }
         }
     }
@@ -395,9 +396,7 @@ fun RegisterButton(
                     address = address,
                     phone = phone,
                     file = it
-
                 )
-
             }
         },
         enabled = isButtonEnable,
