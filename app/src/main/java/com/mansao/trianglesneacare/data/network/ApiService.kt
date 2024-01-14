@@ -9,6 +9,7 @@ import com.mansao.trianglesneacare.data.network.response.ProfileResponse
 import com.mansao.trianglesneacare.data.network.response.RegisterDriverResponse
 import com.mansao.trianglesneacare.data.network.response.RegisterResponse
 import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
@@ -25,11 +26,11 @@ interface ApiService {
     @Multipart
     @POST(ApiConst.REGISTER_DRIVER)
     suspend fun registerDriver(
-        @Part("name") name: String,
-        @Part("email") email: String,
-        @Part("password") password: String,
-        @Part("address") address: String,
-        @Part("phone") phone: String,
+        @Part("name") name: RequestBody,
+        @Part("email") email: RequestBody,
+        @Part("password") password: RequestBody,
+        @Part("address") address: RequestBody,
+        @Part("phone") phone: RequestBody,
         @Part image: MultipartBody.Part
     ): RegisterDriverResponse
 

@@ -68,10 +68,10 @@ class AppRepositoryImpl @Inject constructor(
     ): RegisterDriverResponse {
         val compressedFile = CameraUtils.reduceFileImage(file)
         val nameBody = name.toRequestBody("text/plain".toMediaType())
-        val emailBody = name.toRequestBody("text/plain".toMediaType())
-        val passwordBody = name.toRequestBody("text/plain".toMediaType())
-        val addressBody = name.toRequestBody("text/plain".toMediaType())
-        val phoneBody = name.toRequestBody("text/plain".toMediaType())
+        val emailBody = email.toRequestBody("text/plain".toMediaType())
+        val passwordBody = password.toRequestBody("text/plain".toMediaType())
+        val addressBody = address.toRequestBody("text/plain".toMediaType())
+        val phoneBody = phone.toRequestBody("text/plain".toMediaType())
         val requestImageFile = compressedFile.asRequestBody("image/jpeg".toMediaType())
         val imageMultipart: MultipartBody.Part = MultipartBody.Part.createFormData(
             "image",
@@ -79,13 +79,14 @@ class AppRepositoryImpl @Inject constructor(
             requestImageFile
         )
         return apiService.registerDriver(
-            name,
-            email,
-            password,
-            address,
-            phone,
+            nameBody,
+            emailBody,
+            passwordBody,
+            addressBody,
+            phoneBody,
             imageMultipart
         )
+
     }
 
     override suspend fun login(loginRequest: LoginRequest): LoginResponse =

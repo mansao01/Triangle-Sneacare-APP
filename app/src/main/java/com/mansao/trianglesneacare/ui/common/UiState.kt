@@ -1,11 +1,8 @@
 package com.mansao.trianglesneacare.ui.common
 
-import com.mansao.trianglesneacare.data.network.request.DriverRegisterRequest
 import com.mansao.trianglesneacare.data.network.response.GetDriversResponse
-import com.mansao.trianglesneacare.data.network.response.LoginResponse
 import com.mansao.trianglesneacare.data.network.response.ProfileResponse
 import com.mansao.trianglesneacare.data.network.response.RegisterDriverResponse
-import com.mansao.trianglesneacare.data.network.response.RegisterResponse
 
 sealed class UiState<out T : Any?> {
     object Standby : UiState<Nothing>()
@@ -15,13 +12,13 @@ sealed class UiState<out T : Any?> {
 
 }
 
-sealed interface RegisterUiState {
-    object StandBy : RegisterUiState
-    object Loading : RegisterUiState
-    data class Success(val registerResponse: RegisterResponse) : RegisterUiState
-    data class Error(val msg: String) : RegisterUiState
-
-}
+//sealed interface RegisterUiState {
+//    object StandBy : RegisterUiState
+//    object Loading : RegisterUiState
+//    data class Success(val registerResponse: RegisterResponse) : RegisterUiState
+//    data class Error(val msg: String) : RegisterUiState
+//
+//}
 
 //sealed interface LoginUiState {
 //    object StandBy : LoginUiState
