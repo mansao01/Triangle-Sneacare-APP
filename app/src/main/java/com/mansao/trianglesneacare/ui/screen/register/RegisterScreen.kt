@@ -126,7 +126,7 @@ fun RegisterComponent(
                     .fillMaxSize()
                     .padding(horizontal = 30.dp)
             ) {
-                HeaderText(text = stringResource(R.string.registration_title))
+                HeaderText(text = stringResource(R.string.registration_title), showDescription = true)
 
                 OutlinedTextField(
                     value = name,

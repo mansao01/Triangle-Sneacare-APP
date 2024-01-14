@@ -14,18 +14,24 @@ import com.mansao.trianglesneacare.R
 @Composable
 fun HeaderText(
     text: String,
+    showDescription:Boolean,
     modifier: Modifier = Modifier
 ) {
-    Text(
-        text = text,
-        style = MaterialTheme.typography.displayMedium,
-        fontWeight = FontWeight.Bold,
-        modifier = modifier
-    )
+
+        Text(
+            text = text,
+            style = MaterialTheme.typography.displayMedium,
+            fontWeight = FontWeight.Bold,
+            modifier = modifier
+        )
+
     Spacer(modifier = Modifier.height(4.dp))
-    Text(
-        text = stringResource(R.string.register_description),
-        fontWeight = FontWeight.Bold,
-        style = MaterialTheme.typography.labelMedium
-    )
+    if (showDescription){
+        Text(
+            text = stringResource(R.string.register_description),
+            fontWeight = FontWeight.Bold,
+            style = MaterialTheme.typography.labelMedium
+        )
+    }
+
 }

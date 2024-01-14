@@ -1,7 +1,6 @@
 package com.mansao.trianglesneacare.data
 
 import com.mansao.trianglesneacare.data.network.ApiService
-import com.mansao.trianglesneacare.data.network.request.DriverRegisterRequest
 import com.mansao.trianglesneacare.data.network.request.LoginRequest
 import com.mansao.trianglesneacare.data.network.request.RegisterRequest
 import com.mansao.trianglesneacare.data.network.response.GetDriversResponse
@@ -11,8 +10,8 @@ import com.mansao.trianglesneacare.data.network.response.ProfileResponse
 import com.mansao.trianglesneacare.data.network.response.RegisterDriverResponse
 import com.mansao.trianglesneacare.data.network.response.RegisterResponse
 import com.mansao.trianglesneacare.data.preferences.AppPreferences
+import com.mansao.trianglesneacare.utils.CameraUtils
 import kotlinx.coroutines.flow.Flow
-import retrofit2.http.Part
 import java.io.File
 import javax.inject.Inject
 
@@ -25,7 +24,7 @@ interface AppRepository {
         password: String,
         address: String,
         phone: String,
-        file: File? = null
+        file: File
     ): RegisterDriverResponse
 
     suspend fun login(loginRequest: LoginRequest): LoginResponse
@@ -61,9 +60,10 @@ class AppRepositoryImpl @Inject constructor(
         password: String,
         address: String,
         phone: String,
-        file: File?
+        file: File
     ): RegisterDriverResponse {
-        return apiService.registerDriver(name, email, password, address, phone)
+        val compressedFile = CameraUtils.reduceFileImage(file)
+        return apiService.registerDriver(name, email, password, address, phone, compressedFile)
     }
 
     override suspend fun login(loginRequest: LoginRequest): LoginResponse =
