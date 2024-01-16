@@ -32,4 +32,5 @@
     <string name="we_sent_an_email_to">We sent an email to %1$s</string>
     <string name="register_description">Please fill in the following fields to complete your registration.</string>
     <string name="registration_title">Welcome to Triangle Sneacare!</string>
+    <string name="service_not_available">Opps! service unavailable, please try again later!</string>
 </resources>

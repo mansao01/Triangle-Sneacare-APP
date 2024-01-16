@@ -21,6 +21,8 @@ import javax.inject.Inject
 
 interface AppRepository {
     //    network
+
+    suspend fun checkServerIsRunning(): OnlyMsgResponse
     suspend fun register(registerRequest: RegisterRequest): RegisterResponse
     suspend fun registerDriver(
         name: String,
@@ -55,6 +57,9 @@ class AppRepositoryImpl @Inject constructor(
     private val appPreferences: AppPreferences
 ) : AppRepository {
     //    network
+
+    override suspend fun checkServerIsRunning(): OnlyMsgResponse = apiService.checkServerWork()
+
     override suspend fun register(registerRequest: RegisterRequest): RegisterResponse =
         apiService.register(registerRequest)
 

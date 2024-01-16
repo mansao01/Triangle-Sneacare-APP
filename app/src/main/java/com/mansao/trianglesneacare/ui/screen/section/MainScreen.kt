@@ -9,6 +9,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
@@ -24,6 +25,9 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.mansao.trianglesneacare.R
 import com.mansao.trianglesneacare.ui.AuthViewModel
+import com.mansao.trianglesneacare.ui.common.UiState
+import com.mansao.trianglesneacare.ui.components.LoadingScreen
+import com.mansao.trianglesneacare.ui.components.ServiceNotAvailable
 import com.mansao.trianglesneacare.ui.navigation.BottomNavigationItem
 import com.mansao.trianglesneacare.ui.navigation.Screen
 import com.mansao.trianglesneacare.ui.screen.profile.ProfileScreen
@@ -31,7 +35,6 @@ import com.mansao.trianglesneacare.ui.screen.profile.ProfileViewModel
 import com.mansao.trianglesneacare.ui.screen.section.admin.driverManagement.DriverManagementScreen
 import com.mansao.trianglesneacare.ui.screen.section.admin.driverManagement.DriverManagementViewModel
 import com.mansao.trianglesneacare.ui.screen.section.admin.driverRegistrarion.DriverRegistrationScreen
-import com.mansao.trianglesneacare.ui.screen.section.admin.driverRegistrarion.DriverRegistrationViewModel
 import com.mansao.trianglesneacare.ui.screen.section.admin.home.AdminHomeScreen
 import com.mansao.trianglesneacare.ui.screen.section.customer.cart.CartScreen
 import com.mansao.trianglesneacare.ui.screen.section.customer.home.CustomerHomeScreen
@@ -41,7 +44,26 @@ import com.mansao.trianglesneacare.ui.screen.section.driver.map.MapScreen
 @Composable
 fun MainScreen(
     navController: NavHostController = rememberNavController(),
-    authViewModel: AuthViewModel = hiltViewModel()
+    authViewModel: AuthViewModel = hiltViewModel(),
+    mainViewModel: MainViewModel = hiltViewModel()
+) {
+
+    mainViewModel.uiState.collectAsState(initial = UiState.Loading).value.let { uiState ->
+        when (uiState) {
+            is UiState.Standby ->{}
+            is UiState.Loading -> LoadingScreen()
+            is UiState.Success -> MainScreenContent(authViewModel = authViewModel, navController =navController )
+            is UiState.Error -> {
+                ServiceNotAvailable()
+            }
+        }
+    }
+}
+
+@Composable
+fun MainScreenContent(
+    authViewModel: AuthViewModel,
+    navController: NavHostController
 ) {
     val role = authViewModel.role.value
 
@@ -53,8 +75,6 @@ fun MainScreen(
         stringResource(id = R.string.admin) -> Screen.AdminHome.route
         else -> Screen.DriverHome.route
     }
-
-
     Scaffold(
         bottomBar = {
 //            if (currentRoute != Screen.DriverRegistration.route) {
@@ -126,8 +146,6 @@ fun MainScreen(
         }
     }
 }
-
-
 @Composable
 fun MainBottomBar(
     navController: NavHostController,

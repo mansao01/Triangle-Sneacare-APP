@@ -18,6 +18,10 @@ import retrofit2.http.POST
 import retrofit2.http.Part
 
 interface ApiService {
+
+    @GET(ApiConst.CHECK_SERVER)
+    suspend fun checkServerWork(): OnlyMsgResponse
+
     @POST(ApiConst.REGISTER)
     suspend fun register(
         @Body registerRequestBody: RegisterRequest
