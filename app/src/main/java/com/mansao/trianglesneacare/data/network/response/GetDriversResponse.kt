@@ -14,16 +14,16 @@ data class GetDriversResponse(
 data class DriversItem(
 
 	@field:SerializedName("address")
-	val address: Any? = null,
+	val address: String? = null,
 
 	@field:SerializedName("role")
 	val role: Role? = null,
 
 	@field:SerializedName("phone")
-	val phone: Any? = null,
+	val phone: String? = null,
 
 	@field:SerializedName("pictureUrl")
-	val pictureUrl: Any? = null,
+	val pictureUrl: String? = null,
 
 	@field:SerializedName("name")
 	val name: String? = null,

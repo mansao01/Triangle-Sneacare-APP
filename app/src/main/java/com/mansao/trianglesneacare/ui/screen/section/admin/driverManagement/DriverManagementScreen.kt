@@ -1,6 +1,7 @@
 package com.mansao.trianglesneacare.ui.screen.section.admin.driverManagement
 
 import android.widget.Toast
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -10,7 +11,6 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
@@ -18,6 +18,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.mansao.trianglesneacare.data.network.response.DriversItem
 import com.mansao.trianglesneacare.ui.common.DriverManagementUiState
+import com.mansao.trianglesneacare.ui.components.DriverItem
 import com.mansao.trianglesneacare.ui.components.LoadingScreen
 
 @Composable
@@ -66,7 +67,7 @@ fun DriverList(
 ) {
     LazyColumn {
         items(driver) { data ->
-            data.name?.let { Text(text = it) }
+            DriverItem(driversItem = data, modifier = Modifier.clickable {  })
         }
     }
 }

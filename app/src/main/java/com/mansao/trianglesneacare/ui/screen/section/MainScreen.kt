@@ -77,9 +77,9 @@ fun MainScreenContent(
     }
     Scaffold(
         bottomBar = {
-//            if (currentRoute != Screen.DriverRegistration.route) {
+            if (currentRoute != Screen.DriverRegistration.route) {
             MainBottomBar(navController = navController, role = role)
-//            }
+            }
         }
     ) {
         Surface(
