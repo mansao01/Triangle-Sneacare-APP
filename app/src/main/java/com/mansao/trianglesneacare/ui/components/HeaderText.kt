@@ -6,14 +6,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.mansao.trianglesneacare.R
 
 @Composable
 fun HeaderText(
     text: String,
+    description:String,
     showDescription:Boolean,
     modifier: Modifier = Modifier
 ) {
@@ -28,10 +27,10 @@ fun HeaderText(
     Spacer(modifier = Modifier.height(4.dp))
     if (showDescription){
         Text(
-            text = stringResource(R.string.register_description),
+            text = description,
             fontWeight = FontWeight.Bold,
             style = MaterialTheme.typography.labelMedium
         )
     }
-
 }
+

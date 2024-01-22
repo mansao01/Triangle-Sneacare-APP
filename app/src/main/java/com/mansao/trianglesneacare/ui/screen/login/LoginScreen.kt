@@ -1,33 +1,35 @@
 package com.mansao.trianglesneacare.ui.screen.login
-
 import android.widget.Toast
-import androidx.compose.foundation.Image
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material.icons.outlined.Email
 import androidx.compose.material.icons.outlined.Lock
-import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -37,7 +39,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
@@ -60,9 +61,11 @@ import com.mansao.trianglesneacare.data.network.request.LoginRequest
 import com.mansao.trianglesneacare.ui.AuthViewModel
 import com.mansao.trianglesneacare.ui.common.UiState
 import com.mansao.trianglesneacare.ui.components.ForbiddenScreen
+import com.mansao.trianglesneacare.ui.components.HeaderText
 import com.mansao.trianglesneacare.ui.components.LoadingScreen
 import com.mansao.trianglesneacare.ui.navigation.Screen
 import com.mansao.trianglesneacare.ui.theme.Roboto
+import com.mansao.trianglesneacare.utils.rememberImeState
 
 @Composable
 fun LoginScreen(
@@ -122,115 +125,126 @@ fun LoginComponent(
     navigateToRegister: () -> Unit
 ) {
     val uiColor = if (isSystemInDarkTheme()) Color.White else Color.Black
+    val imeState = rememberImeState()
+    val scrollState = rememberScrollState()
 
     var email by remember { mutableStateOf("") }
-    var isEmailEmpty by remember { mutableStateOf(false) }
 
     var password by remember { mutableStateOf("") }
-    var isPasswordEmpty by remember { mutableStateOf(false) }
 
     val keyboardController = LocalSoftwareKeyboardController.current
     var passwordVisibility by remember { mutableStateOf(false) }
+    val isButtonEnable =
+        (email.isNotEmpty() && password.isNotEmpty())
 
-    Surface {
-        Column(modifier = Modifier.fillMaxSize()) {
-            TopSection(uiColor)
-            Spacer(modifier = Modifier.height(26.dp))
+
+    LaunchedEffect(key1 = imeState.value) {
+        if (imeState.value) {
+            scrollState.animateScrollTo(scrollState.maxValue, tween(300))
+        }
+    }
+    Scaffold { scaffoldPadding ->
+        Surface(modifier = Modifier.padding(scaffoldPadding)) {
             Column(
                 modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(scrollState)
                     .padding(horizontal = 30.dp)
-                    .fillMaxWidth(),
-                verticalArrangement = Arrangement.Center
             ) {
-                OutlinedTextField(
-                    value = email,
-                    onValueChange = { email = it.trim() },
-                    label = { Text(text = stringResource(R.string.enter_your_email)) },
-                    placeholder = { Text(text = stringResource(R.string.email)) },
-                    leadingIcon = {
-                        Icon(
-                            imageVector = Icons.Outlined.Email,
-                            contentDescription = null
-                        )
-                    },
-                    keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Email),
-                    singleLine = true,
-                    keyboardActions = KeyboardActions(
-                        onDone = {
-                            if (isEmailValid(email)) {
-                                keyboardController?.hide()
-                            }
-                        }
-                    ),
-                    isError = isEmailEmpty,
+                Spacer(modifier = Modifier.height(46.dp))
+                TopSection()
+                Spacer(modifier = Modifier.height(16.dp))
+                Column(
                     modifier = Modifier
-                        .align(Alignment.CenterHorizontally)
-                        .padding(top = 16.dp)
-                        .fillMaxWidth()
-
-                )
-                OutlinedTextField(
-                    value = password,
-                    onValueChange = { password = it },
-                    label = { Text(text = stringResource(R.string.enter_your_password)) },
-                    placeholder = { Text(text = stringResource(R.string.password)) },
-                    leadingIcon = {
-                        Icon(
-                            imageVector = Icons.Outlined.Lock,
-                            contentDescription = null
-                        )
-                    },
-                    singleLine = true,
-                    visualTransformation = if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
-                    isError = isPasswordEmpty,
-                    trailingIcon = {
-                        IconButton(
-                            onClick = { passwordVisibility = !passwordVisibility },
-                            modifier = Modifier
-                                .align(Alignment.End)
-                                .padding(end = 16.dp)
-                        ) {
-                            Icon(
-                                imageVector = if (passwordVisibility) Icons.Default.VisibilityOff else Icons.Default.Visibility,
-                                contentDescription = if (passwordVisibility) {
-                                    stringResource(R.string.hide_password)
-                                } else {
-                                    stringResource(R.string.show_password)
-                                }
-                            )
-                        }
-                    },
-                    modifier = Modifier
-                        .align(Alignment.CenterHorizontally)
-                        .padding(top = 16.dp)
-                        .fillMaxWidth()
-                )
-                Button(
-                    onClick = {
-                        when {
-                            email.isEmpty() -> isEmailEmpty = true
-                            password.isEmpty() -> isPasswordEmpty = true
-                            else -> {
-                                loginViewModel.login(LoginRequest(email, password))
-                            }
-                        }
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 16.dp)
+                        .fillMaxWidth(),
+                    verticalArrangement = Arrangement.Center
                 ) {
-                    Text(
-                        text = stringResource(id = R.string.login),
-                        style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Medium)
-                    )
-                }
+                    OutlinedTextField(
+                        value = email,
+                        onValueChange = { email = it.trim() },
+                        label = { Text(text = stringResource(R.string.enter_your_email)) },
+                        placeholder = { Text(text = stringResource(R.string.email)) },
+                        leadingIcon = {
+                            Icon(
+                                imageVector = Icons.Outlined.Email,
+                                contentDescription = null
+                            )
+                        },
+                        keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Email),
+                        singleLine = true,
+                        keyboardActions = KeyboardActions(
+                            onDone = {
+                                if (isEmailValid(email)) {
+                                    keyboardController?.hide()
+                                }
+                            }
+                        ),
+                        modifier = Modifier
+                            .align(Alignment.CenterHorizontally)
+                            .fillMaxWidth()
 
-                RegisterText(
-                    uiColor = uiColor,
-                    modifier = Modifier
-                        .align(Alignment.CenterHorizontally)
-                        .padding(top = 16.dp)
-                        .clickable { navigateToRegister() })
+                    )
+                    OutlinedTextField(
+                        value = password,
+                        onValueChange = { password = it },
+                        label = { Text(text = stringResource(R.string.enter_your_password)) },
+                        placeholder = { Text(text = stringResource(R.string.password)) },
+                        leadingIcon = {
+                            Icon(
+                                imageVector = Icons.Outlined.Lock,
+                                contentDescription = null
+                            )
+                        },
+                        singleLine = true,
+                        visualTransformation = if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
+                        trailingIcon = {
+                            IconButton(
+                                onClick = { passwordVisibility = !passwordVisibility },
+                                modifier = Modifier
+                                    .align(Alignment.End)
+                                    .padding(end = 16.dp)
+                            ) {
+                                Icon(
+                                    imageVector = if (passwordVisibility) Icons.Default.VisibilityOff else Icons.Default.Visibility,
+                                    contentDescription = if (passwordVisibility) {
+                                        stringResource(R.string.hide_password)
+                                    } else {
+                                        stringResource(R.string.show_password)
+                                    }
+                                )
+                            }
+                        },
+                        modifier = Modifier
+                            .align(Alignment.CenterHorizontally)
+                            .padding(top = 16.dp)
+                            .fillMaxWidth()
+                    )
+                    OutlinedButton(
+                        enabled = isButtonEnable,
+                        onClick = {
+                            when {
+                                else -> {
+                                    loginViewModel.login(LoginRequest(email, password))
+                                }
+                            }
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 16.dp)
+                    ) {
+                        Text(
+                            text = stringResource(id = R.string.login),
+                            style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Medium)
+                        )
+                    }
+
+                    RegisterText(
+                        uiColor = uiColor,
+                        modifier = Modifier
+                            .align(Alignment.CenterHorizontally)
+                            .padding(top = 16.dp)
+                            .clickable { navigateToRegister() })
+                }
             }
         }
     }
@@ -238,36 +252,22 @@ fun LoginComponent(
 
 }
 
+
 @Composable
-private fun TopSection(
-    uiColor: Color
-) {
-    Box(
-        contentAlignment = Alignment.TopCenter
-    ) {
-        Image(
-            painter = painterResource(id = R.drawable.shape),
-            contentDescription = null,
-            contentScale = ContentScale.FillBounds,
-            modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight(fraction = 0.46f)
-        )
+private fun TopSection() {
+    Column(modifier = Modifier.fillMaxWidth()) {
 
         Icon(
             painter = painterResource(
                 id = R.drawable.default_logo
             ),
             contentDescription = null,
-            modifier = Modifier.padding(top = 80.dp)
+            modifier = Modifier.size(120.dp)
         )
-        Text(
-            text = stringResource(id = R.string.login),
-            style = MaterialTheme.typography.headlineLarge,
-            color = uiColor,
-            modifier = Modifier
-                .padding(bottom = 10.dp, top = 280.dp)
-
+        HeaderText(
+            text = stringResource(R.string.greeting),
+            description = stringResource(id = R.string.login_description),
+            showDescription = true
         )
     }
 }

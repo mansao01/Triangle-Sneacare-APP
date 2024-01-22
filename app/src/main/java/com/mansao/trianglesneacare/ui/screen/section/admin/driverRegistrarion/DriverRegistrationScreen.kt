@@ -476,7 +476,7 @@ fun Context.createImageFile(): File {
 fun DriverRegistrationTopBar(
     navigateToDriverManagement: () -> Unit
 ) {
-    TopAppBar(title = { HeaderText(text = "Driver Register", showDescription = false) },
+    TopAppBar(title = { HeaderText(text = "Driver Register", showDescription = false, description = "") },
         navigationIcon = {
             IconButton(
                 onClick = { navigateToDriverManagement() }
