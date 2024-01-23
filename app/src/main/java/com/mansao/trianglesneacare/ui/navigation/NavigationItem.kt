@@ -6,8 +6,10 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Map
 import androidx.compose.material.icons.filled.Motorcycle
 import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.runtime.Stable
 import androidx.compose.ui.graphics.vector.ImageVector
 
+@Stable
 data class BottomNavigationItem(
     val title: String = "",
     val icon: ImageVector = Icons.Filled.Home,

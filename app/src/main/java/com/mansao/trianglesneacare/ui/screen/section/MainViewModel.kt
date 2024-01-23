@@ -22,6 +22,7 @@ class MainViewModel @Inject constructor(private val appRepositoryImpl: AppReposi
         MutableStateFlow(UiState.Standby)
     val uiState: Flow<UiState<OnlyMsgResponse>> = _uiState
 
+
     init {
         checkServerRunning()
     }

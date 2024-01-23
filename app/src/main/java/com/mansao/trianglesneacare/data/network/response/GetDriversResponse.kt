@@ -17,20 +17,20 @@ data class DriversItem(
 	val address: String? = null,
 
 	@field:SerializedName("role")
-	val role: Role? = null,
+	val role: Role,
 
 	@field:SerializedName("phone")
-	val phone: String? = null,
+	val phone: String,
 
 	@field:SerializedName("pictureUrl")
 	val pictureUrl: String? = null,
 
 	@field:SerializedName("name")
-	val name: String? = null,
+	val name: String,
 
 	@field:SerializedName("id")
-	val id: String? = null,
+	val id: String,
 
 	@field:SerializedName("email")
-	val email: String? = null
+	val email: String
 )

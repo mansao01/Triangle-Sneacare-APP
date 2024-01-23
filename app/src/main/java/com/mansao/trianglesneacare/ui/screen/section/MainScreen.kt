@@ -11,9 +11,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -50,9 +47,13 @@ fun MainScreen(
 
     mainViewModel.uiState.collectAsState(initial = UiState.Loading).value.let { uiState ->
         when (uiState) {
-            is UiState.Standby ->{}
+            is UiState.Standby -> {}
             is UiState.Loading -> LoadingScreen()
-            is UiState.Success -> MainScreenContent(authViewModel = authViewModel, navController =navController )
+            is UiState.Success -> MainScreenContent(
+                authViewModel = authViewModel,
+                navController = navController
+            )
+
             is UiState.Error -> {
                 ServiceNotAvailable()
             }
@@ -78,7 +79,11 @@ fun MainScreenContent(
     Scaffold(
         bottomBar = {
             if (currentRoute != Screen.DriverRegistration.route) {
-            MainBottomBar(navController = navController, role = role)
+                MainBottomBar(
+                    navController = navController,
+                    role = role,
+                    currentRoute = currentRoute
+                )
             }
         }
     ) {
@@ -146,23 +151,22 @@ fun MainScreenContent(
         }
     }
 }
+
 @Composable
 fun MainBottomBar(
     navController: NavHostController,
-    role: String
+    role: String,
+    currentRoute: String?
 ) {
-    var navigationSelectedItem by remember {
-        mutableIntStateOf(0)
-    }
-
     NavigationBar {
 
         when (role) {
             stringResource(id = R.string.customer) -> {
                 BottomNavigationItem().customerBottomNavigationItem()
-                    .forEachIndexed { index, navigationItem ->
+                    .forEach {  navigationItem ->
+                        val isSelected = currentRoute == navigationItem.screen
                         NavigationBarItem(
-                            selected = index == navigationSelectedItem,
+                            selected = isSelected,
                             label = {
                                 Text(text = navigationItem.title)
                             },
@@ -172,7 +176,6 @@ fun MainBottomBar(
                                     contentDescription = navigationItem.contentDescription
                                 )
                             }, onClick = {
-                                navigationSelectedItem = index
                                 navController.navigate(navigationItem.screen) {
                                     popUpTo(navController.graph.findStartDestination().id) {
                                         saveState = true
@@ -186,9 +189,10 @@ fun MainBottomBar(
 
             stringResource(id = R.string.admin) -> {
                 BottomNavigationItem().adminBottomNavigationItem()
-                    .forEachIndexed { index, navigationItem ->
+                    .forEach { navigationItem ->
+                        val isSelected = currentRoute == navigationItem.screen
                         NavigationBarItem(
-                            selected = index == navigationSelectedItem,
+                            selected = isSelected,
                             label = {
                                 Text(text = navigationItem.title)
                             },
@@ -198,7 +202,6 @@ fun MainBottomBar(
                                     contentDescription = navigationItem.contentDescription
                                 )
                             }, onClick = {
-                                navigationSelectedItem = index
                                 navController.navigate(navigationItem.screen) {
                                     popUpTo(navController.graph.findStartDestination().id) {
                                         saveState = true
@@ -212,9 +215,11 @@ fun MainBottomBar(
 
             stringResource(id = R.string.driver) -> {
                 BottomNavigationItem().driverBottomNavigationItem()
-                    .forEachIndexed { index, navigationItem ->
+                    .forEach {  navigationItem ->
+                        val isSelected = currentRoute == navigationItem.screen
+
                         NavigationBarItem(
-                            selected = index == navigationSelectedItem,
+                            selected = isSelected,
                             label = {
                                 Text(text = navigationItem.title)
                             },
@@ -224,7 +229,6 @@ fun MainBottomBar(
                                     contentDescription = navigationItem.contentDescription
                                 )
                             }, onClick = {
-                                navigationSelectedItem = index
                                 navController.navigate(navigationItem.screen) {
                                     popUpTo(navController.graph.findStartDestination().id) {
                                         saveState = true

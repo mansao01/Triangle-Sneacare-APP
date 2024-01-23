@@ -17,8 +17,11 @@ class DriverManagementViewModel @Inject constructor(private val appRepositoryImp
     var uiState: DriverManagementUiState by mutableStateOf(DriverManagementUiState.Loading)
         private set
 
+    init {
+        getDrivers()
+    }
 
-     fun getDrivers() {
+    private fun getDrivers() {
         viewModelScope.launch {
             uiState = DriverManagementUiState.Loading
             uiState = try {
