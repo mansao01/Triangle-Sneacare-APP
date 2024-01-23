@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
@@ -108,16 +109,14 @@ fun RegisterComponent(
     modifier: Modifier = Modifier
 ) {
     var name by remember { mutableStateOf("") }
-    var isNameEmpty by remember { mutableStateOf(false) }
-
     var email by remember { mutableStateOf("") }
-    var isEmailEmpty by remember { mutableStateOf(false) }
-
     var password by remember { mutableStateOf("") }
-    var isPasswordEmpty by remember { mutableStateOf(false) }
 
     val keyboardController = LocalSoftwareKeyboardController.current
     var passwordVisibility by remember { mutableStateOf(false) }
+
+    val isButtonEnable =
+        (email.isNotEmpty() && password.isNotEmpty() && name.isNotEmpty())
 
     var buttonSize by remember { mutableStateOf(DpSize.Zero) }
     val density = LocalDensity.current
@@ -159,11 +158,12 @@ fun RegisterComponent(
                         )
                     },
                     singleLine = true,
-                    isError = isNameEmpty,
                     modifier = Modifier
                         .fillMaxWidth()
                         .align(Alignment.CenterHorizontally)
-                        .padding(top = 16.dp)
+                        .padding(top = 16.dp),
+                    shape = RoundedCornerShape(16.dp)
+
                 )
 
                 OutlinedTextField(
@@ -186,11 +186,12 @@ fun RegisterComponent(
                             }
                         }
                     ),
-                    isError = isEmailEmpty,
                     modifier = Modifier
                         .fillMaxWidth()
                         .align(Alignment.CenterHorizontally)
-                        .padding(top = 16.dp)
+                        .padding(top = 16.dp),
+                    shape = RoundedCornerShape(16.dp)
+
                 )
                 OutlinedTextField(
                     value = password,
@@ -205,7 +206,6 @@ fun RegisterComponent(
                     },
                     singleLine = true,
                     visualTransformation = if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
-                    isError = isPasswordEmpty,
                     trailingIcon = {
                         IconButton(
                             onClick = { passwordVisibility = !passwordVisibility },
@@ -226,15 +226,14 @@ fun RegisterComponent(
                     modifier = Modifier
                         .fillMaxWidth()
                         .align(Alignment.CenterHorizontally)
-                        .padding(top = 16.dp)
+                        .padding(top = 16.dp),
+                    shape = RoundedCornerShape(16.dp)
+
                 )
 
                 OutlinedButton(
                     onClick = {
                         when {
-                            name.isEmpty() -> isNameEmpty = true
-                            email.isEmpty() -> isEmailEmpty = true
-                            password.isEmpty() -> isPasswordEmpty = true
                             else -> {
                                 registerViewModel.register(
                                     RegisterRequest(
@@ -261,6 +260,7 @@ fun RegisterComponent(
                                 }
                             }
                         },
+                    enabled = isButtonEnable
                 ) {
                     if (isLoading) {
                         CircularProgressIndicator(

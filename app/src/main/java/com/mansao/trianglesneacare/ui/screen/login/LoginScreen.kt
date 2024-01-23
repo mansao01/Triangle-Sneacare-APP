@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
@@ -181,7 +182,8 @@ fun LoginComponent(
                         ),
                         modifier = Modifier
                             .align(Alignment.CenterHorizontally)
-                            .fillMaxWidth()
+                            .fillMaxWidth(),
+                        shape = RoundedCornerShape(16.dp)
 
                     )
                     OutlinedTextField(
@@ -217,7 +219,8 @@ fun LoginComponent(
                         modifier = Modifier
                             .align(Alignment.CenterHorizontally)
                             .padding(top = 16.dp)
-                            .fillMaxWidth()
+                            .fillMaxWidth(),
+                        shape = RoundedCornerShape(16.dp)
                     )
                     OutlinedButton(
                         enabled = isButtonEnable,

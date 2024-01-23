@@ -13,6 +13,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.core.view.WindowCompat
 import com.mansao.trianglesneacare.ui.AuthViewModel
 import com.mansao.trianglesneacare.ui.TriangleApp
 import com.mansao.trianglesneacare.ui.theme.TriangleSneacareTheme
@@ -31,6 +32,7 @@ class MainActivity : ComponentActivity() {
             )
         )
         super.onCreate(savedInstanceState)
+        WindowCompat.setDecorFitsSystemWindows(window, false)
         setContent {
             installSplashScreen().setKeepOnScreenCondition { !authViewModel.isLoading.value }
             TriangleSneacareTheme {

@@ -4,33 +4,36 @@ import com.google.gson.annotations.SerializedName
 
 data class ProfileResponse(
 
-	@field:SerializedName("msg")
-	val msg: String,
+    @field:SerializedName("msg")
+    val msg: String,
 
-	@field:SerializedName("profile")
-	val profile: Profile
+    @field:SerializedName("profile")
+    val profile: Profile
 )
 
 data class Role(
 
-	@field:SerializedName("name")
-	val name: String,
+    @field:SerializedName("name")
+    val name: String,
 
-	@field:SerializedName("id")
-	val id: Int
+    @field:SerializedName("id")
+    val id: Int
 )
 
 data class Profile(
 
-	@field:SerializedName("role")
-	val role: Role,
+    @field:SerializedName("role")
+    val role: Role,
 
-	@field:SerializedName("name")
-	val name: String,
+    @field:SerializedName("name")
+    val name: String,
 
-	@field:SerializedName("id")
-	val id: String,
+    @field:SerializedName("id")
+    val id: String,
 
-	@field:SerializedName("email")
-	val email: String
+    @field:SerializedName("image")
+    val image: String? = null,
+
+    @field:SerializedName("email")
+    val email: String
 )
