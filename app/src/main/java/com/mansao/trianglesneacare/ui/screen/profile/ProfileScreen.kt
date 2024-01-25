@@ -18,6 +18,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ListAlt
 import androidx.compose.material.icons.outlined.Logout
+import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -71,6 +72,7 @@ fun ProfileComponent(
             image = profile.profile.image,
             name = profile.profile.name,
             email = profile.profile.email,
+            phone = profile.profile.phone,
             modifier = Modifier.clickable { TODO() }
         )
         Spacer(
@@ -149,66 +151,84 @@ fun UserDetailComponent(
     image: String?,
     name: String,
     email: String,
+    phone: String?,
     modifier: Modifier = Modifier
 ) {
-    val context = LocalContext.current
-    Row(
+    Card(
         modifier = modifier
             .fillMaxWidth()
             .padding(16.dp)
     ) {
-        Box(
+        Row(
             modifier = Modifier
-                .size(93.dp)
-                .clip(CircleShape)
+                .fillMaxWidth()
+                .padding(16.dp)
         ) {
-            if (image == null) {
-                Image(
-                    painter = painterResource(id = R.drawable.person_circle_svgrepo_com),
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .size(40.dp)
-                        .fillMaxSize()
-                        .align(Alignment.Center)
-
+            Box(
+                modifier = Modifier
+                    .size(93.dp)
+                    .clip(CircleShape)
+            ) {
+                if (image == null) {
+                    Image(
+                        painter = painterResource(id = R.drawable.person_circle_svgrepo_com),
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .size(40.dp)
+                            .fillMaxSize()
+                            .align(Alignment.Center)
+                    )
+                } else {
+                    SubcomposeAsyncImage(
+                        model = ImageRequest.Builder(LocalContext.current)
+                            .crossfade(true)
+                            .data(image)
+                            .build(),
+                        contentDescription = null,
+                        loading = {
+                            CircularProgressIndicator(
+                                modifier = Modifier
+                                    .size(40.dp)
+                                    .padding(4.dp)
+                            )
+                        },
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.fillMaxSize()
+                    )
+                }
+            }
+            Spacer(modifier = Modifier.width(16.dp))
+            Column {
+                Text(
+                    text = name,
+                    style = TextStyle(
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 18.sp
+                    ),
+                    modifier = Modifier.padding(bottom = 4.dp)
                 )
-            } else {
-                SubcomposeAsyncImage(
-                    model = ImageRequest.Builder(context)
-                        .crossfade(true)
-                        .data(image)
-                        .build(),
-                    contentDescription = null,
-                    loading = {
-                        CircularProgressIndicator(
-                            modifier = Modifier
-                                .size(40.dp)
-                                .padding(4.dp)
+
+                phone?.let {
+                    Text(
+                        text = it,
+                        style = TextStyle(
+                            color = Color.Gray,
+                            fontSize = 14.sp
                         )
-                    },
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier.fillMaxSize()
+                    )
+                }
+
+
+                Text(
+                    text = email,
+                    style = TextStyle(
+                        color = Color.Gray,
+                        fontSize = 14.sp
+                    )
                 )
             }
         }
-        Spacer(modifier = Modifier.width(16.dp))
-        Column {
-            Text(
-                text = name,
-                style = TextStyle(
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 18.sp
-                ),
-                modifier = Modifier.padding(bottom = 4.dp)
-            )
-            Text(
-                text = email,
-                style = TextStyle(
-                    color = Color.Gray,
-                    fontSize = 14.sp
-                )
-            )
-        }
     }
 }
+

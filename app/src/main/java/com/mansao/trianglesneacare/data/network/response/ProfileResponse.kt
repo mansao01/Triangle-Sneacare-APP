@@ -35,5 +35,8 @@ data class Profile(
     val image: String? = null,
 
     @field:SerializedName("email")
-    val email: String
+    val email: String,
+
+    @field:SerializedName("phone")
+    val phone: String? = null
 )
