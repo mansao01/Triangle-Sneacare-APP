@@ -29,12 +29,15 @@ import com.mansao.trianglesneacare.ui.navigation.BottomNavigationItem
 import com.mansao.trianglesneacare.ui.navigation.Screen
 import com.mansao.trianglesneacare.ui.screen.profile.ProfileScreen
 import com.mansao.trianglesneacare.ui.screen.profile.ProfileViewModel
+import com.mansao.trianglesneacare.ui.screen.profileEdit.ProfileEditScreen
 import com.mansao.trianglesneacare.ui.screen.section.admin.driverManagement.DriverManagementScreen
 import com.mansao.trianglesneacare.ui.screen.section.admin.driverManagement.DriverManagementViewModel
 import com.mansao.trianglesneacare.ui.screen.section.admin.driverRegistrarion.DriverRegistrationScreen
 import com.mansao.trianglesneacare.ui.screen.section.admin.home.AdminHomeScreen
+import com.mansao.trianglesneacare.ui.screen.section.customer.addressList.AddressListScreen
 import com.mansao.trianglesneacare.ui.screen.section.customer.cart.CartScreen
 import com.mansao.trianglesneacare.ui.screen.section.customer.home.CustomerHomeScreen
+import com.mansao.trianglesneacare.ui.screen.section.customer.transactionList.TransactionListScreen
 import com.mansao.trianglesneacare.ui.screen.section.driver.home.DriverHomeScreen
 import com.mansao.trianglesneacare.ui.screen.section.driver.map.MapScreen
 
@@ -96,6 +99,19 @@ fun MainScreenContent(
                 navController = navController,
                 startDestination = startDestination,
             ) {
+                composable(Screen.Profile.route) {
+                    val profileViewModel: ProfileViewModel = hiltViewModel()
+                    ProfileScreen(
+                        uiState = profileViewModel.uiState,
+                        navigateToProfileEdit = { navController.navigate(Screen.ProfileEdit.route) },
+                        navigateToAddressList = { navController.navigate(Screen.AddressList.route) }
+                    )
+                }
+
+                composable(Screen.ProfileEdit.route) {
+                    ProfileEditScreen()
+                }
+
 //                customer
                 composable(Screen.CustomerHome.route) {
                     CustomerHomeScreen()
@@ -103,9 +119,11 @@ fun MainScreenContent(
                 composable(Screen.CustomerCart.route) {
                     CartScreen()
                 }
-                composable(Screen.Profile.route) {
-                    val profileViewModel: ProfileViewModel = hiltViewModel()
-                    ProfileScreen(uiState = profileViewModel.uiState)
+                composable(Screen.TransactionList.route) {
+                    TransactionListScreen()
+                }
+                composable(Screen.AddressList.route) {
+                    AddressListScreen()
                 }
 
 
@@ -122,10 +140,7 @@ fun MainScreenContent(
                         }
                     )
                 }
-                composable(Screen.Profile.route) {
-                    val profileViewModel: ProfileViewModel = hiltViewModel()
-                    ProfileScreen(uiState = profileViewModel.uiState)
-                }
+
 
                 composable(Screen.DriverRegistration.route) {
                     DriverRegistrationScreen(
@@ -143,10 +158,7 @@ fun MainScreenContent(
                 composable(Screen.DriverMap.route) {
                     MapScreen()
                 }
-                composable(Screen.Profile.route) {
-                    val profileViewModel: ProfileViewModel = hiltViewModel()
-                    ProfileScreen(uiState = profileViewModel.uiState)
-                }
+
             }
         }
     }
@@ -163,7 +175,7 @@ fun MainBottomBar(
         when (role) {
             stringResource(id = R.string.customer) -> {
                 BottomNavigationItem().customerBottomNavigationItem()
-                    .forEach {  navigationItem ->
+                    .forEach { navigationItem ->
                         val isSelected = currentRoute == navigationItem.screen
                         NavigationBarItem(
                             selected = isSelected,
@@ -215,7 +227,7 @@ fun MainBottomBar(
 
             stringResource(id = R.string.driver) -> {
                 BottomNavigationItem().driverBottomNavigationItem()
-                    .forEach {  navigationItem ->
+                    .forEach { navigationItem ->
                         val isSelected = currentRoute == navigationItem.screen
 
                         NavigationBarItem(

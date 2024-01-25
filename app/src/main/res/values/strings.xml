@@ -34,4 +34,7 @@
     <string name="login_description">Please fill in the following fields to login.</string>
     <string name="greeting">Welcome to Triangle Sneacare!</string>
     <string name="service_not_available">Opps! service unavailable, please try again later!</string>
+    <string name="account_setting">Account Setting</string>
+    <string name="transaction_list">Transaction List</string>
+    <string name="address_list">Address List</string>
 </resources>

@@ -16,7 +16,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.ListAlt
+import androidx.compose.material.icons.outlined.Edit
+import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Logout
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
@@ -28,10 +29,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -43,18 +44,23 @@ import com.mansao.trianglesneacare.R
 import com.mansao.trianglesneacare.data.network.response.ProfileResponse
 import com.mansao.trianglesneacare.ui.common.ProfileUiState
 import com.mansao.trianglesneacare.ui.components.LoadingScreen
+import com.mansao.trianglesneacare.ui.components.ProfileMenuItem
 
 @Composable
 fun ProfileScreen(
     uiState: ProfileUiState,
-    profileViewModel: ProfileViewModel = hiltViewModel()
+    profileViewModel: ProfileViewModel = hiltViewModel(),
+    navigateToProfileEdit: () -> Unit,
+    navigateToAddressList: () -> Unit
 ) {
     val context = LocalContext.current
     when (uiState) {
         is ProfileUiState.Loading -> LoadingScreen()
         is ProfileUiState.Success -> ProfileComponent(
             profile = uiState.profile,
-            viewModel = profileViewModel
+            viewModel = profileViewModel,
+            navigateToProfileEdit = navigateToProfileEdit,
+            navigateToAddressList = navigateToAddressList
         )
 
         is ProfileUiState.Error -> Toast.makeText(context, uiState.msg, Toast.LENGTH_SHORT).show()
@@ -64,16 +70,18 @@ fun ProfileScreen(
 @Composable
 fun ProfileComponent(
     profile: ProfileResponse,
-    viewModel: ProfileViewModel
+    viewModel: ProfileViewModel,
+    navigateToProfileEdit: () -> Unit,
+    navigateToAddressList: () -> Unit
 ) {
     val role = profile.profile.role.name
     Column(modifier = Modifier.fillMaxSize()) {
-        UserDetailComponent(
+        UserDetail(
             image = profile.profile.image,
             name = profile.profile.name,
             email = profile.profile.email,
             phone = profile.profile.phone,
-            modifier = Modifier.clickable { TODO() }
+            modifier = Modifier.clickable { navigateToProfileEdit() }
         )
         Spacer(
             modifier = Modifier
@@ -84,19 +92,28 @@ fun ProfileComponent(
                 )
                 .fillMaxWidth()
         )
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Text(
+            text = stringResource(R.string.account_setting),
+            fontWeight = FontWeight.Bold,
+            fontSize = 18.sp,
+            modifier = Modifier.padding(start = 16.dp)
+        )
+        Spacer(modifier = Modifier.height(8.dp))
 
         if (role == "customer") {
+
             ProfileMenuItem(
-                menuName = "Transaction List",
-                icon = Icons.Outlined.ListAlt,
-                onClick = { TODO() }
+                menuName = stringResource(R.string.address_list),
+                icon = Icons.Outlined.Home,
+                onClick = { navigateToAddressList() }
             )
         }
 
-
         Spacer(modifier = Modifier.height(8.dp))
         ProfileMenuItem(
-            menuName = "Logout",
+            menuName = stringResource(R.string.logout),
             icon = Icons.Outlined.Logout,
             onClick = { viewModel.logout() }
         )
@@ -107,47 +124,7 @@ fun ProfileComponent(
 }
 
 @Composable
-fun ProfileMenuItem(
-    menuName: String,
-    icon: ImageVector,
-    modifier: Modifier = Modifier,
-    onClick: () -> Unit = {}
-) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = modifier
-            .fillMaxWidth()
-            .height(56.dp)
-            .clickable {
-                onClick()
-            }
-            .padding(horizontal = 16.dp)
-    ) {
-        // Icon
-        Icon(
-            imageVector = icon,
-            contentDescription = null,
-            modifier = Modifier
-                .size(24.dp)
-        )
-
-        // Spacer
-        Spacer(modifier = Modifier.width(16.dp))
-
-        // Menu Name
-        Text(
-            text = menuName,
-            style = TextStyle(
-                fontWeight = FontWeight.Bold,
-                fontSize = 16.sp,
-            )
-        )
-
-    }
-}
-
-@Composable
-fun UserDetailComponent(
+fun UserDetail(
     image: String?,
     name: String,
     email: String,
@@ -218,8 +195,7 @@ fun UserDetailComponent(
                         )
                     )
                 }
-
-
+                
                 Text(
                     text = email,
                     style = TextStyle(
@@ -228,6 +204,8 @@ fun UserDetailComponent(
                     )
                 )
             }
+            Spacer(modifier = Modifier.width(32.dp))
+            Icon(imageVector = Icons.Outlined.Edit, contentDescription = null )
         }
     }
 }

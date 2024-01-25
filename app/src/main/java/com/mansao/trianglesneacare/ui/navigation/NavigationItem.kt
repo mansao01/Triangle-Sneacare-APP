@@ -3,6 +3,7 @@ package com.mansao.trianglesneacare.ui.navigation
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.ListAlt
 import androidx.compose.material.icons.filled.Map
 import androidx.compose.material.icons.filled.Motorcycle
 import androidx.compose.material.icons.filled.ShoppingCart
@@ -53,13 +54,19 @@ data class BottomNavigationItem(
                 title = "Cart",
                 icon = Icons.Filled.ShoppingCart,
                 screen = Screen.CustomerCart.route,
-                contentDescription = "Home"
+                contentDescription = "cart"
+            ),
+            BottomNavigationItem(
+                title = "Transaction",
+                icon = Icons.Filled.ListAlt,
+                screen = Screen.TransactionList.route,
+                contentDescription = "transaction"
             ),
             BottomNavigationItem(
                 title = "Profile",
                 icon = Icons.Filled.AccountCircle,
                 screen = Screen.Profile.route,
-                contentDescription = "Profile"
+                contentDescription = "profile"
             ),
         )
 

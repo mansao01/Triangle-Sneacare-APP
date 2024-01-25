@@ -17,7 +17,7 @@ import com.mansao.trianglesneacare.R
 @Composable
 fun LoadingScreen() {
     val composition by
-    rememberLottieComposition(spec = LottieCompositionSpec.RawRes(R.raw.dot_loading))
+    rememberLottieComposition(spec = LottieCompositionSpec.RawRes(R.raw.spiral_loading))
     AlertDialog(
         onDismissRequest = { /*TODO*/ },
         confirmButton = { /*TODO*/ },
@@ -25,7 +25,7 @@ fun LoadingScreen() {
             LottieAnimation(
                 composition = composition,
                 iterations = LottieConstants.IterateForever,
-                modifier = Modifier.size(120.dp)
+                modifier = Modifier.size(140.dp)
             )
         },
         modifier = Modifier

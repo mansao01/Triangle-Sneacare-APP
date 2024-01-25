@@ -5,7 +5,7 @@ sealed class Screen(val route: String) {
     object Login : Screen("login")
     object Register : Screen("register")
     object Profile : Screen("profile")
-
+    object ProfileEdit : Screen("profileEdit")
     object Main :Screen("main")
 
 //    admin
@@ -16,6 +16,8 @@ sealed class Screen(val route: String) {
 //    customer
     object CustomerHome : Screen("customerHome")
     object CustomerCart : Screen("customerCart")
+    object TransactionList : Screen("transactionList")
+    object AddressList : Screen("addressList")
 
 
 //driver
