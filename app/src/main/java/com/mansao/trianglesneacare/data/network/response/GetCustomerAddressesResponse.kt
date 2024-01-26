@@ -5,10 +5,10 @@ import com.google.gson.annotations.SerializedName
 data class GetCustomerAddressesResponse(
 
 	@field:SerializedName("address")
-	val address: List<AddressItem?>? = null,
+	val address: List<AddressItem>,
 
 	@field:SerializedName("message")
-	val message: String? = null
+	val message: String
 )
 
 data class AddressItem(
@@ -30,6 +30,12 @@ data class AddressItem(
 
 	@field:SerializedName("title")
 	val title: String? = null,
+
+	@field:SerializedName("receiverName")
+	val receiverName: String? = null,
+
+	@field:SerializedName("phone")
+	val phone: String? = null,
 
 	@field:SerializedName("userId")
 	val userId: String? = null,

@@ -18,7 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import com.mansao.trianglesneacare.data.network.response.DriversItem
 import com.mansao.trianglesneacare.ui.common.DriverManagementUiState
-import com.mansao.trianglesneacare.ui.components.DriverItem
+import com.mansao.trianglesneacare.ui.components.DriverListItem
 import com.mansao.trianglesneacare.ui.components.EmptyData
 import com.mansao.trianglesneacare.ui.components.HeaderText
 import com.mansao.trianglesneacare.ui.components.LoadingScreen
@@ -71,7 +71,7 @@ fun DriverList(
 ) {
     LazyColumn {
         items(driver) { data ->
-            DriverItem(driversItem = data, modifier = Modifier.clickable { })
+            DriverListItem(driversItem = data, modifier = Modifier.clickable { })
         }
     }
 }

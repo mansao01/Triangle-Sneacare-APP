@@ -34,6 +34,7 @@ import com.mansao.trianglesneacare.ui.screen.section.admin.driverManagement.Driv
 import com.mansao.trianglesneacare.ui.screen.section.admin.driverManagement.DriverManagementViewModel
 import com.mansao.trianglesneacare.ui.screen.section.admin.driverRegistrarion.DriverRegistrationScreen
 import com.mansao.trianglesneacare.ui.screen.section.admin.home.AdminHomeScreen
+import com.mansao.trianglesneacare.ui.screen.section.customer.addAddress.AddAddressScreen
 import com.mansao.trianglesneacare.ui.screen.section.customer.addressList.AddressListScreen
 import com.mansao.trianglesneacare.ui.screen.section.customer.cart.CartScreen
 import com.mansao.trianglesneacare.ui.screen.section.customer.home.CustomerHomeScreen
@@ -123,7 +124,18 @@ fun MainScreenContent(
                     TransactionListScreen()
                 }
                 composable(Screen.AddressList.route) {
-                    AddressListScreen()
+                    AddressListScreen(
+                        navigateToProfile = {
+                            navController.popBackStack()
+                            navController.navigate(Screen.Profile.route)
+                        },
+                        navigateToAddAddress = {
+                            navController.navigate(Screen.AddAddress.route)
+                        })
+                }
+
+                composable(Screen.AddAddress.route) {
+                    AddAddressScreen()
                 }
 
 

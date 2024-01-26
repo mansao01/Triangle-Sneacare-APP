@@ -2,6 +2,7 @@ package com.mansao.trianglesneacare.data.network
 
 import com.mansao.trianglesneacare.data.network.request.LoginRequest
 import com.mansao.trianglesneacare.data.network.request.RegisterRequest
+import com.mansao.trianglesneacare.data.network.response.GetCustomerAddressesResponse
 import com.mansao.trianglesneacare.data.network.response.GetDriversResponse
 import com.mansao.trianglesneacare.data.network.response.LoginResponse
 import com.mansao.trianglesneacare.data.network.response.OnlyMsgResponse
@@ -50,6 +51,11 @@ interface ApiService {
 
     @GET(ApiConst.DRIVERS)
     suspend fun getDrivers(): GetDriversResponse
+
+    @GET(ApiConst.GET_CUSTOMER_ADDRESS)
+    suspend fun getCustomerAddresses(
+        @Header(ApiConst.AUTHORIZATION_KEY) token: String
+    ): GetCustomerAddressesResponse
 
     @POST(ApiConst.LOGOUT)
     suspend fun logout(

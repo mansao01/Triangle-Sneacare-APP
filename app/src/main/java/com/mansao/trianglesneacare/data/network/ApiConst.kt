@@ -11,4 +11,5 @@ object ApiConst {
     const val PROFILE = "profile"
     const val DRIVERS = "drivers"
     const val LOGOUT = "logout"
+    const val GET_CUSTOMER_ADDRESS = "getCustomerAddress"
 }

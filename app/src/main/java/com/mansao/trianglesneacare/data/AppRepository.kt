@@ -3,6 +3,7 @@ package com.mansao.trianglesneacare.data
 import com.mansao.trianglesneacare.data.network.ApiService
 import com.mansao.trianglesneacare.data.network.request.LoginRequest
 import com.mansao.trianglesneacare.data.network.request.RegisterRequest
+import com.mansao.trianglesneacare.data.network.response.GetCustomerAddressesResponse
 import com.mansao.trianglesneacare.data.network.response.GetDriversResponse
 import com.mansao.trianglesneacare.data.network.response.LoginResponse
 import com.mansao.trianglesneacare.data.network.response.OnlyMsgResponse
@@ -37,6 +38,7 @@ interface AppRepository {
     suspend fun getProfile(token: String): ProfileResponse
     suspend fun getDrivers(): GetDriversResponse
     suspend fun logout(token: String): OnlyMsgResponse
+    suspend fun getCustomerAddresses(token: String): GetCustomerAddressesResponse
 
     //    preferences
     suspend fun saveAccessToken(token: String)
@@ -102,6 +104,9 @@ class AppRepositoryImpl @Inject constructor(
     override suspend fun getDrivers(): GetDriversResponse = apiService.getDrivers()
 
     override suspend fun logout(token: String): OnlyMsgResponse = apiService.logout(token)
+
+    override suspend fun getCustomerAddresses(token: String): GetCustomerAddressesResponse =
+        apiService.getCustomerAddresses(token)
 
     //    preferences
     override suspend fun saveAccessToken(token: String) = appPreferences.saveAccessToken(token)

@@ -28,7 +28,7 @@ import coil.request.ImageRequest
 import com.mansao.trianglesneacare.data.network.response.DriversItem
 
 @Composable
-fun DriverItem(
+fun DriverListItem(
     driversItem: DriversItem,
     modifier: Modifier = Modifier
 ) {
