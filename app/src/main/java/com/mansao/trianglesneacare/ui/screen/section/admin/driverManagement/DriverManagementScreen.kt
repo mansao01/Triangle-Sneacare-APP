@@ -21,7 +21,7 @@ import com.mansao.trianglesneacare.ui.common.DriverManagementUiState
 import com.mansao.trianglesneacare.ui.components.DriverListItem
 import com.mansao.trianglesneacare.ui.components.EmptyData
 import com.mansao.trianglesneacare.ui.components.HeaderText
-import com.mansao.trianglesneacare.ui.components.LoadingScreen
+import com.mansao.trianglesneacare.ui.components.LoadingDialog
 
 @Composable
 fun DriverManagementScreen(
@@ -32,7 +32,7 @@ fun DriverManagementScreen(
     val context = LocalContext.current
 
     when (uiState) {
-        is DriverManagementUiState.Loading -> LoadingScreen()
+        is DriverManagementUiState.Loading -> LoadingDialog()
         is DriverManagementUiState.Success -> DriverManagementComponent(
             driver = uiState.getDriversResponse.drivers,
             navigateToDriverRegistration

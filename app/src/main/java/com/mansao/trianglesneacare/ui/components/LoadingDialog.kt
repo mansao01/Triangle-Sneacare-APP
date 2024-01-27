@@ -15,7 +15,7 @@ import com.airbnb.lottie.compose.rememberLottieComposition
 import com.mansao.trianglesneacare.R
 
 @Composable
-fun LoadingScreen() {
+fun LoadingDialog() {
     val composition by
     rememberLottieComposition(spec = LottieCompositionSpec.RawRes(R.raw.spiral_loading))
     AlertDialog(
@@ -31,5 +31,17 @@ fun LoadingScreen() {
         modifier = Modifier
             .width(120.dp)
             .height(120.dp)
+    )
+}
+
+@Composable
+fun LoadingScreen() {
+    val composition by
+    rememberLottieComposition(spec = LottieCompositionSpec.RawRes(R.raw.spiral_loading))
+
+    LottieAnimation(
+        composition = composition,
+        iterations = LottieConstants.IterateForever,
+        modifier = Modifier.size(140.dp)
     )
 }

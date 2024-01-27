@@ -2,7 +2,9 @@ package com.mansao.trianglesneacare.ui.screen.section.customer.addressList
 
 import android.widget.Toast
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
@@ -21,12 +23,14 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.mansao.trianglesneacare.R
 import com.mansao.trianglesneacare.data.network.response.AddressItem
 import com.mansao.trianglesneacare.ui.common.UiState
 import com.mansao.trianglesneacare.ui.components.AddressListItem
-import com.mansao.trianglesneacare.ui.components.LoadingScreen
+import com.mansao.trianglesneacare.ui.components.LoadingDialog
 
 @Composable
 fun AddressListScreen(
@@ -51,7 +55,7 @@ fun AddressListScreen(
             viewModel.uiState.collectAsState(initial = UiState.Standby).value.let { uiState ->
                 when (uiState) {
                     is UiState.Standby -> {}
-                    is UiState.Loading -> LoadingScreen()
+                    is UiState.Loading -> LoadingDialog()
                     is UiState.Success -> AddressListComponent(address = uiState.data.address)
                     is UiState.Error -> Toast.makeText(
                         context,
@@ -68,8 +72,8 @@ fun AddressListScreen(
 fun AddressListComponent(
     address: List<AddressItem>
 ) {
-    LazyColumn{
-        items(address){
+    LazyColumn {
+        items(address) {
             AddressListItem(address = it)
         }
     }
@@ -92,8 +96,10 @@ fun AddressListTopBar(
             Text(
                 text = stringResource(R.string.add_address),
                 modifier = Modifier.clickable { navigateToSearchAddress() },
-                color = MaterialTheme.colorScheme.primary
+                color = MaterialTheme.colorScheme.primary,
+                fontWeight = FontWeight.Bold
             )
+            Spacer(modifier = Modifier.width(12.dp))
         }
 
     )

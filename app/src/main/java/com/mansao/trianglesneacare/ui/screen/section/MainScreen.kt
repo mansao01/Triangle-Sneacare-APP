@@ -23,7 +23,7 @@ import androidx.navigation.compose.rememberNavController
 import com.mansao.trianglesneacare.R
 import com.mansao.trianglesneacare.ui.AuthViewModel
 import com.mansao.trianglesneacare.ui.common.UiState
-import com.mansao.trianglesneacare.ui.components.LoadingScreen
+import com.mansao.trianglesneacare.ui.components.LoadingDialog
 import com.mansao.trianglesneacare.ui.components.ServiceNotAvailable
 import com.mansao.trianglesneacare.ui.navigation.BottomNavigationItem
 import com.mansao.trianglesneacare.ui.navigation.Screen
@@ -52,7 +52,7 @@ fun MainScreen(
     mainViewModel.uiState.collectAsState(initial = UiState.Loading).value.let { uiState ->
         when (uiState) {
             is UiState.Standby -> {}
-            is UiState.Loading -> LoadingScreen()
+            is UiState.Loading -> LoadingDialog()
             is UiState.Success -> MainScreenContent(
                 authViewModel = authViewModel,
                 navController = navController
@@ -82,7 +82,11 @@ fun MainScreenContent(
     }
     Scaffold(
         bottomBar = {
-            if (currentRoute != Screen.DriverRegistration.route) {
+            if (
+                currentRoute != Screen.DriverRegistration.route &&
+                currentRoute != Screen.SearchAddress.route &&
+                currentRoute != Screen.AddressList.route
+            ) {
                 MainBottomBar(
                     navController = navController,
                     role = role,
@@ -139,6 +143,7 @@ fun MainScreenContent(
 //                }
                 composable(Screen.SearchAddress.route) {
                     SearchAddressScreen(navigateToAddressList = {
+                        navController.popBackStack()
                         navController.navigate(Screen.AddressList.route)
                     })
                 }

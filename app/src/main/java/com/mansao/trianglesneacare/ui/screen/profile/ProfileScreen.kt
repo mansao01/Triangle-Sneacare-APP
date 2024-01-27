@@ -43,7 +43,7 @@ import coil.request.ImageRequest
 import com.mansao.trianglesneacare.R
 import com.mansao.trianglesneacare.data.network.response.ProfileResponse
 import com.mansao.trianglesneacare.ui.common.ProfileUiState
-import com.mansao.trianglesneacare.ui.components.LoadingScreen
+import com.mansao.trianglesneacare.ui.components.LoadingDialog
 import com.mansao.trianglesneacare.ui.components.ProfileMenuItem
 
 @Composable
@@ -55,7 +55,7 @@ fun ProfileScreen(
 ) {
     val context = LocalContext.current
     when (uiState) {
-        is ProfileUiState.Loading -> LoadingScreen()
+        is ProfileUiState.Loading -> LoadingDialog()
         is ProfileUiState.Success -> ProfileComponent(
             profile = uiState.profile,
             viewModel = profileViewModel,

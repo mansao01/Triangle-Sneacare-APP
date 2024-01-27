@@ -2,6 +2,8 @@ package com.mansao.trianglesneacare.ui.screen.section.customer.searchAddress
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -9,11 +11,13 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.ListItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Surface
@@ -35,7 +39,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.mansao.trianglesneacare.R
 import com.mansao.trianglesneacare.data.network.response.PredictionsItem
 import com.mansao.trianglesneacare.ui.common.UiState
-import com.mansao.trianglesneacare.ui.components.AutoCompleteSearchAddressListItem
+import com.mansao.trianglesneacare.ui.components.AddressNotFound
 import com.mansao.trianglesneacare.ui.components.LoadingScreen
 
 @Composable
@@ -47,7 +51,7 @@ fun SearchAddressScreen(
         topBar = { SearchAddressTopBar(navigateToAddressList = navigateToAddressList) }
     ) {
         Surface(modifier = Modifier.padding(it)) {
-            Column(modifier = Modifier.fillMaxWidth()) {
+            Column(modifier = Modifier.fillMaxSize()) {
                 SearchBarAddressComponent(searchViewModel = searchViewModel)
                 Spacer(modifier = Modifier.height(12.dp))
                 searchViewModel.uiState.collectAsState(initial = UiState.Standby).value.let { uiState ->
@@ -68,10 +72,36 @@ fun SearchAddressScreen(
 fun SearchAddressComponent(
     addressPrediction: List<PredictionsItem>
 ) {
-    LazyColumn {
-        items(addressPrediction) { item ->
-            AutoCompleteSearchAddressListItem(item)
+    if (addressPrediction.isNotEmpty()) {
+        LazyColumn(
+            modifier = Modifier.fillMaxHeight()
+        ) {
+            items(addressPrediction) { item ->
+                ListItem(
+                    headlineContent = {
+                        item.structuredFormatting?.mainText?.let {
+                            Text(
+                                text = it,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+                    },
+                    leadingContent = {
+                        Icon(
+                            imageVector = Icons.Default.LocationOn,
+                            contentDescription = null,
+                        )
+                    },
+                    supportingContent = {
+                        item.structuredFormatting?.secondaryText?.let { Text(text = it) }
+
+                    }
+
+                )
+            }
         }
+    } else {
+        AddressNotFound()
     }
 }
 
@@ -90,7 +120,8 @@ fun SearchAddressTopBar(
                 )
                 Text(
                     text = stringResource(R.string.where_is_your_delivery_location),
-                    fontSize = 14.sp
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Thin
                 )
             }
         },

@@ -63,7 +63,7 @@ import com.mansao.trianglesneacare.ui.AuthViewModel
 import com.mansao.trianglesneacare.ui.common.UiState
 import com.mansao.trianglesneacare.ui.components.ForbiddenScreen
 import com.mansao.trianglesneacare.ui.components.HeaderText
-import com.mansao.trianglesneacare.ui.components.LoadingScreen
+import com.mansao.trianglesneacare.ui.components.LoadingDialog
 import com.mansao.trianglesneacare.ui.navigation.Screen
 import com.mansao.trianglesneacare.ui.theme.Roboto
 import com.mansao.trianglesneacare.utils.rememberImeState
@@ -80,7 +80,7 @@ fun LoginScreen(
 
     authViewModel.loginState.collectAsState().value.let { isLogin ->
         if (isLogin) {
-            LoadingScreen()
+            LoadingDialog()
         } else {
             LoginComponent(
                 loginViewModel = loginViewModel,
@@ -88,7 +88,7 @@ fun LoginScreen(
             )
             loginViewModel.uiState.collectAsState(initial = UiState.Standby).value.let { uiState ->
                 when (uiState) {
-                    is UiState.Loading -> LoadingScreen()
+                    is UiState.Loading -> LoadingDialog()
                     is UiState.Success -> {
                         navigateToMain()
                         Toast.makeText(

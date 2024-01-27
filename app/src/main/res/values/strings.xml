@@ -41,4 +41,6 @@
     <string name="search_address">Search Address</string>
     <string name="where_is_your_delivery_location">Where is your delivery location?</string>
     <string name="search_location_placeholder">write the name of the street/building/housing</string>
+    <string name="address_not_found_title">Oops, your address not found</string>
+    <string name="address_not_found_description">Double-check your address and try again</string>
 </resources>
