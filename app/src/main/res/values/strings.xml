@@ -38,4 +38,7 @@
     <string name="transaction_list">Transaction List</string>
     <string name="address_list">Address List</string>
     <string name="add_address">Add Address</string>
+    <string name="search_address">Search Address</string>
+    <string name="where_is_your_delivery_location">Where is your delivery location?</string>
+    <string name="search_location_placeholder">write the name of the street/building/housing</string>
 </resources>

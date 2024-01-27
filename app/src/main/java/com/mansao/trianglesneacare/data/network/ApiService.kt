@@ -1,7 +1,10 @@
 package com.mansao.trianglesneacare.data.network
 
+import com.mansao.trianglesneacare.data.network.request.CreateCustomerAddressRequest
 import com.mansao.trianglesneacare.data.network.request.LoginRequest
 import com.mansao.trianglesneacare.data.network.request.RegisterRequest
+import com.mansao.trianglesneacare.data.network.response.AutoCompleteAddressResponse
+import com.mansao.trianglesneacare.data.network.response.CreateCustomerAddressResponse
 import com.mansao.trianglesneacare.data.network.response.GetCustomerAddressesResponse
 import com.mansao.trianglesneacare.data.network.response.GetDriversResponse
 import com.mansao.trianglesneacare.data.network.response.LoginResponse
@@ -17,6 +20,7 @@ import retrofit2.http.Header
 import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.Part
+import retrofit2.http.Query
 
 interface ApiService {
 
@@ -56,6 +60,17 @@ interface ApiService {
     suspend fun getCustomerAddresses(
         @Header(ApiConst.AUTHORIZATION_KEY) token: String
     ): GetCustomerAddressesResponse
+
+    @POST(ApiConst.CREATE_CUSTOMER_ADDRESS)
+    suspend fun createCustomerAddress(
+        @Header(ApiConst.AUTHORIZATION_KEY) token: String,
+        @Body createCustomerAddressRequest: CreateCustomerAddressRequest
+    ): CreateCustomerAddressResponse
+
+    @GET(ApiConst.AUTO_COMPLETE_ADDRESS)
+    suspend fun autoCompleteAddress(
+        @Query("address") address: String
+    ): AutoCompleteAddressResponse
 
     @POST(ApiConst.LOGOUT)
     suspend fun logout(

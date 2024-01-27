@@ -1,8 +1,11 @@
 package com.mansao.trianglesneacare.data
 
 import com.mansao.trianglesneacare.data.network.ApiService
+import com.mansao.trianglesneacare.data.network.request.CreateCustomerAddressRequest
 import com.mansao.trianglesneacare.data.network.request.LoginRequest
 import com.mansao.trianglesneacare.data.network.request.RegisterRequest
+import com.mansao.trianglesneacare.data.network.response.AutoCompleteAddressResponse
+import com.mansao.trianglesneacare.data.network.response.CreateCustomerAddressResponse
 import com.mansao.trianglesneacare.data.network.response.GetCustomerAddressesResponse
 import com.mansao.trianglesneacare.data.network.response.GetDriversResponse
 import com.mansao.trianglesneacare.data.network.response.LoginResponse
@@ -39,6 +42,12 @@ interface AppRepository {
     suspend fun getDrivers(): GetDriversResponse
     suspend fun logout(token: String): OnlyMsgResponse
     suspend fun getCustomerAddresses(token: String): GetCustomerAddressesResponse
+    suspend fun createCustomerAddress(
+        token: String,
+        createCustomerAddressRequest: CreateCustomerAddressRequest
+    ): CreateCustomerAddressResponse
+
+    suspend fun autoCompleteAddress(address: String): AutoCompleteAddressResponse
 
     //    preferences
     suspend fun saveAccessToken(token: String)
@@ -107,6 +116,15 @@ class AppRepositoryImpl @Inject constructor(
 
     override suspend fun getCustomerAddresses(token: String): GetCustomerAddressesResponse =
         apiService.getCustomerAddresses(token)
+
+    override suspend fun createCustomerAddress(
+        token: String,
+        createCustomerAddressRequest: CreateCustomerAddressRequest
+    ): CreateCustomerAddressResponse =
+        apiService.createCustomerAddress(token, createCustomerAddressRequest)
+
+    override suspend fun autoCompleteAddress(address: String): AutoCompleteAddressResponse =
+        apiService.autoCompleteAddress(address)
 
     //    preferences
     override suspend fun saveAccessToken(token: String) = appPreferences.saveAccessToken(token)

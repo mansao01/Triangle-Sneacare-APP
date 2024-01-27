@@ -19,6 +19,7 @@ sealed class Screen(val route: String) {
     object TransactionList : Screen("transactionList")
     object AddressList : Screen("addressList")
     object AddAddress : Screen("addAddress")
+    object SearchAddress : Screen("searchAddress")
 
 
 //driver

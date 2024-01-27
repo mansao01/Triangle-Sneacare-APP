@@ -31,7 +31,7 @@ import com.mansao.trianglesneacare.ui.components.LoadingScreen
 @Composable
 fun AddressListScreen(
     navigateToProfile: () -> Unit,
-    navigateToAddAddress: () -> Unit,
+    navigateToSearchAddress: () -> Unit,
     viewModel: AddressListViewModel = hiltViewModel()
 ) {
     LaunchedEffect(key1 = Unit) {
@@ -43,7 +43,7 @@ fun AddressListScreen(
         topBar = {
             AddressListTopBar(
                 navigateToProfile = navigateToProfile,
-                navigateToAddAddress = navigateToAddAddress
+                navigateToSearchAddress = navigateToSearchAddress
             )
         }
     ) {
@@ -79,7 +79,7 @@ fun AddressListComponent(
 @Composable
 fun AddressListTopBar(
     navigateToProfile: () -> Unit,
-    navigateToAddAddress: () -> Unit
+    navigateToSearchAddress: () -> Unit
 ) {
     TopAppBar(
         title = { Text(text = stringResource(id = R.string.address_list)) },
@@ -91,7 +91,7 @@ fun AddressListTopBar(
         actions = {
             Text(
                 text = stringResource(R.string.add_address),
-                modifier = Modifier.clickable { navigateToAddAddress() },
+                modifier = Modifier.clickable { navigateToSearchAddress() },
                 color = MaterialTheme.colorScheme.primary
             )
         }
