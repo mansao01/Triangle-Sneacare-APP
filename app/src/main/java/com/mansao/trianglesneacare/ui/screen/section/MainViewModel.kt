@@ -29,7 +29,7 @@ class MainViewModel @Inject constructor(private val appRepositoryImpl: AppReposi
     private fun setLoadingState() {
         _uiState.value = UiState.Loading
     }
-    private fun checkServerRunning() {
+     fun checkServerRunning() {
         setLoadingState()
         viewModelScope.launch {
             try {

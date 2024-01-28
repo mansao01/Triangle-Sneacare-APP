@@ -64,7 +64,7 @@ fun MainScreen(
             )
 
             is UiState.Error -> {
-                ServiceNotAvailable()
+                ServiceNotAvailable(action = { mainViewModel.checkServerRunning() })
             }
         }
     }
@@ -161,8 +161,16 @@ fun MainScreenContent(
                     )
                 }
 
-                composable(Screen.Maps.route){
-                    MapsScreen(sharedViewModel = sharedViewModel)
+                composable(Screen.Maps.route) {
+                    MapsScreen(
+                        sharedViewModel = sharedViewModel,
+                        navigateToSearchAddress = {
+                            navController.popBackStack()
+                            navController.navigate(
+                                Screen.SearchAddress.route
+                            )
+                        }
+                    )
                 }
 
 

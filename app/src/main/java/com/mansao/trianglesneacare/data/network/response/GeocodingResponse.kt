@@ -35,7 +35,7 @@ data class PlusCode(
 data class ResultsItem(
 
 	@field:SerializedName("formatted_address")
-	val formattedAddress: String,
+	val formattedAddress: String? = null,
 
 	@field:SerializedName("types")
 	val types: List<String>,

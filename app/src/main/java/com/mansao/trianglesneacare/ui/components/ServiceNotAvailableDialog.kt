@@ -15,12 +15,14 @@ import com.airbnb.lottie.compose.rememberLottieComposition
 import com.mansao.trianglesneacare.R
 
 @Composable
-fun ServiceNotAvailable() {
+fun ServiceNotAvailable(
+    action: () -> Unit
+) {
     val composition by
     rememberLottieComposition(spec = LottieCompositionSpec.RawRes(R.raw.server))
     AlertDialog(
         onDismissRequest = { },
-        confirmButton = {},
+        confirmButton = { action() },
         icon = {
             LottieAnimation(
                 composition = composition,
