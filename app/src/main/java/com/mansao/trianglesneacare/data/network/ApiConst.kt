@@ -14,4 +14,6 @@ object ApiConst {
     const val GET_CUSTOMER_ADDRESS = "getCustomerAddress"
     const val AUTO_COMPLETE_ADDRESS = "autoCompleteAddress"
     const val CREATE_CUSTOMER_ADDRESS = "createCustomerAddress"
+    const val GEOCODING_ADDRESS = "geoCodeWithAddress"
+    const val GEOCODING_PLACE_ID = "geoCodeWithPlaceId"
 }

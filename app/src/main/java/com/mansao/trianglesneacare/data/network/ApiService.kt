@@ -5,6 +5,7 @@ import com.mansao.trianglesneacare.data.network.request.LoginRequest
 import com.mansao.trianglesneacare.data.network.request.RegisterRequest
 import com.mansao.trianglesneacare.data.network.response.AutoCompleteAddressResponse
 import com.mansao.trianglesneacare.data.network.response.CreateCustomerAddressResponse
+import com.mansao.trianglesneacare.data.network.response.GeocodingResponse
 import com.mansao.trianglesneacare.data.network.response.GetCustomerAddressesResponse
 import com.mansao.trianglesneacare.data.network.response.GetDriversResponse
 import com.mansao.trianglesneacare.data.network.response.LoginResponse
@@ -71,6 +72,16 @@ interface ApiService {
     suspend fun autoCompleteAddress(
         @Query("address") address: String
     ): AutoCompleteAddressResponse
+
+    @GET(ApiConst.GEOCODING_ADDRESS)
+    suspend fun geocodeWithAddress(
+        @Query("address") address: String
+    ):GeocodingResponse
+
+    @GET(ApiConst.GEOCODING_PLACE_ID)
+    suspend fun geocodeWithPlaceId(
+        @Query("placeId") placeId: String
+    ):GeocodingResponse
 
     @POST(ApiConst.LOGOUT)
     suspend fun logout(

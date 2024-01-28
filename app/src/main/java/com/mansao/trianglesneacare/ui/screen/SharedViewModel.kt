@@ -7,10 +7,10 @@ import androidx.lifecycle.ViewModel
 import com.mansao.trianglesneacare.data.network.response.PredictionsItem
 
 class SharedViewModel : ViewModel() {
-    var autoCompletePlaceItem by mutableStateOf<PredictionsItem?>(null)
+    var predictionItem by mutableStateOf<PredictionsItem?>(null)
         private set
 
-    fun addPlace(newPlace: PredictionsItem) {
-        autoCompletePlaceItem = newPlace
+    fun addPlace(newPredictionItem: PredictionsItem) {
+        predictionItem = newPredictionItem
     }
 }

@@ -14,6 +14,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -27,6 +28,7 @@ import com.mansao.trianglesneacare.ui.components.LoadingDialog
 import com.mansao.trianglesneacare.ui.components.ServiceNotAvailable
 import com.mansao.trianglesneacare.ui.navigation.BottomNavigationItem
 import com.mansao.trianglesneacare.ui.navigation.Screen
+import com.mansao.trianglesneacare.ui.screen.SharedViewModel
 import com.mansao.trianglesneacare.ui.screen.profile.ProfileScreen
 import com.mansao.trianglesneacare.ui.screen.profile.ProfileViewModel
 import com.mansao.trianglesneacare.ui.screen.profileEdit.ProfileEditScreen
@@ -47,7 +49,8 @@ import com.mansao.trianglesneacare.ui.screen.section.driver.map.MapScreen
 fun MainScreen(
     navController: NavHostController = rememberNavController(),
     authViewModel: AuthViewModel = hiltViewModel(),
-    mainViewModel: MainViewModel = hiltViewModel()
+    mainViewModel: MainViewModel = hiltViewModel(),
+    sharedViewModel: SharedViewModel = viewModel()
 ) {
 
     mainViewModel.uiState.collectAsState(initial = UiState.Loading).value.let { uiState ->
@@ -56,7 +59,8 @@ fun MainScreen(
             is UiState.Loading -> LoadingDialog()
             is UiState.Success -> MainScreenContent(
                 authViewModel = authViewModel,
-                navController = navController
+                navController = navController,
+                sharedViewModel = sharedViewModel
             )
 
             is UiState.Error -> {
@@ -69,6 +73,7 @@ fun MainScreen(
 @Composable
 fun MainScreenContent(
     authViewModel: AuthViewModel,
+    sharedViewModel: SharedViewModel,
     navController: NavHostController
 ) {
     val role = authViewModel.role.value
@@ -86,7 +91,8 @@ fun MainScreenContent(
             if (
                 currentRoute != Screen.DriverRegistration.route &&
                 currentRoute != Screen.SearchAddress.route &&
-                currentRoute != Screen.AddressList.route
+                currentRoute != Screen.AddressList.route &&
+                currentRoute != Screen.Maps.route
             ) {
                 MainBottomBar(
                     navController = navController,
@@ -150,12 +156,13 @@ fun MainScreenContent(
                         },
                         navigateToMap = {
                             navController.navigate(Screen.Maps.route)
-                        }
+                        },
+                        sharedViewModel = sharedViewModel
                     )
                 }
 
                 composable(Screen.Maps.route){
-                    MapsScreen()
+                    MapsScreen(sharedViewModel = sharedViewModel)
                 }
 
 

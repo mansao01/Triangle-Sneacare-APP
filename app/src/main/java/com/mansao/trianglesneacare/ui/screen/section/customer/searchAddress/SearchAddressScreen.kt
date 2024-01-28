@@ -1,5 +1,6 @@
 package com.mansao.trianglesneacare.ui.screen.section.customer.searchAddress
 
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -37,7 +38,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.mansao.trianglesneacare.R
 import com.mansao.trianglesneacare.data.network.response.PredictionsItem
 import com.mansao.trianglesneacare.ui.common.UiState
@@ -49,7 +49,8 @@ import com.mansao.trianglesneacare.ui.screen.SharedViewModel
 fun SearchAddressScreen(
     navigateToAddressList: () -> Unit,
     navigateToMap: () -> Unit,
-    searchViewModel: SearchAddressViewModel = hiltViewModel()
+    searchViewModel: SearchAddressViewModel = hiltViewModel(),
+    sharedViewModel: SharedViewModel
 ) {
     Scaffold(
         topBar = { SearchAddressTopBar(navigateToAddressList = navigateToAddressList) }
@@ -64,7 +65,8 @@ fun SearchAddressScreen(
                         is UiState.Loading -> LoadingScreen()
                         is UiState.Success -> SearchAddressComponent(
                             addressPrediction = uiState.data.data.predictions,
-                            navigateToMap = navigateToMap
+                            navigateToMap = navigateToMap,
+                            sharedViewModel = sharedViewModel
                         )
 
                         is UiState.Error -> {}
@@ -80,7 +82,7 @@ fun SearchAddressScreen(
 fun SearchAddressComponent(
     addressPrediction: List<PredictionsItem>,
     navigateToMap: () -> Unit,
-    sharedViewModel: SharedViewModel = viewModel()
+    sharedViewModel: SharedViewModel
     ) {
     if (addressPrediction.isNotEmpty()) {
         LazyColumn(
@@ -89,7 +91,7 @@ fun SearchAddressComponent(
             items(addressPrediction) { item ->
                 ListItem(
                     headlineContent = {
-                        item.structuredFormatting?.mainText?.let {
+                        item.structuredFormatting.mainText?.let {
                             Text(
                                 text = it,
                                 fontWeight = FontWeight.Bold
@@ -103,11 +105,12 @@ fun SearchAddressComponent(
                         )
                     },
                     supportingContent = {
-                        item.structuredFormatting?.secondaryText?.let { Text(text = it) }
+                        item.structuredFormatting.secondaryText?.let { Text(text = it) }
                     },
                     modifier = Modifier.clickable {
+                        sharedViewModel.addPlace(newPredictionItem = item)
+                        Log.d("item", item.toString())
                         navigateToMap()
-                        sharedViewModel.addPlace(item)
                     }
 
                 )

@@ -6,6 +6,7 @@ import com.mansao.trianglesneacare.data.network.request.LoginRequest
 import com.mansao.trianglesneacare.data.network.request.RegisterRequest
 import com.mansao.trianglesneacare.data.network.response.AutoCompleteAddressResponse
 import com.mansao.trianglesneacare.data.network.response.CreateCustomerAddressResponse
+import com.mansao.trianglesneacare.data.network.response.GeocodingResponse
 import com.mansao.trianglesneacare.data.network.response.GetCustomerAddressesResponse
 import com.mansao.trianglesneacare.data.network.response.GetDriversResponse
 import com.mansao.trianglesneacare.data.network.response.LoginResponse
@@ -48,6 +49,9 @@ interface AppRepository {
     ): CreateCustomerAddressResponse
 
     suspend fun autoCompleteAddress(address: String): AutoCompleteAddressResponse
+
+    suspend fun geocodeWithAddress(address: String): GeocodingResponse
+    suspend fun geocodeWithPlaceId(placeId: String): GeocodingResponse
 
     //    preferences
     suspend fun saveAccessToken(token: String)
@@ -125,6 +129,12 @@ class AppRepositoryImpl @Inject constructor(
 
     override suspend fun autoCompleteAddress(address: String): AutoCompleteAddressResponse =
         apiService.autoCompleteAddress(address)
+
+    override suspend fun geocodeWithAddress(address: String): GeocodingResponse =
+        apiService.geocodeWithAddress(address)
+
+    override suspend fun geocodeWithPlaceId(placeId: String): GeocodingResponse =
+        apiService.geocodeWithPlaceId(placeId)
 
     //    preferences
     override suspend fun saveAccessToken(token: String) = appPreferences.saveAccessToken(token)
