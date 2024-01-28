@@ -1,5 +1,6 @@
 package com.mansao.trianglesneacare.ui.screen.section.customer.maps
 
+import android.annotation.SuppressLint
 import android.location.Location
 import android.util.Log
 import android.widget.Toast
@@ -15,11 +16,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowBack
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -41,8 +42,10 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
+import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.maps.android.compose.Circle
 import com.google.maps.android.compose.GoogleMap
+import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.rememberCameraPositionState
 import com.mansao.trianglesneacare.R
 import com.mansao.trianglesneacare.data.network.response.GeocodingResponse
@@ -50,6 +53,7 @@ import com.mansao.trianglesneacare.ui.common.UiState
 import com.mansao.trianglesneacare.ui.components.LoadingDialog
 import com.mansao.trianglesneacare.ui.screen.SharedViewModel
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun MapsScreen(
     sharedViewModel: SharedViewModel,
@@ -59,39 +63,52 @@ fun MapsScreen(
     val context = LocalContext.current
     val predictionItem = sharedViewModel.predictionItem
     val placeId = predictionItem?.placeId ?: ""
+    val mapProperties = MapProperties(
+        mapStyleOptions = MapStyleOptions.loadRawResourceStyle(context, R.raw.maps_style)
+    )
 
-    LaunchedEffect(key1 = placeId) {
-        mapsViewModel.getLocationFromPlaceId(placeId)
-    }
     Scaffold(
         topBar = { MapTopBar(navigateToSearchAddress = navigateToSearchAddress) },
         modifier = Modifier
             .statusBarsPadding()
             .fillMaxSize()
             .navigationBarsPadding()
-    ) { scaffoldPadding ->
-        Surface(modifier = Modifier.padding(scaffoldPadding)) {
-            mapsViewModel.uiState.collectAsState(initial = UiState.Loading).value.let { uiState ->
-                when (uiState) {
-                    is UiState.Standby -> {}
-                    is UiState.Loading -> LoadingDialog()
-                    is UiState.Success -> MapsScreenComponent(geocodingItem = uiState.data)
-                    is UiState.Error -> Toast.makeText(
-                        context,
-                        uiState.errorMessage,
-                        Toast.LENGTH_SHORT
-                    )
-                        .show()
+    ) {
+        Surface {
+            if (placeId.isEmpty()) {
+                MapsScreenComponentWIthLocation(mapProperties)
+            } else {
+                LaunchedEffect(key1 = placeId) {
+                    mapsViewModel.getLocationFromPlaceId(placeId)
+                }
+                mapsViewModel.uiState.collectAsState(initial = UiState.Loading).value.let { uiState ->
+                    when (uiState) {
+                        is UiState.Standby -> {}
+                        is UiState.Loading -> LoadingDialog()
+                        is UiState.Success -> MapsScreenComponentWithPlaceId(
+                            geocodingItem = uiState.data,
+                            mapProperties = mapProperties
+                        )
+
+                        is UiState.Error -> Toast.makeText(
+                            context,
+                            uiState.errorMessage,
+                            Toast.LENGTH_SHORT
+                        )
+                            .show()
+                    }
                 }
             }
+
         }
 
     }
 }
 
 @Composable
-fun MapsScreenComponent(
-    geocodingItem: GeocodingResponse
+fun MapsScreenComponentWithPlaceId(
+    geocodingItem: GeocodingResponse,
+    mapProperties: MapProperties
 ) {
     Log.d("geocoding item", geocodingItem.toString())
     val northeastLat = geocodingItem.data.results[0].geometry.viewport.northeast.lat
@@ -120,7 +137,8 @@ fun MapsScreenComponent(
 
     Box(modifier = Modifier.fillMaxSize()) {
         GoogleMap(
-            cameraPositionState = cameraPositionState
+            cameraPositionState = cameraPositionState,
+            properties = mapProperties
         ) {
 
             boundsBuilder.build()
@@ -129,8 +147,8 @@ fun MapsScreenComponent(
             Circle(
                 center = centerLocation,
                 radius = radius,
-                fillColor = Color.Blue.copy(alpha = 0.3f),
-                strokeColor = Color.Blue,
+                fillColor = Color.White.copy(alpha = 0.3f),
+                strokeColor = Color.White,
                 strokeWidth = 2f
             )
         }
@@ -148,18 +166,32 @@ fun MapsScreenComponent(
                 geocodingItem.data.results[0].formattedAddress?.let {
                     Text(text = it)
                 }
-                Button(
+                Spacer(modifier = Modifier.height(8.dp))
+
+                OutlinedButton(
                     onClick = { /*TODO*/ }, modifier = Modifier.fillMaxWidth()
                 ) {
                     Text(text = "Select location coverage & continue to fill the address")
 
                 }
+
             }
 
         }
     }
 }
 
+
+@Composable
+fun MapsScreenComponentWIthLocation(
+    mapProperties: MapProperties
+) {
+    GoogleMap(
+        properties = mapProperties
+    ) {
+
+    }
+}
 
 fun calculateRadius(center: LatLng, point: LatLng): Double {
     val result = FloatArray(1)

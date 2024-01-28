@@ -23,14 +23,14 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     private val authViewModel by viewModels<AuthViewModel>()
     override fun onCreate(savedInstanceState: Bundle?) {
-//        enableEdgeToEdge(
-//            statusBarStyle = SystemBarStyle.light(
-//                Color.TRANSPARENT, Color.TRANSPARENT
-//            ),
-//            navigationBarStyle = SystemBarStyle.light(
-//                Color.TRANSPARENT, Color.TRANSPARENT
-//            )
-//        )
+        enableEdgeToEdge(
+            statusBarStyle = SystemBarStyle.light(
+                Color.TRANSPARENT, Color.TRANSPARENT
+            ),
+            navigationBarStyle = SystemBarStyle.light(
+                Color.TRANSPARENT, Color.TRANSPARENT
+            )
+        )
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
         setContent {

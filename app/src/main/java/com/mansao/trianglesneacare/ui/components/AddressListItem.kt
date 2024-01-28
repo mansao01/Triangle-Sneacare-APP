@@ -17,14 +17,19 @@ import com.mansao.trianglesneacare.data.network.response.AddressItem
 fun AddressListItem(
     address: AddressItem
 ) {
-    Card(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp).padding(bottom = 8.dp)) {
-        Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
+    Card(modifier = Modifier
+        .fillMaxWidth()
+        .padding(horizontal = 16.dp)
+        .padding(bottom = 8.dp)) {
+        Column(modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp)) {
             Spacer(modifier = Modifier.height(8.dp))
             address.title?.let { Text(text = it, fontWeight = FontWeight.Bold) }
             Spacer(modifier = Modifier.height(4.dp))
             address.receiverName?.let { Text(text = it, fontWeight = FontWeight.Bold) }
-            address.fullAddress?.let { Text(text = it) }
-            address.notes?.let { Text(text = it) }
+            address.fullAddress?.let { Text(text = it, fontWeight = FontWeight.Thin) }
+            address.notes?.let { Text(text = it, fontWeight = FontWeight.Thin) }
             Spacer(modifier = Modifier.height(8.dp))
 
         }

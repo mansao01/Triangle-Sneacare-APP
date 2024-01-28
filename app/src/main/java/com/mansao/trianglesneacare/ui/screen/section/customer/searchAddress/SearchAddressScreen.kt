@@ -16,6 +16,7 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.ArrowBack
+import androidx.compose.material.icons.outlined.LocationSearching
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -58,7 +59,21 @@ fun SearchAddressScreen(
         Surface(modifier = Modifier.padding(it)) {
             Column(modifier = Modifier.fillMaxSize()) {
                 SearchBarAddressComponent(searchViewModel = searchViewModel)
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(8.dp))
+                ListItem(
+                    headlineContent = {
+                        Text(
+                            text = "Use my current location",
+                            fontWeight = FontWeight.Bold
+                        )
+                    },
+                    leadingContent = {
+                        Icon(
+                            imageVector = Icons.Outlined.LocationSearching,
+                            contentDescription = null
+                        )
+                    },
+                    modifier = Modifier.clickable { navigateToMap() })
                 searchViewModel.uiState.collectAsState(initial = UiState.Standby).value.let { uiState ->
                     when (uiState) {
                         is UiState.Standby -> {}
@@ -83,11 +98,12 @@ fun SearchAddressComponent(
     addressPrediction: List<PredictionsItem>,
     navigateToMap: () -> Unit,
     sharedViewModel: SharedViewModel
-    ) {
+) {
     if (addressPrediction.isNotEmpty()) {
         LazyColumn(
             modifier = Modifier.fillMaxHeight()
         ) {
+
             items(addressPrediction) { item ->
                 ListItem(
                     headlineContent = {

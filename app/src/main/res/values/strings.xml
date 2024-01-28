@@ -33,16 +33,16 @@
     <string name="register_description">Please fill in the following fields to complete your registration.</string>
     <string name="login_description">Please fill in the following fields to login.</string>
     <string name="greeting">Welcome to Triangle Sneacare!</string>
-    <string name="service_not_available">Opps! service unavailable, please try again later!</string>
+    <string name="service_not_available">Oops! service unavailable, please try again later!</string>
     <string name="account_setting">Account Setting</string>
     <string name="transaction_list">Transaction List</string>
     <string name="address_list">Address List</string>
     <string name="add_address">Add Address</string>
     <string name="search_address">Search Address</string>
     <string name="where_is_your_delivery_location">Where is your delivery location?</string>
-    <string name="search_location_placeholder">write the name of the street/building/housing</string>
+    <string name="search_location_placeholder">Write the name of the street/building/housing</string>
     <string name="address_not_found_title">Oops, your address not found</string>
     <string name="address_not_found_description">Double-check your address and try again</string>
-    <string name="location_scope">Location Scope</string>
+    <string name="location_scope">Location Coverage</string>
     <string name="select_location_coverage_and_continue_to_fill_in_the_address">Select location coverage and continue to fill in the address</string>
 </resources>
