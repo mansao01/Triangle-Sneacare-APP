@@ -1,5 +1,6 @@
 package com.mansao.trianglesneacare.ui.screen.section.customer.searchAddress
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -36,15 +37,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.mansao.trianglesneacare.R
 import com.mansao.trianglesneacare.data.network.response.PredictionsItem
 import com.mansao.trianglesneacare.ui.common.UiState
 import com.mansao.trianglesneacare.ui.components.AddressNotFound
 import com.mansao.trianglesneacare.ui.components.LoadingScreen
+import com.mansao.trianglesneacare.ui.screen.SharedViewModel
 
 @Composable
 fun SearchAddressScreen(
     navigateToAddressList: () -> Unit,
+    navigateToMap: () -> Unit,
     searchViewModel: SearchAddressViewModel = hiltViewModel()
 ) {
     Scaffold(
@@ -58,7 +62,11 @@ fun SearchAddressScreen(
                     when (uiState) {
                         is UiState.Standby -> {}
                         is UiState.Loading -> LoadingScreen()
-                        is UiState.Success -> SearchAddressComponent(addressPrediction = uiState.data.data.predictions)
+                        is UiState.Success -> SearchAddressComponent(
+                            addressPrediction = uiState.data.data.predictions,
+                            navigateToMap = navigateToMap
+                        )
+
                         is UiState.Error -> {}
                     }
                 }
@@ -70,8 +78,10 @@ fun SearchAddressScreen(
 
 @Composable
 fun SearchAddressComponent(
-    addressPrediction: List<PredictionsItem>
-) {
+    addressPrediction: List<PredictionsItem>,
+    navigateToMap: () -> Unit,
+    sharedViewModel: SharedViewModel = viewModel()
+    ) {
     if (addressPrediction.isNotEmpty()) {
         LazyColumn(
             modifier = Modifier.fillMaxHeight()
@@ -94,7 +104,10 @@ fun SearchAddressComponent(
                     },
                     supportingContent = {
                         item.structuredFormatting?.secondaryText?.let { Text(text = it) }
-
+                    },
+                    modifier = Modifier.clickable {
+                        navigateToMap()
+                        sharedViewModel.addPlace(item)
                     }
 
                 )

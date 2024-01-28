@@ -34,10 +34,11 @@ import com.mansao.trianglesneacare.ui.screen.section.admin.driverManagement.Driv
 import com.mansao.trianglesneacare.ui.screen.section.admin.driverManagement.DriverManagementViewModel
 import com.mansao.trianglesneacare.ui.screen.section.admin.driverRegistrarion.DriverRegistrationScreen
 import com.mansao.trianglesneacare.ui.screen.section.admin.home.AdminHomeScreen
-import com.mansao.trianglesneacare.ui.screen.section.customer.searchAddress.SearchAddressScreen
 import com.mansao.trianglesneacare.ui.screen.section.customer.addressList.AddressListScreen
 import com.mansao.trianglesneacare.ui.screen.section.customer.cart.CartScreen
 import com.mansao.trianglesneacare.ui.screen.section.customer.home.CustomerHomeScreen
+import com.mansao.trianglesneacare.ui.screen.section.customer.maps.MapsScreen
+import com.mansao.trianglesneacare.ui.screen.section.customer.searchAddress.SearchAddressScreen
 import com.mansao.trianglesneacare.ui.screen.section.customer.transactionList.TransactionListScreen
 import com.mansao.trianglesneacare.ui.screen.section.driver.home.DriverHomeScreen
 import com.mansao.trianglesneacare.ui.screen.section.driver.map.MapScreen
@@ -142,10 +143,19 @@ fun MainScreenContent(
 //                    AddAddressScreen()
 //                }
                 composable(Screen.SearchAddress.route) {
-                    SearchAddressScreen(navigateToAddressList = {
-                        navController.popBackStack()
-                        navController.navigate(Screen.AddressList.route)
-                    })
+                    SearchAddressScreen(
+                        navigateToAddressList = {
+                            navController.popBackStack()
+                            navController.navigate(Screen.AddressList.route)
+                        },
+                        navigateToMap = {
+                            navController.navigate(Screen.Maps.route)
+                        }
+                    )
+                }
+
+                composable(Screen.Maps.route){
+                    MapsScreen()
                 }
 
 
