@@ -34,7 +34,7 @@ import com.mansao.trianglesneacare.ui.components.LoadingDialog
 
 @Composable
 fun AddressListScreen(
-    navigateToProfile: () -> Unit,
+    navigateBack: () -> Unit,
     navigateToSearchAddress: () -> Unit,
     viewModel: AddressListViewModel = hiltViewModel()
 ) {
@@ -46,7 +46,7 @@ fun AddressListScreen(
     Scaffold(
         topBar = {
             AddressListTopBar(
-                navigateToProfile = navigateToProfile,
+                navigateBack = navigateBack,
                 navigateToSearchAddress = navigateToSearchAddress
             )
         }
@@ -82,13 +82,13 @@ fun AddressListComponent(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddressListTopBar(
-    navigateToProfile: () -> Unit,
+    navigateBack: () -> Unit,
     navigateToSearchAddress: () -> Unit
 ) {
     TopAppBar(
         title = { Text(text = stringResource(id = R.string.address_list)) },
         navigationIcon = {
-            IconButton(onClick = { navigateToProfile() }) {
+            IconButton(onClick = { navigateBack() }) {
                 Icon(imageVector = Icons.Outlined.ArrowBack, contentDescription = null)
             }
         },

@@ -44,6 +44,7 @@ import com.mansao.trianglesneacare.ui.screen.section.customer.searchAddress.Sear
 import com.mansao.trianglesneacare.ui.screen.section.customer.transactionList.TransactionListScreen
 import com.mansao.trianglesneacare.ui.screen.section.driver.home.DriverHomeScreen
 import com.mansao.trianglesneacare.ui.screen.section.driver.map.MapScreen
+import com.mansao.trianglesneacare.utils.canGoBack
 
 @Composable
 fun MainScreen(
@@ -136,9 +137,10 @@ fun MainScreenContent(
                 }
                 composable(Screen.AddressList.route) {
                     AddressListScreen(
-                        navigateToProfile = {
-                            navController.popBackStack()
-                            navController.navigate(Screen.Profile.route)
+                        navigateBack = {
+                            if (navController.canGoBack) {
+                                navController.popBackStack()
+                            }
                         },
                         navigateToSearchAddress = {
                             navController.navigate(Screen.SearchAddress.route)
@@ -150,9 +152,10 @@ fun MainScreenContent(
 //                }
                 composable(Screen.SearchAddress.route) {
                     SearchAddressScreen(
-                        navigateToAddressList = {
-                            navController.popBackStack()
-                            navController.navigate(Screen.AddressList.route)
+                        navigateBack = {
+                            if (navController.canGoBack) {
+                                navController.popBackStack()
+                            }
                         },
                         navigateToMap = {
                             navController.navigate(Screen.Maps.route)
@@ -164,12 +167,10 @@ fun MainScreenContent(
                 composable(Screen.Maps.route) {
                     MapsScreen(
                         sharedViewModel = sharedViewModel,
-                        navigateToSearchAddress = {
-                            navController.popBackStack()
-                            navController.navigate(
-                                Screen.SearchAddress.route
-                            )
-                        }
+                        navigateBack = {
+                            if (navController.canGoBack) {
+                                navController.popBackStack()
+                            }                        }
                     )
                 }
 

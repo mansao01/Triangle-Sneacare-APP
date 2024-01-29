@@ -58,7 +58,7 @@ import com.mansao.trianglesneacare.ui.screen.SharedViewModel
 fun MapsScreen(
     sharedViewModel: SharedViewModel,
     mapsViewModel: MapsViewModel = hiltViewModel(),
-    navigateToSearchAddress: () -> Unit
+    navigateBack: () -> Unit
 ) {
     val context = LocalContext.current
     val predictionItem = sharedViewModel.predictionItem
@@ -68,7 +68,7 @@ fun MapsScreen(
     )
 
     Scaffold(
-        topBar = { MapTopBar(navigateToSearchAddress = navigateToSearchAddress) },
+        topBar = { MapTopBar(navigateBack = navigateBack) },
         modifier = Modifier
             .statusBarsPadding()
             .fillMaxSize()
@@ -208,7 +208,7 @@ fun calculateRadius(center: LatLng, point: LatLng): Double {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MapTopBar(
-    navigateToSearchAddress: () -> Unit
+    navigateBack: () -> Unit
 ) {
     TopAppBar(
         title = {
@@ -216,7 +216,7 @@ fun MapTopBar(
         },
         navigationIcon = {
 
-            IconButton(onClick = { navigateToSearchAddress() }) {
+            IconButton(onClick = { navigateBack() }) {
                 Icon(imageVector = Icons.Outlined.ArrowBack, contentDescription = null)
             }
         }

@@ -48,13 +48,13 @@ import com.mansao.trianglesneacare.ui.screen.SharedViewModel
 
 @Composable
 fun SearchAddressScreen(
-    navigateToAddressList: () -> Unit,
+    navigateBack: () -> Unit,
     navigateToMap: () -> Unit,
     searchViewModel: SearchAddressViewModel = hiltViewModel(),
     sharedViewModel: SharedViewModel
 ) {
     Scaffold(
-        topBar = { SearchAddressTopBar(navigateToAddressList = navigateToAddressList) }
+        topBar = { SearchAddressTopBar(navigateBack = navigateBack) }
     ) {
         Surface(modifier = Modifier.padding(it)) {
             Column(modifier = Modifier.fillMaxSize()) {
@@ -140,7 +140,7 @@ fun SearchAddressComponent(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchAddressTopBar(
-    navigateToAddressList: () -> Unit
+    navigateBack: () -> Unit
 ) {
     TopAppBar(
         title = {
@@ -158,7 +158,7 @@ fun SearchAddressTopBar(
             }
         },
         navigationIcon = {
-            IconButton(onClick = { navigateToAddressList() }) {
+            IconButton(onClick = { navigateBack() }) {
                 Icon(
                     imageVector = Icons.Outlined.ArrowBack,
                     contentDescription = null
