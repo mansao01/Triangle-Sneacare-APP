@@ -1,7 +1,11 @@
 package com.mansao.trianglesneacare.ui.screen.section.customer.maps
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.location.Address
+import android.location.Geocoder
 import android.location.Location
+import android.os.Build
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
@@ -46,12 +50,16 @@ import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.maps.android.compose.Circle
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapProperties
+import com.google.maps.android.compose.Marker
+import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
 import com.mansao.trianglesneacare.R
+import com.mansao.trianglesneacare.data.local.model.LocationDetail
 import com.mansao.trianglesneacare.data.network.response.GeocodingResponse
 import com.mansao.trianglesneacare.ui.common.UiState
 import com.mansao.trianglesneacare.ui.components.LoadingDialog
 import com.mansao.trianglesneacare.ui.screen.SharedViewModel
+import java.util.Locale
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -68,7 +76,7 @@ fun MapsScreen(
     )
 
     Scaffold(
-        topBar = { MapTopBar(navigateBack = navigateBack) },
+        topBar = { MapTopBar(navigateBack = navigateBack, placeId = placeId) },
         modifier = Modifier
             .statusBarsPadding()
             .fillMaxSize()
@@ -102,9 +110,7 @@ fun MapsScreen(
                     }
                 }
             }
-
         }
-
     }
 }
 
@@ -174,7 +180,7 @@ fun MapsScreenComponentWithPlaceId(
                 OutlinedButton(
                     onClick = { /*TODO*/ }, modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text(text = "Select location coverage & continue to fill the address")
+                    Text(text = stringResource(R.string.button_with_place_id))
 
                 }
 
@@ -190,14 +196,106 @@ fun MapsScreenComponentWIthLocation(
     mapProperties: MapProperties,
     sharedViewModel: SharedViewModel
 ) {
+    val context = LocalContext.current
     val location by remember { mutableStateOf(sharedViewModel.location) }
-    Log.d("location in map screen", location.toString())
-    GoogleMap(
-        properties = mapProperties
-    ) {
+    val latitude = location?.latitude ?: 0.0
+    val longitude = location?.longitude ?: 0.0
+    val cameraPositionState = rememberCameraPositionState {
+        position = CameraPosition.fromLatLngZoom(LatLng(latitude, longitude), 18f)
+    }
+    val detailLocation = getDetailLocation(latitude, longitude, context)
 
+    Log.d("detail location", detailLocation.toString())
+
+    Box(modifier = Modifier.fillMaxWidth()) {
+        GoogleMap(
+            properties = mapProperties,
+            cameraPositionState = cameraPositionState
+        ) {
+            Marker(
+                state = MarkerState(LatLng(latitude, longitude))
+            )
+        }
+
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(MaterialTheme.colorScheme.surface)
+                .align(Alignment.BottomCenter)
+        ) {
+            Column(
+                modifier = Modifier
+                    .padding(horizontal = 16.dp, vertical = 8.dp)
+            ) {
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(text = detailLocation.address)
+                Spacer(modifier = Modifier.height(8.dp))
+
+                OutlinedButton(
+                    onClick = { /*TODO*/ }, modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(text = stringResource(R.string.button_with_get_location))
+
+                }
+
+            }
+
+        }
     }
 }
+
+fun getDetailLocation(latitude: Double, longitude: Double, context: Context): LocationDetail {
+    val geocoder = Geocoder(context, Locale.getDefault())
+
+    var locationDetail = LocationDetail()
+
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        geocoder.getFromLocation(
+            latitude, longitude, 1
+        ) { addresses ->
+            val address = addresses[0]
+            val addressText = address.getAddressLine(0) ?: ""
+            val city = address.locality ?: ""
+            val state = address.adminArea ?: ""
+            val country = address.countryName ?: ""
+            val subCity = address.subAdminArea ?: "" //kabupaten
+            val village = address.subLocality ?: "" //desa
+            val roadName = address.thoroughfare ?: ""
+
+            locationDetail =
+                LocationDetail(addressText, city, state, country, subCity, village, roadName)
+        }
+    } else {
+        try {
+            val addresses: MutableList<Address>? = geocoder.getFromLocation(latitude, longitude, 1)
+            return if (addresses!!.isNotEmpty()) {
+                val address = addresses[0]
+                Log.d("full location", address.toString())
+
+                LocationDetail(
+                    address.getAddressLine(0) ?: "",
+                    address.locality ?: "",
+                    address.adminArea ?: "",
+                    address.countryName ?: "",
+                    address.subAdminArea ?: "",
+                    address.subLocality ?: "",
+                    address.thoroughfare ?: ""
+                )
+            } else {
+                LocationDetail("", "", "", "", "", "")
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            locationDetail = LocationDetail(
+                address = "Error retrieving location details"
+
+            )
+        }
+    }
+
+    return locationDetail
+}
+
 
 fun calculateRadius(center: LatLng, point: LatLng): Double {
     val result = FloatArray(1)
@@ -214,11 +312,19 @@ fun calculateRadius(center: LatLng, point: LatLng): Double {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MapTopBar(
-    navigateBack: () -> Unit
+    navigateBack: () -> Unit,
+    placeId: String
 ) {
     TopAppBar(
         title = {
-            Text(text = stringResource(R.string.location_scope))
+
+            Text(
+                text = if (placeId.isNotEmpty()) stringResource(R.string.location_scope) else stringResource(
+                    R.string.your_location
+                )
+            )
+//            stringResource(R.string.location_scope)
+
         },
         navigationIcon = {
 
