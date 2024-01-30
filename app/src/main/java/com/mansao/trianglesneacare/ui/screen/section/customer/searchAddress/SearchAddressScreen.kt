@@ -1,6 +1,14 @@
 package com.mansao.trianglesneacare.ui.screen.section.customer.searchAddress
 
+import android.Manifest
+import android.annotation.SuppressLint
+import android.content.Context
+import android.content.pm.PackageManager
+import android.location.Location
 import android.util.Log
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -34,17 +42,27 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.tasks.CancellationToken
+import com.google.android.gms.tasks.CancellationTokenSource
+import com.google.android.gms.tasks.OnTokenCanceledListener
 import com.mansao.trianglesneacare.R
 import com.mansao.trianglesneacare.data.network.response.PredictionsItem
+import com.mansao.trianglesneacare.location.LocationCallback
 import com.mansao.trianglesneacare.ui.common.UiState
 import com.mansao.trianglesneacare.ui.components.AddressNotFound
 import com.mansao.trianglesneacare.ui.components.LoadingScreen
 import com.mansao.trianglesneacare.ui.screen.SharedViewModel
+
 
 @Composable
 fun SearchAddressScreen(
@@ -53,6 +71,27 @@ fun SearchAddressScreen(
     searchViewModel: SearchAddressViewModel = hiltViewModel(),
     sharedViewModel: SharedViewModel
 ) {
+    val context = LocalContext.current
+    val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
+
+
+    val permissions = arrayOf(
+        Manifest.permission.ACCESS_COARSE_LOCATION,
+        Manifest.permission.ACCESS_FINE_LOCATION
+    )
+
+    val launcherMultiplePermissions = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissionsMap ->
+        val areGranted = permissionsMap.values.all { it }
+        if (areGranted) {
+            Toast.makeText(context, "Permission Granted", Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(context, "Permission Denied", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+
     Scaffold(
         topBar = { SearchAddressTopBar(navigateBack = navigateBack) }
     ) {
@@ -60,6 +99,7 @@ fun SearchAddressScreen(
             Column(modifier = Modifier.fillMaxSize()) {
                 SearchBarAddressComponent(searchViewModel = searchViewModel)
                 Spacer(modifier = Modifier.height(8.dp))
+
                 ListItem(
                     headlineContent = {
                         Text(
@@ -73,7 +113,23 @@ fun SearchAddressScreen(
                             contentDescription = null
                         )
                     },
-                    modifier = Modifier.clickable { navigateToMap() })
+                    modifier = Modifier.clickable {
+                        if (hasLocationPermissions(context, permissions)) {
+                            getCurrentLocation(fusedLocationClient, object : LocationCallback {
+                                override fun onLocationResult(location: Location) {
+                                    val latitude = location.latitude
+                                    val longitude = location.longitude
+
+                                    navigateToMap()
+                                    sharedViewModel.addLocation(latitude, longitude)
+                                }
+                            })
+                        } else {
+                            launcherMultiplePermissions.launch(permissions)
+                        }
+                    }
+                )
+
                 searchViewModel.uiState.collectAsState(initial = UiState.Standby).value.let { uiState ->
                     when (uiState) {
                         is UiState.Standby -> {}
@@ -92,6 +148,7 @@ fun SearchAddressScreen(
     }
 
 }
+
 
 @Composable
 fun SearchAddressComponent(
@@ -217,3 +274,30 @@ fun SearchBarAddressComponent(
             .padding(horizontal = 16.dp)
     )
 }
+
+
+private fun hasLocationPermissions(context: Context, permissions: Array<String>): Boolean {
+    return permissions.all {
+        ContextCompat.checkSelfPermission(context, it) == PackageManager.PERMISSION_GRANTED
+    }
+}
+
+@SuppressLint("MissingPermission")
+private fun getCurrentLocation(
+    fusedLocationClient: FusedLocationProviderClient,
+    callback: LocationCallback
+) {
+    fusedLocationClient.getCurrentLocation(LocationRequest.PRIORITY_HIGH_ACCURACY, object :
+        CancellationToken() {
+        override fun onCanceledRequested(p0: OnTokenCanceledListener): CancellationToken =
+            CancellationTokenSource().token
+
+        override fun isCancellationRequested(): Boolean = false
+    }).addOnSuccessListener { location: Location? ->
+        if (location != null) {
+            callback.onLocationResult(location)
+        }
+    }
+}
+
+

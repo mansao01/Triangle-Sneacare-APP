@@ -120,6 +120,8 @@ dependencies {
     implementation("com.google.maps.android:maps-compose:2.2.0")
     implementation("com.google.android.gms:play-services-location:21.0.1")
 
+    //    permission
+    implementation("com.google.accompanist:accompanist-permissions:0.30.1")
     implementation("androidx.exifinterface:exifinterface:1.3.6")
 
     testImplementation("junit:junit:4.13.2")

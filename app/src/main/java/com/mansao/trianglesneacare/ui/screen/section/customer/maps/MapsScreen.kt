@@ -76,7 +76,10 @@ fun MapsScreen(
     ) {
         Surface {
             if (placeId.isEmpty()) {
-                MapsScreenComponentWIthLocation(mapProperties)
+                MapsScreenComponentWIthLocation(
+                    mapProperties = mapProperties,
+                    sharedViewModel = sharedViewModel
+                )
             } else {
                 LaunchedEffect(key1 = placeId) {
                     mapsViewModel.getLocationFromPlaceId(placeId)
@@ -184,8 +187,11 @@ fun MapsScreenComponentWithPlaceId(
 
 @Composable
 fun MapsScreenComponentWIthLocation(
-    mapProperties: MapProperties
+    mapProperties: MapProperties,
+    sharedViewModel: SharedViewModel
 ) {
+    val location by remember { mutableStateOf(sharedViewModel.location) }
+    Log.d("location in map screen", location.toString())
     GoogleMap(
         properties = mapProperties
     ) {

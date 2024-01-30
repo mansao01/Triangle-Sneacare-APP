@@ -170,7 +170,8 @@ fun MainScreenContent(
                         navigateBack = {
                             if (navController.canGoBack) {
                                 navController.popBackStack()
-                            }                        }
+                            }
+                        },
                     )
                 }
 
