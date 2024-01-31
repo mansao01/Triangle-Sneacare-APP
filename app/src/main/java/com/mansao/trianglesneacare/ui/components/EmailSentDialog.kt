@@ -21,15 +21,15 @@ import com.mansao.trianglesneacare.R
 
 @Composable
 fun EmailSentDialog(
-    navigateToLogin: () -> Unit,
+    navigateBack: () -> Unit,
     email: String
 ) {
     val composition by
     rememberLottieComposition(spec = LottieCompositionSpec.RawRes(R.raw.email_send))
     AlertDialog(
-        onDismissRequest = { navigateToLogin() },
+        onDismissRequest = { navigateBack() },
         confirmButton = {
-            Button(onClick = { navigateToLogin() }) {
+            Button(onClick = { navigateBack() }) {
                 Text(text = stringResource(id = R.string.confirm))
             }
         },

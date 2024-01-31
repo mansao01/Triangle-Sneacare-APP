@@ -47,5 +47,11 @@
     <string name="select_location_coverage_and_continue_to_fill_in_the_address">Select location coverage and continue to fill in the address</string>
     <string name="your_location">Your location</string>
     <string name="button_with_place_id"><![CDATA[Select location coverage & continue to fill the address]]></string>
-    <string name="button_with_get_location"><![CDATA[Select location & continue to fill the address]]></string>
+    <string name="button_with_get_location"><![CDATA[Select location & continue to fill the address details]]></string>
+    <string name="detail_address">Detail Address</string>
+    <string name="address_label">Address Label</string>
+    <string name="full_address">Full Address</string>
+    <string name="receiver_name">recipient\'s name</string>
+    <string name="notes_to_courier">Notes to courier</string>
+    <string name="save">Save</string>
 </resources>

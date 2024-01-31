@@ -9,6 +9,7 @@ import com.mansao.trianglesneacare.ui.navigation.Screen
 import com.mansao.trianglesneacare.ui.screen.login.LoginScreen
 import com.mansao.trianglesneacare.ui.screen.register.RegisterScreen
 import com.mansao.trianglesneacare.ui.screen.section.MainScreen
+import com.mansao.trianglesneacare.utils.canGoBack
 
 @Composable
 fun TriangleApp(
@@ -19,9 +20,9 @@ fun TriangleApp(
 
         composable(Screen.Register.route) {
             RegisterScreen(
-                navigateToLogin = {
-                    navController.popBackStack()
-                    navController.navigate(Screen.Login.route)
+                navigateBack = {
+                    if (navController.canGoBack) navController.popBackStack()
+
                 }
             )
         }

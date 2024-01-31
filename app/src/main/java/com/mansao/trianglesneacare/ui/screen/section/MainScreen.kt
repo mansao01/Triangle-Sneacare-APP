@@ -94,7 +94,8 @@ fun MainScreenContent(
                 currentRoute != Screen.DriverRegistration.route &&
                 currentRoute != Screen.SearchAddress.route &&
                 currentRoute != Screen.AddressList.route &&
-                currentRoute != Screen.Maps.route
+                currentRoute != Screen.Maps.route &&
+                currentRoute != Screen.AddAddress.route
             ) {
                 MainBottomBar(
                     navController = navController,
@@ -139,9 +140,8 @@ fun MainScreenContent(
                 composable(Screen.AddressList.route) {
                     AddressListScreen(
                         navigateBack = {
-                            if (navController.canGoBack) {
-                                navController.popBackStack()
-                            }
+                            if (navController.canGoBack) navController.popBackStack()
+
                         },
                         navigateToSearchAddress = {
                             navController.navigate(Screen.SearchAddress.route)
@@ -149,14 +149,26 @@ fun MainScreenContent(
                 }
 
                 composable(Screen.AddAddress.route) {
-                    AddAddressScreen()
+                    AddAddressScreen(
+                        navigateBack = {
+                            if (navController.canGoBack) navController.popBackStack()
+                        },
+                        sharedViewModel = sharedViewModel,
+                        navigateToListAddress = {
+                            if (navController.canGoBack) {
+//                                back to list address trough several screen
+                                navController.popBackStack()
+                                navController.popBackStack()
+                                navController.popBackStack()
+                            }
+
+                        }
+                    )
                 }
                 composable(Screen.SearchAddress.route) {
                     SearchAddressScreen(
                         navigateBack = {
-                            if (navController.canGoBack) {
-                                navController.popBackStack()
-                            }
+                            if (navController.canGoBack) navController.popBackStack()
                         },
                         navigateToMap = {
                             navController.navigate(Screen.Maps.route)
@@ -169,10 +181,12 @@ fun MainScreenContent(
                     MapsScreen(
                         sharedViewModel = sharedViewModel,
                         navigateBack = {
-                            if (navController.canGoBack) {
-                                navController.popBackStack()
-                            }
+                            if (navController.canGoBack) navController.popBackStack()
+
                         },
+                        navigateToAddScreen = {
+                            navController.navigate(Screen.AddAddress.route)
+                        }
                     )
                 }
 

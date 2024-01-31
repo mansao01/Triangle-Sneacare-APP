@@ -60,7 +60,7 @@ import com.mansao.trianglesneacare.data.network.response.PredictionsItem
 import com.mansao.trianglesneacare.location.LocationCallback
 import com.mansao.trianglesneacare.ui.common.UiState
 import com.mansao.trianglesneacare.ui.components.AddressNotFound
-import com.mansao.trianglesneacare.ui.components.LoadingScreen
+import com.mansao.trianglesneacare.ui.components.LoadingDialog
 import com.mansao.trianglesneacare.ui.screen.SharedViewModel
 
 
@@ -114,6 +114,7 @@ fun SearchAddressScreen(
                         )
                     },
                     modifier = Modifier.clickable {
+                        searchViewModel.setLoadingState()
                         if (hasLocationPermissions(context, permissions)) {
                             getCurrentLocation(fusedLocationClient, object : LocationCallback {
                                 override fun onLocationResult(location: Location) {
@@ -122,6 +123,7 @@ fun SearchAddressScreen(
 
                                     navigateToMap()
                                     sharedViewModel.addLocation(latitude, longitude)
+                                    searchViewModel.setStandbyState()
                                 }
                             })
                         } else {
@@ -133,7 +135,7 @@ fun SearchAddressScreen(
                 searchViewModel.uiState.collectAsState(initial = UiState.Standby).value.let { uiState ->
                     when (uiState) {
                         is UiState.Standby -> {}
-                        is UiState.Loading -> LoadingScreen()
+                        is UiState.Loading -> LoadingDialog()
                         is UiState.Success -> SearchAddressComponent(
                             addressPrediction = uiState.data.data.predictions,
                             navigateToMap = navigateToMap,

@@ -13,11 +13,18 @@ class SharedViewModel : ViewModel() {
 
     var location by mutableStateOf<LatLong?>(null)
 
+    var fullAddress by mutableStateOf<String?>(null)
+
     fun addPlace(newPredictionItem: PredictionsItem) {
         predictionItem = newPredictionItem
     }
 
     fun addLocation(latitude: Double, longitude: Double) {
         location = LatLong(latitude, longitude)
+    }
+
+    fun addFullAddress(newAddress: String) {
+        fullAddress = newAddress
+
     }
 }

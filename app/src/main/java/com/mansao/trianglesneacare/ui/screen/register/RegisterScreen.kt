@@ -66,7 +66,7 @@ import com.mansao.trianglesneacare.utils.rememberImeState
 fun RegisterScreen(
     modifier: Modifier = Modifier,
     registerViewModel: RegisterViewModel = hiltViewModel(),
-    navigateToLogin: () -> Unit
+    navigateBack: () -> Unit
 ) {
     val context = LocalContext.current
     var isLoading by rememberSaveable {
@@ -76,7 +76,7 @@ fun RegisterScreen(
     RegisterComponent(
         registerViewModel = registerViewModel,
         isLoading = isLoading,
-        navigateToLogin = navigateToLogin,
+        navigateBack = navigateBack,
         modifier = modifier,
     )
 
@@ -86,7 +86,7 @@ fun RegisterScreen(
             is UiState.Loading -> isLoading = true
             is UiState.Success -> {
                 EmailSentDialog(
-                    navigateToLogin = { navigateToLogin() },
+                    navigateBack = { navigateBack() },
                     email = uiState.data.user.email
                 )
                 isLoading = false
@@ -105,7 +105,7 @@ fun RegisterScreen(
 fun RegisterComponent(
     registerViewModel: RegisterViewModel,
     isLoading: Boolean,
-    navigateToLogin: () -> Unit,
+    navigateBack: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     var name by remember { mutableStateOf("") }
@@ -131,7 +131,7 @@ fun RegisterComponent(
     }
 
     Scaffold(
-        topBar = { RegisterTopBar(navigateToLogin = navigateToLogin) }
+        topBar = { RegisterTopBar(navigateBack = navigateBack) }
     ) { scaffoldPadding ->
         Surface(modifier = Modifier.padding(scaffoldPadding)) {
             Column(
@@ -281,10 +281,10 @@ fun RegisterComponent(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RegisterTopBar(
-    navigateToLogin: () -> Unit
+    navigateBack: () -> Unit
 ) {
     TopAppBar(title = { }, navigationIcon = {
-        IconButton(onClick = { navigateToLogin() }) {
+        IconButton(onClick = { navigateBack() }) {
             Icon(imageVector = Icons.Outlined.ArrowBack, contentDescription = null)
         }
     })

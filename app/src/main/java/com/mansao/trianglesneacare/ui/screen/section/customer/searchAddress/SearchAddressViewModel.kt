@@ -18,28 +18,14 @@ class SearchAddressViewModel @Inject constructor(private val appRepositoryImpl: 
         MutableStateFlow(UiState.Standby)
     val uiState: Flow<UiState<AutoCompleteAddressResponse>> = _uiState
 
-//     fun setStandbyState() {
-//        _uiState.value = UiState.Loading
-//
-//    }
 
-//    fun createCustomerAddress(createCustomerAddressRequest: CreateCustomerAddressRequest) {
-//        setLoadingState()
-//        viewModelScope.launch {
-//            try {
-//                val token = appRepositoryImpl.getAccessToken()
-//                val result = appRepositoryImpl.createCustomerAddress(
-//                    "Bearer $token",
-//                    createCustomerAddressRequest
-//                )
-//
-//                _uiState.value = UiState.Success(result)
-//            } catch (e: Exception) {
-//                _uiState.value = UiState.Error(e.message.toString())
-//            }
-//        }
-//    }
+    fun setLoadingState(){
+        _uiState.value = UiState.Loading
+    }
 
+    fun setStandbyState(){
+        _uiState.value = UiState.Standby
+    }
     fun autoCompleteAddress(address: String) {
         viewModelScope.launch {
             try {

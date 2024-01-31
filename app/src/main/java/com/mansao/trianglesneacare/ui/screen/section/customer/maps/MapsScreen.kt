@@ -66,7 +66,8 @@ import java.util.Locale
 fun MapsScreen(
     sharedViewModel: SharedViewModel,
     mapsViewModel: MapsViewModel = hiltViewModel(),
-    navigateBack: () -> Unit
+    navigateBack: () -> Unit,
+    navigateToAddScreen: () -> Unit
 ) {
     val context = LocalContext.current
     val predictionItem = sharedViewModel.predictionItem
@@ -86,7 +87,8 @@ fun MapsScreen(
             if (placeId.isEmpty()) {
                 MapsScreenComponentWIthLocation(
                     mapProperties = mapProperties,
-                    sharedViewModel = sharedViewModel
+                    sharedViewModel = sharedViewModel,
+                    navigateToAddScreen = navigateToAddScreen
                 )
             } else {
                 LaunchedEffect(key1 = placeId) {
@@ -194,7 +196,9 @@ fun MapsScreenComponentWithPlaceId(
 @Composable
 fun MapsScreenComponentWIthLocation(
     mapProperties: MapProperties,
-    sharedViewModel: SharedViewModel
+    sharedViewModel: SharedViewModel,
+    navigateToAddScreen: () -> Unit
+
 ) {
     val context = LocalContext.current
     val location by remember { mutableStateOf(sharedViewModel.location) }
@@ -232,7 +236,11 @@ fun MapsScreenComponentWIthLocation(
                 Spacer(modifier = Modifier.height(8.dp))
 
                 OutlinedButton(
-                    onClick = { /*TODO*/ }, modifier = Modifier.fillMaxWidth()
+                    onClick = {
+                        sharedViewModel.addFullAddress(detailLocation.address)
+                        Log.d("full address",detailLocation.address)
+                        navigateToAddScreen()
+                    }, modifier = Modifier.fillMaxWidth()
                 ) {
                     Text(text = stringResource(R.string.button_with_get_location))
 
