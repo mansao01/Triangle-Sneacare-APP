@@ -96,13 +96,13 @@ fun AddAddressContent(
     var phone by rememberSaveable { mutableStateOf("") }
 
     val isButtonEnable =
-        ((addressLabel.isNotEmpty() || getFullAddress!!.isNotEmpty()) && receiverName.isNotEmpty() && phone.isNotEmpty())
+        ((addressLabel.isNotEmpty() || getFullAddress?.isNotEmpty() == true) && receiverName.isNotEmpty() && phone.isNotEmpty())
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
-
+            .padding(horizontal = 4.dp)
     ) {
         OutlinedTextField(
             value = addressLabel,
@@ -131,7 +131,7 @@ fun AddAddressContent(
         OutlinedTextField(
             value = getFullAddress ?: fullAddress,
             onValueChange = {
-                if (getFullAddress!!.isEmpty()) {
+                if (getFullAddress?.isEmpty() == true) {
                     fullAddress = it
                 } else {
                     getFullAddress = it
@@ -243,12 +243,15 @@ fun AddAddressContent(
                         title = addressLabel,
                         receiverName = receiverName,
                         phone = phone,
-                        fullAddress = if (getFullAddress!!.isNotEmpty()) getFullAddress else fullAddress,
+                        fullAddress = if (getFullAddress?.isNotEmpty() == true) getFullAddress else fullAddress,
                         note = notes
                     )
                 )
             },
-            enabled = isButtonEnable
+            enabled = isButtonEnable,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 12.dp)
         ) {
             Text(text = stringResource(R.string.save))
         }

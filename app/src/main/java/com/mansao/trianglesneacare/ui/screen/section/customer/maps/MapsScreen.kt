@@ -67,7 +67,7 @@ fun MapsScreen(
     sharedViewModel: SharedViewModel,
     mapsViewModel: MapsViewModel = hiltViewModel(),
     navigateBack: () -> Unit,
-    navigateToAddScreen: () -> Unit
+    navigateToAddAddress: () -> Unit
 ) {
     val context = LocalContext.current
     val predictionItem = sharedViewModel.predictionItem
@@ -85,10 +85,10 @@ fun MapsScreen(
     ) {
         Surface {
             if (placeId.isEmpty()) {
-                MapsScreenComponentWIthLocation(
+                MapsScreenComponentWithLocation(
                     mapProperties = mapProperties,
                     sharedViewModel = sharedViewModel,
-                    navigateToAddScreen = navigateToAddScreen
+                    navigateToAddAddress = navigateToAddAddress
                 )
             } else {
                 LaunchedEffect(key1 = placeId) {
@@ -100,7 +100,8 @@ fun MapsScreen(
                         is UiState.Loading -> LoadingDialog()
                         is UiState.Success -> MapsScreenComponentWithPlaceId(
                             geocodingItem = uiState.data,
-                            mapProperties = mapProperties
+                            mapProperties = mapProperties,
+                            navigateToAddAddress = navigateToAddAddress
                         )
 
                         is UiState.Error -> Toast.makeText(
@@ -119,7 +120,8 @@ fun MapsScreen(
 @Composable
 fun MapsScreenComponentWithPlaceId(
     geocodingItem: GeocodingResponse,
-    mapProperties: MapProperties
+    mapProperties: MapProperties,
+    navigateToAddAddress: () -> Unit
 ) {
     Log.d("geocoding item", geocodingItem.toString())
     val northeastLat = geocodingItem.data.results[0].geometry.viewport.northeast.lat
@@ -142,7 +144,7 @@ fun MapsScreenComponentWithPlaceId(
         .include(LatLng(southWestLat, southWestLng))
 
     val cameraPositionState = rememberCameraPositionState {
-        position = CameraPosition.fromLatLngZoom(centerLocation, 17f)
+        position = CameraPosition.fromLatLngZoom(centerLocation, 10f)
     }
     val radius = calculateRadius(centerLocation, LatLng(northeastLat, northeastLng))
 
@@ -180,7 +182,7 @@ fun MapsScreenComponentWithPlaceId(
                 Spacer(modifier = Modifier.height(8.dp))
 
                 OutlinedButton(
-                    onClick = { /*TODO*/ }, modifier = Modifier.fillMaxWidth()
+                    onClick = { navigateToAddAddress() }, modifier = Modifier.fillMaxWidth()
                 ) {
                     Text(text = stringResource(R.string.button_with_place_id))
 
@@ -194,10 +196,10 @@ fun MapsScreenComponentWithPlaceId(
 
 
 @Composable
-fun MapsScreenComponentWIthLocation(
+fun MapsScreenComponentWithLocation(
     mapProperties: MapProperties,
     sharedViewModel: SharedViewModel,
-    navigateToAddScreen: () -> Unit
+    navigateToAddAddress: () -> Unit
 
 ) {
     val context = LocalContext.current
@@ -238,8 +240,8 @@ fun MapsScreenComponentWIthLocation(
                 OutlinedButton(
                     onClick = {
                         sharedViewModel.addFullAddress(detailLocation.address)
-                        Log.d("full address",detailLocation.address)
-                        navigateToAddScreen()
+                        Log.d("full address", detailLocation.address)
+                        navigateToAddAddress()
                     }, modifier = Modifier.fillMaxWidth()
                 ) {
                     Text(text = stringResource(R.string.button_with_get_location))

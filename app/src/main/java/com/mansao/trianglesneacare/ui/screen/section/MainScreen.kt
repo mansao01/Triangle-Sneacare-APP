@@ -184,9 +184,9 @@ fun MainScreenContent(
                             if (navController.canGoBack) navController.popBackStack()
 
                         },
-                        navigateToAddScreen = {
+                        navigateToAddAddress = {
                             navController.navigate(Screen.AddAddress.route)
-                        }
+                        },
                     )
                 }
 
