@@ -124,7 +124,9 @@ fun MainScreenContent(
                 }
 
                 composable(Screen.ProfileEdit.route) {
-                    ProfileEditScreen()
+                    ProfileEditScreen(
+                        navigateBack = {}
+                    )
                 }
 
 //                customer

@@ -8,6 +8,7 @@ import com.mansao.trianglesneacare.data.network.response.CreateCustomerAddressRe
 import com.mansao.trianglesneacare.data.network.response.GeocodingResponse
 import com.mansao.trianglesneacare.data.network.response.GetCustomerAddressesResponse
 import com.mansao.trianglesneacare.data.network.response.GetDriversResponse
+import com.mansao.trianglesneacare.data.network.response.GetProfileDetailResponse
 import com.mansao.trianglesneacare.data.network.response.LoginResponse
 import com.mansao.trianglesneacare.data.network.response.OnlyMsgResponse
 import com.mansao.trianglesneacare.data.network.response.ProfileResponse
@@ -53,6 +54,12 @@ interface ApiService {
     suspend fun getProfile(
         @Header(ApiConst.AUTHORIZATION_KEY) token: String
     ): ProfileResponse
+
+    @GET(ApiConst.PROFILE_DETAIL)
+    suspend fun getProfileDetail(
+        @Header(ApiConst.AUTHORIZATION_KEY) token: String
+    ): GetProfileDetailResponse
+
 
     @GET(ApiConst.DRIVERS)
     suspend fun getDrivers(): GetDriversResponse

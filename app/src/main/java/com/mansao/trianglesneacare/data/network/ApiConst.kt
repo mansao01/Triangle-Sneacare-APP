@@ -9,6 +9,7 @@ object ApiConst {
     const val REGISTER = "register"
     const val REGISTER_DRIVER = "registerDriver"
     const val PROFILE = "profile"
+    const val PROFILE_DETAIL = "profile/detail"
     const val DRIVERS = "drivers"
     const val LOGOUT = "logout"
     const val GET_CUSTOMER_ADDRESS = "getCustomerAddress"
