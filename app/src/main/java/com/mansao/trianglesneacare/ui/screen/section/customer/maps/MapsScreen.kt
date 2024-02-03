@@ -32,6 +32,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -55,6 +56,8 @@ import com.mansao.trianglesneacare.data.network.response.GeocodingResponse
 import com.mansao.trianglesneacare.ui.common.UiState
 import com.mansao.trianglesneacare.ui.components.LoadingDialog
 import com.mansao.trianglesneacare.ui.screen.SharedViewModel
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.debounce
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -191,6 +194,7 @@ fun MapsScreenComponentWithPlaceId(
 }
 
 
+@OptIn(FlowPreview::class)
 @Composable
 fun MapsScreenComponentWithLocation(
     mapProperties: MapProperties,
@@ -212,6 +216,15 @@ fun MapsScreenComponentWithLocation(
     val newLatitude = markerState.position.latitude
     val newLongitude = markerState.position.longitude
 
+    val debouncedAddress = remember { mutableStateOf("") }
+
+    LaunchedEffect(Unit) {
+        mapsViewModel.address
+            .debounce(1500) // Adjust the duration as needed (in milliseconds)
+            .collect { newAddress ->
+                debouncedAddress.value = newAddress
+            }
+    }
 
     Log.d("lat", latitude.toString())
 
@@ -222,7 +235,8 @@ fun MapsScreenComponentWithLocation(
         ) {
             Marker(
                 state = markerState,
-                draggable = true
+                draggable = true,
+
             )
         }
         LaunchedEffect(key1 = newLatitude, key2 = newLongitude) {
@@ -241,22 +255,20 @@ fun MapsScreenComponentWithLocation(
                     .padding(horizontal = 16.dp, vertical = 8.dp)
             ) {
                 Spacer(modifier = Modifier.height(8.dp))
-                mapsViewModel.address.collectAsState().value.let { address ->
-                    Text(text = address)
+                    Text(text = debouncedAddress.value)
 
                     Spacer(modifier = Modifier.height(8.dp))
 
                     OutlinedButton(
                         onClick = {
-                            sharedViewModel.addFullAddress(address)
-                            Log.d("full address", address)
+                            sharedViewModel.addFullAddress(debouncedAddress.value)
+                            Log.d("full address", debouncedAddress.value)
                             navigateToAddAddress()
                         }, modifier = Modifier.fillMaxWidth()
                     ) {
                         Text(text = stringResource(R.string.button_with_get_location))
                     }
                 }
-            }
         }
     }
 }

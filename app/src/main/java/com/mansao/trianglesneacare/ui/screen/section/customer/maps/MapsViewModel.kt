@@ -53,12 +53,7 @@ class MapsViewModel @Inject constructor(private val appRepositoryImpl: AppReposi
                 ) { addresses ->
                     val address = addresses[0]
                     val addressText = address.getAddressLine(0) ?: ""
-                    val city = address.locality ?: ""
-                    val state = address.adminArea ?: ""
-                    val country = address.countryName ?: ""
-                    val subCity = address.subAdminArea ?: "" //kabupaten
-                    val village = address.subLocality ?: "" //desa
-                    val roadName = address.thoroughfare ?: ""
+
 
                     _address.value =addressText
 
@@ -71,13 +66,6 @@ class MapsViewModel @Inject constructor(private val appRepositoryImpl: AppReposi
                         val address = addresses[0]
                         Log.d("full location", address.toString())
                         val addressText = address.getAddressLine(0) ?: ""
-                        val city = address.locality ?: ""
-                        val state = address.adminArea ?: ""
-                        val country = address.countryName ?: ""
-                        val subCity = address.subAdminArea ?: "" //kabupaten
-                        val village = address.subLocality ?: "" //desa
-                        val roadName = address.thoroughfare ?: ""
-
 
                         _address.value = addressText
                     } else {
