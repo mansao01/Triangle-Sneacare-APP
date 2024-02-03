@@ -51,8 +51,8 @@ import com.google.maps.android.compose.Circle
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.Marker
-import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
+import com.google.maps.android.compose.rememberMarkerState
 import com.mansao.trianglesneacare.R
 import com.mansao.trianglesneacare.data.local.model.LocationDetail
 import com.mansao.trianglesneacare.data.network.response.GeocodingResponse
@@ -200,7 +200,6 @@ fun MapsScreenComponentWithLocation(
     mapProperties: MapProperties,
     sharedViewModel: SharedViewModel,
     navigateToAddAddress: () -> Unit
-
 ) {
     val context = LocalContext.current
     val location by remember { mutableStateOf(sharedViewModel.location) }
@@ -209,7 +208,11 @@ fun MapsScreenComponentWithLocation(
     val cameraPositionState = rememberCameraPositionState {
         position = CameraPosition.fromLatLngZoom(LatLng(latitude, longitude), 18f)
     }
-    val detailLocation = getDetailLocation(latitude, longitude, context)
+    var detailLocation = getDetailLocation(latitude, longitude, context)
+    val markerState = rememberMarkerState(position = LatLng(latitude, longitude))
+    val newLatitude = markerState.position.latitude
+    val newLongitude = markerState.position.longitude
+
 
     Log.d("detail location", detailLocation.toString())
 
@@ -219,8 +222,13 @@ fun MapsScreenComponentWithLocation(
             cameraPositionState = cameraPositionState
         ) {
             Marker(
-                state = MarkerState(LatLng(latitude, longitude))
+                state = markerState,
+                draggable = true
             )
+        }
+        LaunchedEffect(key1 = newLatitude, key2 = newLongitude) {
+            Log.d("marker", "New coordinates: $newLatitude, $newLongitude")
+            detailLocation = getDetailLocation(newLatitude, newLongitude, context)
         }
 
         Box(
@@ -253,6 +261,7 @@ fun MapsScreenComponentWithLocation(
         }
     }
 }
+
 
 fun getDetailLocation(latitude: Double, longitude: Double, context: Context): LocationDetail {
     val geocoder = Geocoder(context, Locale.getDefault())
