@@ -33,6 +33,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -59,6 +60,7 @@ import com.mansao.trianglesneacare.data.network.response.GeocodingResponse
 import com.mansao.trianglesneacare.ui.common.UiState
 import com.mansao.trianglesneacare.ui.components.LoadingDialog
 import com.mansao.trianglesneacare.ui.screen.SharedViewModel
+import kotlinx.coroutines.flow.collect
 import java.util.Locale
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -88,7 +90,8 @@ fun MapsScreen(
                 MapsScreenComponentWithLocation(
                     mapProperties = mapProperties,
                     sharedViewModel = sharedViewModel,
-                    navigateToAddAddress = navigateToAddAddress
+                    navigateToAddAddress = navigateToAddAddress,
+                    mapsViewModel = mapsViewModel
                 )
             } else {
                 LaunchedEffect(key1 = placeId) {
@@ -199,22 +202,23 @@ fun MapsScreenComponentWithPlaceId(
 fun MapsScreenComponentWithLocation(
     mapProperties: MapProperties,
     sharedViewModel: SharedViewModel,
+    mapsViewModel: MapsViewModel,
     navigateToAddAddress: () -> Unit
 ) {
     val context = LocalContext.current
     val location by remember { mutableStateOf(sharedViewModel.location) }
-    val latitude = location?.latitude ?: 0.0
-    val longitude = location?.longitude ?: 0.0
+    val latitude by remember { mutableDoubleStateOf(location?.latitude ?: 0.0) }
+    val longitude by remember { mutableDoubleStateOf(location?.longitude ?: 0.0) }
     val cameraPositionState = rememberCameraPositionState {
         position = CameraPosition.fromLatLngZoom(LatLng(latitude, longitude), 18f)
     }
-    var detailLocation = getDetailLocation(latitude, longitude, context)
+    mapsViewModel.getDetailLocation(latitude, longitude, context)
     val markerState = rememberMarkerState(position = LatLng(latitude, longitude))
     val newLatitude = markerState.position.latitude
     val newLongitude = markerState.position.longitude
 
 
-    Log.d("detail location", detailLocation.toString())
+    Log.d("lat", latitude.toString())
 
     Box(modifier = Modifier.fillMaxWidth()) {
         GoogleMap(
@@ -228,7 +232,7 @@ fun MapsScreenComponentWithLocation(
         }
         LaunchedEffect(key1 = newLatitude, key2 = newLongitude) {
             Log.d("marker", "New coordinates: $newLatitude, $newLongitude")
-            detailLocation = getDetailLocation(newLatitude, newLongitude, context)
+            mapsViewModel.getDetailLocation(newLatitude, newLongitude, context)
         }
 
         Box(
@@ -242,78 +246,78 @@ fun MapsScreenComponentWithLocation(
                     .padding(horizontal = 16.dp, vertical = 8.dp)
             ) {
                 Spacer(modifier = Modifier.height(8.dp))
-                Text(text = detailLocation.address)
-                Spacer(modifier = Modifier.height(8.dp))
+                mapsViewModel.address.collectAsState().value.let { address ->
+                    Text(text = address)
 
-                OutlinedButton(
-                    onClick = {
-                        sharedViewModel.addFullAddress(detailLocation.address)
-                        Log.d("full address", detailLocation.address)
-                        navigateToAddAddress()
-                    }, modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text(text = stringResource(R.string.button_with_get_location))
+                    Spacer(modifier = Modifier.height(8.dp))
 
+                    OutlinedButton(
+                        onClick = {
+                            sharedViewModel.addFullAddress(address)
+                            Log.d("full address", address)
+                            navigateToAddAddress()
+                        }, modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(text = stringResource(R.string.button_with_get_location))
+                    }
                 }
-
             }
-
         }
     }
 }
 
 
-fun getDetailLocation(latitude: Double, longitude: Double, context: Context): LocationDetail {
-    val geocoder = Geocoder(context, Locale.getDefault())
-
-    var locationDetail = LocationDetail()
-
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-        geocoder.getFromLocation(
-            latitude, longitude, 1
-        ) { addresses ->
-            val address = addresses[0]
-            val addressText = address.getAddressLine(0) ?: ""
-            val city = address.locality ?: ""
-            val state = address.adminArea ?: ""
-            val country = address.countryName ?: ""
-            val subCity = address.subAdminArea ?: "" //kabupaten
-            val village = address.subLocality ?: "" //desa
-            val roadName = address.thoroughfare ?: ""
-
-            locationDetail =
-                LocationDetail(addressText, city, state, country, subCity, village, roadName)
-        }
-    } else {
-        try {
-            val addresses: MutableList<Address>? = geocoder.getFromLocation(latitude, longitude, 1)
-            return if (addresses!!.isNotEmpty()) {
-                val address = addresses[0]
-                Log.d("full location", address.toString())
-
-                LocationDetail(
-                    address.getAddressLine(0) ?: "",
-                    address.locality ?: "",
-                    address.adminArea ?: "",
-                    address.countryName ?: "",
-                    address.subAdminArea ?: "",
-                    address.subLocality ?: "",
-                    address.thoroughfare ?: ""
-                )
-            } else {
-                LocationDetail("", "", "", "", "", "")
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-            locationDetail = LocationDetail(
-                address = "Error retrieving location details"
-
-            )
-        }
-    }
-
-    return locationDetail
-}
+//fun getDetailLocation(latitude: Double, longitude: Double, context: Context): LocationDetail {
+//    val geocoder = Geocoder(context, Locale.getDefault())
+//
+//    var locationDetail = LocationDetail()
+//
+//    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+//        geocoder.getFromLocation(
+//            latitude, longitude, 1
+//        ) { addresses ->
+//            val address = addresses[0]
+//            val addressText = address.getAddressLine(0) ?: ""
+//            val city = address.locality ?: ""
+//            val state = address.adminArea ?: ""
+//            val country = address.countryName ?: ""
+//            val subCity = address.subAdminArea ?: "" //kabupaten
+//            val village = address.subLocality ?: "" //desa
+//            val roadName = address.thoroughfare ?: ""
+//
+//            locationDetail =
+//                LocationDetail(addressText, city, state, country, subCity, village, roadName)
+//        }
+//    } else {
+//        try {
+//            val addresses: MutableList<Address>? = geocoder.getFromLocation(latitude, longitude, 1)
+//            return if (addresses!!.isNotEmpty()) {
+//                val address = addresses[0]
+//                Log.d("full location", address.toString())
+//
+//                LocationDetail(
+//                    address.getAddressLine(0) ?: "",
+//                    address.locality ?: "",
+//                    address.adminArea ?: "",
+//                    address.countryName ?: "",
+//                    address.subAdminArea ?: "",
+//                    address.subLocality ?: "",
+//                    address.thoroughfare ?: ""
+//                )
+//            } else {
+//                LocationDetail("", "", "", "", "", "")
+//            }
+//        } catch (e: Exception) {
+//            e.printStackTrace()
+//            locationDetail = LocationDetail(
+//                address = "Error retrieving location details"
+//
+//            )
+//        }
+//    }
+//
+//    return locationDetail
+//}
 
 
 fun calculateRadius(center: LatLng, point: LatLng): Double {
@@ -342,7 +346,6 @@ fun MapTopBar(
                     R.string.your_location
                 )
             )
-//            stringResource(R.string.location_scope)
 
         },
         navigationIcon = {
