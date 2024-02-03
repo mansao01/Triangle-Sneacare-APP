@@ -1,11 +1,7 @@
 package com.mansao.trianglesneacare.ui.screen.section.customer.maps
 
 import android.annotation.SuppressLint
-import android.content.Context
-import android.location.Address
-import android.location.Geocoder
 import android.location.Location
-import android.os.Build
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
@@ -55,13 +51,10 @@ import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.rememberCameraPositionState
 import com.google.maps.android.compose.rememberMarkerState
 import com.mansao.trianglesneacare.R
-import com.mansao.trianglesneacare.data.local.model.LocationDetail
 import com.mansao.trianglesneacare.data.network.response.GeocodingResponse
 import com.mansao.trianglesneacare.ui.common.UiState
 import com.mansao.trianglesneacare.ui.components.LoadingDialog
 import com.mansao.trianglesneacare.ui.screen.SharedViewModel
-import kotlinx.coroutines.flow.collect
-import java.util.Locale
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -212,7 +205,9 @@ fun MapsScreenComponentWithLocation(
     val cameraPositionState = rememberCameraPositionState {
         position = CameraPosition.fromLatLngZoom(LatLng(latitude, longitude), 18f)
     }
-    mapsViewModel.getDetailLocation(latitude, longitude, context)
+    LaunchedEffect(Unit){
+        mapsViewModel.getDetailLocation(latitude, longitude, context)
+    }
     val markerState = rememberMarkerState(position = LatLng(latitude, longitude))
     val newLatitude = markerState.position.latitude
     val newLongitude = markerState.position.longitude

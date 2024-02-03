@@ -8,7 +8,6 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mansao.trianglesneacare.data.AppRepositoryImpl
-import com.mansao.trianglesneacare.data.local.model.LocationDetail
 import com.mansao.trianglesneacare.data.network.response.GeocodingResponse
 import com.mansao.trianglesneacare.ui.common.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -47,7 +46,6 @@ class MapsViewModel @Inject constructor(private val appRepositoryImpl: AppReposi
         viewModelScope.launch {
             val geocoder = Geocoder(context, Locale.getDefault())
 
-            var locationDetail = LocationDetail()
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 geocoder.getFromLocation(
@@ -62,17 +60,7 @@ class MapsViewModel @Inject constructor(private val appRepositoryImpl: AppReposi
                     val village = address.subLocality ?: "" //desa
                     val roadName = address.thoroughfare ?: ""
 
-                    locationDetail =
-                        LocationDetail(
-                            addressText,
-                            city,
-                            state,
-                            country,
-                            subCity,
-                            village,
-                            roadName
-                        )
-                    _address.value = address.getAddressLine(0)
+                    _address.value =addressText
 
                 }
             } else {
@@ -82,27 +70,22 @@ class MapsViewModel @Inject constructor(private val appRepositoryImpl: AppReposi
                     if (addresses!!.isNotEmpty()) {
                         val address = addresses[0]
                         Log.d("full location", address.toString())
+                        val addressText = address.getAddressLine(0) ?: ""
+                        val city = address.locality ?: ""
+                        val state = address.adminArea ?: ""
+                        val country = address.countryName ?: ""
+                        val subCity = address.subAdminArea ?: "" //kabupaten
+                        val village = address.subLocality ?: "" //desa
+                        val roadName = address.thoroughfare ?: ""
 
-                        LocationDetail(
-                            address.getAddressLine(0) ?: "",
-                            address.locality ?: "",
-                            address.adminArea ?: "",
-                            address.countryName ?: "",
-                            address.subAdminArea ?: "",
-                            address.subLocality ?: "",
-                            address.thoroughfare ?: ""
-                        )
 
-                        _address.value = address.getAddressLine(0)
+                        _address.value = addressText
                     } else {
-                        LocationDetail("", "", "", "", "", "")
+                        _address.value = ""
+
                     }
                 } catch (e: Exception) {
                     e.printStackTrace()
-                    locationDetail = LocationDetail(
-                        address = "Error retrieving location details"
-
-                    )
                 }
             }
 
