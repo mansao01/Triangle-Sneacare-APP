@@ -29,6 +29,16 @@ class MapsViewModel @Inject constructor(private val appRepositoryImpl: AppReposi
         MutableStateFlow("")
     val address: StateFlow<String> = _address
 
+    private var _showBalloonState: MutableStateFlow<Boolean> = MutableStateFlow(true)
+    val showBalloonState: StateFlow<Boolean> = _showBalloonState
+
+    init {
+        viewModelScope.launch {
+            appRepositoryImpl.getBalloonState().collect { showBalloon ->
+                _showBalloonState.value = showBalloon
+            }
+        }
+    }
 
     fun getLocationFromPlaceId(placeId: String) {
         _uiState.value = UiState.Loading
@@ -55,7 +65,7 @@ class MapsViewModel @Inject constructor(private val appRepositoryImpl: AppReposi
                     val addressText = address.getAddressLine(0) ?: ""
 
 
-                    _address.value =addressText
+                    _address.value = addressText
 
                 }
             } else {
@@ -77,6 +87,12 @@ class MapsViewModel @Inject constructor(private val appRepositoryImpl: AppReposi
                 }
             }
 
+        }
+    }
+
+    fun hideBalloon() {
+        viewModelScope.launch {
+            appRepositoryImpl.saveShowBalloonState(false)
         }
     }
 

@@ -32,7 +32,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -56,6 +55,12 @@ import com.mansao.trianglesneacare.data.network.response.GeocodingResponse
 import com.mansao.trianglesneacare.ui.common.UiState
 import com.mansao.trianglesneacare.ui.components.LoadingDialog
 import com.mansao.trianglesneacare.ui.screen.SharedViewModel
+import com.skydoves.balloon.ArrowPositionRules
+import com.skydoves.balloon.BalloonAnimation
+import com.skydoves.balloon.BalloonHighlightAnimation
+import com.skydoves.balloon.BalloonSizeSpec
+import com.skydoves.balloon.compose.Balloon
+import com.skydoves.balloon.compose.rememberBalloonBuilder
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.debounce
 
@@ -145,6 +150,7 @@ fun MapsScreenComponentWithPlaceId(
     val cameraPositionState = rememberCameraPositionState {
         position = CameraPosition.fromLatLngZoom(centerLocation, 10f)
     }
+
     val radius = calculateRadius(centerLocation, LatLng(northeastLat, northeastLng))
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -152,7 +158,6 @@ fun MapsScreenComponentWithPlaceId(
             cameraPositionState = cameraPositionState,
             properties = mapProperties
         ) {
-
             boundsBuilder.build()
             cameraPositionState.move(CameraUpdateFactory.newLatLngBounds(boundsBuilder.build(), 64))
 
@@ -209,7 +214,7 @@ fun MapsScreenComponentWithLocation(
     val cameraPositionState = rememberCameraPositionState {
         position = CameraPosition.fromLatLngZoom(LatLng(latitude, longitude), 18f)
     }
-    LaunchedEffect(Unit){
+    LaunchedEffect(Unit) {
         mapsViewModel.getDetailLocation(latitude, longitude, context)
     }
     val markerState = rememberMarkerState(position = LatLng(latitude, longitude))
@@ -220,10 +225,23 @@ fun MapsScreenComponentWithLocation(
 
     LaunchedEffect(Unit) {
         mapsViewModel.address
-            .debounce(1500) // Adjust the duration as needed (in milliseconds)
+            .debounce(1000)
             .collect { newAddress ->
                 debouncedAddress.value = newAddress
             }
+    }
+
+    val balloonBuilder = rememberBalloonBuilder {
+        setArrowSize(10)
+        setArrowPosition(0.5f)
+        setArrowPositionRules(ArrowPositionRules.ALIGN_ANCHOR)
+        setWidth(BalloonSizeSpec.WRAP)
+        setHeight(BalloonSizeSpec.WRAP)
+        setPadding(12)
+        setMarginHorizontal(12)
+        setCornerRadius(8f)
+        setBalloonAnimation(BalloonAnimation.ELASTIC)
+        setBalloonHighlightAnimation(BalloonHighlightAnimation.SHAKE)
     }
 
     Log.d("lat", latitude.toString())
@@ -235,9 +253,9 @@ fun MapsScreenComponentWithLocation(
         ) {
             Marker(
                 state = markerState,
-                draggable = true,
-
+                draggable = true
             )
+
         }
         LaunchedEffect(key1 = newLatitude, key2 = newLongitude) {
             Log.d("marker", "New coordinates: $newLatitude, $newLongitude")
@@ -254,21 +272,47 @@ fun MapsScreenComponentWithLocation(
                 modifier = Modifier
                     .padding(horizontal = 16.dp, vertical = 8.dp)
             ) {
+
                 Spacer(modifier = Modifier.height(8.dp))
-                    Text(text = debouncedAddress.value)
 
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    OutlinedButton(
-                        onClick = {
-                            sharedViewModel.addFullAddress(debouncedAddress.value)
-                            Log.d("full address", debouncedAddress.value)
-                            navigateToAddAddress()
-                        }, modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text(text = stringResource(R.string.button_with_get_location))
+                Balloon(
+                    builder = balloonBuilder,
+                    balloonContent = {
+                        Column {
+                            Text(text = "You can move the marker by hold and move the marker")
+                            OutlinedButton(
+                                onClick = {
+                                    mapsViewModel.hideBalloon()
+                                },
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                Text(text = "Dismiss")
+                            }
+                        }
                     }
+                ) { balloonWindow ->
+                    mapsViewModel.showBalloonState.collectAsState().value.let { showBalloon ->
+                        Log.d("balloonState", showBalloon.toString())
+                        if (showBalloon) balloonWindow.showAlignTop() else balloonWindow.dismiss()
+
+                    }
+
+                    Text(text = debouncedAddress.value)
                 }
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+
+                OutlinedButton(
+                    onClick = {
+                        sharedViewModel.addFullAddress(debouncedAddress.value)
+                        Log.d("full address", debouncedAddress.value)
+                        navigateToAddAddress()
+                    }, modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(text = stringResource(R.string.button_with_get_location))
+                }
+            }
         }
     }
 }
@@ -345,6 +389,7 @@ fun MapTopBar(
     navigateBack: () -> Unit,
     placeId: String
 ) {
+
     TopAppBar(
         title = {
 
@@ -353,6 +398,7 @@ fun MapTopBar(
                     R.string.your_location
                 )
             )
+
 
         },
         navigationIcon = {

@@ -122,7 +122,14 @@ dependencies {
 
     //    permission
     implementation("com.google.accompanist:accompanist-permissions:0.30.1")
+
+//    balloon
+    implementation("com.github.skydoves:balloon-compose:1.6.4")
+
+
     implementation("androidx.exifinterface:exifinterface:1.3.6")
+
+
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")

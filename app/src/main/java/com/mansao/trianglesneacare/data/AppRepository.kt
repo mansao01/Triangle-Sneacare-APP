@@ -60,10 +60,12 @@ interface AppRepository {
     suspend fun saveIsLoginState(isLogin: Boolean)
     suspend fun saveUsername(name: String)
     suspend fun saveRole(role: String)
+    suspend fun saveShowBalloonState(showBalloonState: Boolean)
     suspend fun getAccessToken(): String?
     suspend fun getUsername(): String?
     suspend fun getRole(): String?
     suspend fun getLoginState(): Flow<Boolean>
+    suspend fun getBalloonState(): Flow<Boolean>
     suspend fun clearToken()
     suspend fun clearUsername()
     suspend fun clearRoleName()
@@ -148,8 +150,9 @@ class AppRepositoryImpl @Inject constructor(
 
     override suspend fun saveUsername(name: String) = appPreferences.saveUsername(name)
 
-
     override suspend fun saveRole(role: String) = appPreferences.saveRole(role)
+    override suspend fun saveShowBalloonState(showBalloonState: Boolean) =
+        appPreferences.saveShowBalloonState(showBalloonState)
 
     override suspend fun getAccessToken(): String? = appPreferences.getAccessToken()
 
@@ -157,6 +160,9 @@ class AppRepositoryImpl @Inject constructor(
 
     override suspend fun getRole(): String? = appPreferences.getRole()
     override suspend fun getLoginState(): Flow<Boolean> = appPreferences.getIsLoginState()
+
+    override suspend fun getBalloonState(): Flow<Boolean> = appPreferences.getShowBalloonState()
+
 
     override suspend fun clearToken() = appPreferences.clearTokens()
 

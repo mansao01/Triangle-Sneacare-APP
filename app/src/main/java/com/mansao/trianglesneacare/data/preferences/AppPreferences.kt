@@ -25,6 +25,7 @@ class AppPreferences @Inject constructor(@ApplicationContext val context: Contex
     private val isLoginState = booleanPreferencesKey("is_login")
     private val username = stringPreferencesKey("username")
     private val roleName = stringPreferencesKey("role")
+    private val showBalloonState = booleanPreferencesKey("show_balloon")
 
     //    save
     suspend fun saveAccessToken(token: String) {
@@ -48,6 +49,12 @@ class AppPreferences @Inject constructor(@ApplicationContext val context: Contex
     suspend fun saveRole(role: String) {
         dataStore.edit { preferences ->
             preferences[roleName] = role
+        }
+    }
+
+    suspend fun saveShowBalloonState(showBalloon: Boolean) {
+        dataStore.edit { preferences ->
+            preferences[showBalloonState] = showBalloon
         }
     }
 
@@ -82,6 +89,21 @@ class AppPreferences @Inject constructor(@ApplicationContext val context: Contex
             }
     }
 
+    fun getShowBalloonState(): Flow<Boolean> {
+        return dataStore.data
+            .catch { exception ->
+                if (exception is IOException) {
+                    emit(emptyPreferences())
+                } else {
+                    throw exception
+                }
+            }
+            .map { preferences ->
+                val balloonState = preferences[showBalloonState] ?: true
+                balloonState
+            }
+    }
+
 //    remove
 
     suspend fun clearTokens() {
@@ -95,6 +117,7 @@ class AppPreferences @Inject constructor(@ApplicationContext val context: Contex
             preferences.remove(username)
         }
     }
+
     suspend fun clearRoleName() {
         dataStore.edit { preferences ->
             preferences.remove(roleName)

@@ -85,7 +85,17 @@ fun SearchAddressScreen(
     ) { permissionsMap ->
         val areGranted = permissionsMap.values.all { it }
         if (areGranted) {
-            Toast.makeText(context, "Permission Granted", Toast.LENGTH_SHORT).show()
+            searchViewModel.setLoadingState()
+            getCurrentLocation(fusedLocationClient, object : LocationCallback {
+                override fun onLocationResult(location: Location) {
+                    val latitude = location.latitude
+                    val longitude = location.longitude
+
+                    searchViewModel.setStandbyState()
+                    navigateToMap()
+                    sharedViewModel.addLocation(latitude, longitude)
+                }
+            })
         } else {
             Toast.makeText(context, "Permission Denied", Toast.LENGTH_SHORT).show()
         }
@@ -114,8 +124,8 @@ fun SearchAddressScreen(
                         )
                     },
                     modifier = Modifier.clickable {
-                        searchViewModel.setLoadingState()
                         if (hasLocationPermissions(context, permissions)) {
+                            searchViewModel.setLoadingState()
                             getCurrentLocation(fusedLocationClient, object : LocationCallback {
                                 override fun onLocationResult(location: Location) {
                                     val latitude = location.latitude
