@@ -11,6 +11,7 @@ import com.mansao.trianglesneacare.data.network.response.GetCustomerAddressesRes
 import com.mansao.trianglesneacare.data.network.response.GetDriversResponse
 import com.mansao.trianglesneacare.data.network.response.GetProfileDetailResponse
 import com.mansao.trianglesneacare.data.network.response.LoginResponse
+import com.mansao.trianglesneacare.data.network.response.OnlyAccessTokenResponse
 import com.mansao.trianglesneacare.data.network.response.OnlyMsgResponse
 import com.mansao.trianglesneacare.data.network.response.ProfileResponse
 import com.mansao.trianglesneacare.data.network.response.RegisterDriverResponse
@@ -40,6 +41,7 @@ interface AppRepository {
     ): RegisterDriverResponse
 
     suspend fun login(loginRequest: LoginRequest): LoginResponse
+    suspend fun refreshToken(refrehToken: String): OnlyAccessTokenResponse
     suspend fun getProfile(token: String): ProfileResponse
     suspend fun getProfileDetail(token: String): GetProfileDetailResponse
     suspend fun getDrivers(): GetDriversResponse
@@ -50,6 +52,15 @@ interface AppRepository {
         createCustomerAddressRequest: CreateCustomerAddressRequest
     ): CreateCustomerAddressResponse
 
+    suspend fun deleteCustomerAddress(token: String, id: Int): OnlyMsgResponse
+    suspend fun updateCustomerAddress(
+        token: String,
+        id: Int,
+        receiverName: String,
+        fullAddress: String,
+        note: String
+    ): OnlyMsgResponse
+
     suspend fun autoCompleteAddress(address: String): AutoCompleteAddressResponse
 
     suspend fun geocodeWithAddress(address: String): GeocodingResponse
@@ -57,11 +68,13 @@ interface AppRepository {
 
     //    preferences
     suspend fun saveAccessToken(token: String)
+    suspend fun saveRefreshToken(token: String)
     suspend fun saveIsLoginState(isLogin: Boolean)
     suspend fun saveUsername(name: String)
     suspend fun saveRole(role: String)
     suspend fun saveShowBalloonState(showBalloonState: Boolean)
     suspend fun getAccessToken(): String?
+    suspend fun getRefreshToken(): String?
     suspend fun getUsername(): String?
     suspend fun getRole(): String?
     suspend fun getLoginState(): Flow<Boolean>
@@ -116,6 +129,9 @@ class AppRepositoryImpl @Inject constructor(
     override suspend fun login(loginRequest: LoginRequest): LoginResponse =
         apiService.login(loginRequest)
 
+    override suspend fun refreshToken(refrehToken: String): OnlyAccessTokenResponse =
+        apiService.refreshToken(refrehToken)
+
     override suspend fun getProfile(token: String): ProfileResponse = apiService.getProfile(token)
     override suspend fun getProfileDetail(token: String): GetProfileDetailResponse =
         apiService.getProfileDetail(token)
@@ -133,6 +149,18 @@ class AppRepositoryImpl @Inject constructor(
     ): CreateCustomerAddressResponse =
         apiService.createCustomerAddress(token, createCustomerAddressRequest)
 
+    override suspend fun deleteCustomerAddress(token: String, id: Int): OnlyMsgResponse =
+        apiService.deleteCustomerAddress(token, id)
+
+    override suspend fun updateCustomerAddress(
+        token: String,
+        id: Int,
+        receiverName: String,
+        fullAddress: String,
+        note: String
+    ): OnlyMsgResponse =
+        apiService.updateCustomerAddress(token, id, receiverName, fullAddress, note)
+
     override suspend fun autoCompleteAddress(address: String): AutoCompleteAddressResponse =
         apiService.autoCompleteAddress(address)
 
@@ -144,6 +172,7 @@ class AppRepositoryImpl @Inject constructor(
 
     //    preferences
     override suspend fun saveAccessToken(token: String) = appPreferences.saveAccessToken(token)
+    override suspend fun saveRefreshToken(token: String)  = appPreferences.saveRefreshToken(token)
 
     override suspend fun saveIsLoginState(isLogin: Boolean) =
         appPreferences.saveIsLoginState(isLogin)
@@ -155,6 +184,7 @@ class AppRepositoryImpl @Inject constructor(
         appPreferences.saveShowBalloonState(showBalloonState)
 
     override suspend fun getAccessToken(): String? = appPreferences.getAccessToken()
+    override suspend fun getRefreshToken(): String?  = appPreferences.getRefreshToken()
 
     override suspend fun getUsername(): String? = appPreferences.getUsername()
 

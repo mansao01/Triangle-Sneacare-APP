@@ -41,6 +41,7 @@ class LoginViewModel @Inject constructor(
                 appRepositoryImpl.saveUsername(result.user.name)
                 result.user.role.role?.let { appRepositoryImpl.saveRole(it) }
                 appRepositoryImpl.saveAccessToken(result.accessToken)
+                appRepositoryImpl.saveRefreshToken(result.refreshToken)
                 _uiState.value = UiState.Success(result)
             } catch (e: Exception) {
                 val errorMessage = when (e) {

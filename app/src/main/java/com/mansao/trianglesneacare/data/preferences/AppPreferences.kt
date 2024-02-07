@@ -22,6 +22,7 @@ class AppPreferences @Inject constructor(@ApplicationContext val context: Contex
     private val dataStore = context.dataStore
 
     private val accessTokenKey = stringPreferencesKey("access_token")
+    private val refreshTokenKey = stringPreferencesKey("refresh_token")
     private val isLoginState = booleanPreferencesKey("is_login")
     private val username = stringPreferencesKey("username")
     private val roleName = stringPreferencesKey("role")
@@ -31,6 +32,12 @@ class AppPreferences @Inject constructor(@ApplicationContext val context: Contex
     suspend fun saveAccessToken(token: String) {
         dataStore.edit { preferences ->
             preferences[accessTokenKey] = token
+        }
+    }
+
+    suspend fun saveRefreshToken(token: String) {
+        dataStore.edit { preferences ->
+            preferences[refreshTokenKey] = token
         }
     }
 
@@ -62,6 +69,11 @@ class AppPreferences @Inject constructor(@ApplicationContext val context: Contex
     suspend fun getAccessToken(): String? {
         val preferences = dataStore.data.first()
         return preferences[accessTokenKey]
+    }
+
+    suspend fun getRefreshToken(): String? {
+        val preferences = dataStore.data.first()
+        return preferences[refreshTokenKey]
     }
 
     suspend fun getUsername(): String? {
@@ -109,6 +121,7 @@ class AppPreferences @Inject constructor(@ApplicationContext val context: Contex
     suspend fun clearTokens() {
         dataStore.edit { preferences ->
             preferences.remove(accessTokenKey)
+            preferences.remove(refreshTokenKey)
         }
     }
 

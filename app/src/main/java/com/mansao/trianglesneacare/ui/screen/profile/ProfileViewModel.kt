@@ -1,5 +1,6 @@
 package com.mansao.trianglesneacare.ui.screen.profile
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -23,6 +24,10 @@ class ProfileViewModel @Inject constructor(private val appRepositoryImpl: AppRep
 
     private fun getProfile() {
         viewModelScope.launch {
+            val refreshToken = appRepositoryImpl.getRefreshToken()
+            Log.d("refresh token", refreshToken.toString())
+            val updatedRefreshToken = refreshToken?.let { appRepositoryImpl.refreshToken(it) }
+            updatedRefreshToken?.accessToken?.let { appRepositoryImpl.saveAccessToken(it) }
             uiState = ProfileUiState.Loading
             uiState = try {
                 val token = appRepositoryImpl.getAccessToken()

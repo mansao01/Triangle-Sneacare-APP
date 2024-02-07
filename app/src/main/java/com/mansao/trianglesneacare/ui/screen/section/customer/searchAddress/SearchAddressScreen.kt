@@ -97,6 +97,7 @@ fun SearchAddressScreen(
                 }
             })
         } else {
+//            hey future me, maybe u can give a alert dialog to warn customer, they need it to use the feature
             Toast.makeText(context, "Permission Denied", Toast.LENGTH_SHORT).show()
         }
     }

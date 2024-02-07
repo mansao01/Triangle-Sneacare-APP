@@ -10,6 +10,7 @@ import com.mansao.trianglesneacare.data.network.response.GetCustomerAddressesRes
 import com.mansao.trianglesneacare.data.network.response.GetDriversResponse
 import com.mansao.trianglesneacare.data.network.response.GetProfileDetailResponse
 import com.mansao.trianglesneacare.data.network.response.LoginResponse
+import com.mansao.trianglesneacare.data.network.response.OnlyAccessTokenResponse
 import com.mansao.trianglesneacare.data.network.response.OnlyMsgResponse
 import com.mansao.trianglesneacare.data.network.response.ProfileResponse
 import com.mansao.trianglesneacare.data.network.response.RegisterDriverResponse
@@ -17,10 +18,12 @@ import com.mansao.trianglesneacare.data.network.response.RegisterResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Multipart
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Part
 import retrofit2.http.Query
 
@@ -50,6 +53,11 @@ interface ApiService {
         @Body loginRequestBody: LoginRequest
     ): LoginResponse
 
+    @POST(ApiConst.REFRESH_ACCESS_TOKEN)
+    suspend fun refreshToken(
+        @Query("refreshToken") refreshToken:String
+    ):OnlyAccessTokenResponse
+
     @GET(ApiConst.PROFILE)
     suspend fun getProfile(
         @Header(ApiConst.AUTHORIZATION_KEY) token: String
@@ -75,20 +83,36 @@ interface ApiService {
         @Body createCustomerAddressRequest: CreateCustomerAddressRequest
     ): CreateCustomerAddressResponse
 
+    @DELETE(ApiConst.DELETE_CUSTOMER_ADDRESS)
+    suspend fun deleteCustomerAddress(
+        @Header(ApiConst.AUTHORIZATION_KEY) token: String,
+        @Query("id") id: Int
+    ):OnlyMsgResponse
+
+    @PUT(ApiConst.UPDATE_CUSTOMER_ADDRESS)
+    suspend fun updateCustomerAddress(
+        @Header(ApiConst.AUTHORIZATION_KEY) token: String,
+        @Query("id") id: Int,
+        @Query("receiverName") receiverName: String,
+        @Query("fullAddress") fullAddress: String,
+        @Query("note") note: String,
+    ):OnlyMsgResponse
+
     @GET(ApiConst.AUTO_COMPLETE_ADDRESS)
     suspend fun autoCompleteAddress(
         @Query("address") address: String
     ): AutoCompleteAddressResponse
 
+
     @GET(ApiConst.GEOCODING_ADDRESS)
     suspend fun geocodeWithAddress(
         @Query("address") address: String
-    ):GeocodingResponse
+    ): GeocodingResponse
 
     @GET(ApiConst.GEOCODING_PLACE_ID)
     suspend fun geocodeWithPlaceId(
         @Query("placeId") placeId: String
-    ):GeocodingResponse
+    ): GeocodingResponse
 
     @POST(ApiConst.LOGOUT)
     suspend fun logout(

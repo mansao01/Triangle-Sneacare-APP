@@ -6,6 +6,7 @@ object ApiConst {
     const val AUTHORIZATION_KEY = "Authorization"
     const val CHECK_SERVER = "test"
     const val LOGIN = "login"
+    const val REFRESH_ACCESS_TOKEN = "token"
     const val REGISTER = "register"
     const val REGISTER_DRIVER = "registerDriver"
     const val PROFILE = "profile"
@@ -15,6 +16,8 @@ object ApiConst {
     const val GET_CUSTOMER_ADDRESS = "getCustomerAddress"
     const val AUTO_COMPLETE_ADDRESS = "autoCompleteAddress"
     const val CREATE_CUSTOMER_ADDRESS = "createCustomerAddress"
+    const val DELETE_CUSTOMER_ADDRESS = "customerAddress/delete"
+    const val UPDATE_CUSTOMER_ADDRESS = "customerAddress/update"
     const val GEOCODING_ADDRESS = "geoCodeWithAddress"
     const val GEOCODING_PLACE_ID = "geoCodeWithPlaceId"
 }
