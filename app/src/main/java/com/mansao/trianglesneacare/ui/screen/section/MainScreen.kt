@@ -147,6 +147,8 @@ fun MainScreenContent(
                         },
                         navigateToSearchAddress = {
                             navController.navigate(Screen.SearchAddress.route)
+                        }, navigateToEditAddress = {
+                            navController.navigate(Screen.EditAddress.route)
                         })
                 }
 
@@ -177,6 +179,10 @@ fun MainScreenContent(
                         },
                         sharedViewModel = sharedViewModel
                     )
+                }
+
+                composable(Screen.EditAddress.route){
+
                 }
 
                 composable(Screen.Maps.route) {

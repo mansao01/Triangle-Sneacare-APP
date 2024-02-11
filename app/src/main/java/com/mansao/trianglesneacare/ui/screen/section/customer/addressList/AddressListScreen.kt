@@ -35,9 +35,11 @@ import com.mansao.trianglesneacare.ui.components.LoadingDialog
 @Composable
 fun AddressListScreen(
     navigateBack: () -> Unit,
+    navigateToEditAddress: () -> Unit,
     navigateToSearchAddress: () -> Unit,
-    viewModel: AddressListViewModel = hiltViewModel()
-) {
+    viewModel: AddressListViewModel = hiltViewModel(),
+
+    ) {
     LaunchedEffect(key1 = Unit) {
         viewModel.getAddresses()
     }
@@ -56,7 +58,11 @@ fun AddressListScreen(
                 when (uiState) {
                     is UiState.Standby -> {}
                     is UiState.Loading -> LoadingDialog()
-                    is UiState.Success -> AddressListComponent(address = uiState.data.address)
+                    is UiState.Success -> AddressListComponent(
+                        address = uiState.data.address,
+                        navigateToEditAddress = navigateToEditAddress
+                    )
+
                     is UiState.Error -> Toast.makeText(
                         context,
                         uiState.errorMessage,
@@ -70,11 +76,12 @@ fun AddressListScreen(
 
 @Composable
 fun AddressListComponent(
-    address: List<AddressItem>
+    address: List<AddressItem>,
+    navigateToEditAddress: () -> Unit
 ) {
     LazyColumn {
         items(address) {
-            AddressListItem(address = it)
+            AddressListItem(address = it, navigateToEditAddress = navigateToEditAddress)
         }
     }
 }
