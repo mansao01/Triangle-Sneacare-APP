@@ -1,11 +1,13 @@
 package com.mansao.trianglesneacare.data
 
+import com.mansao.trianglesneacare.data.network.ApiConst
 import com.mansao.trianglesneacare.data.network.ApiService
 import com.mansao.trianglesneacare.data.network.request.CreateCustomerAddressRequest
 import com.mansao.trianglesneacare.data.network.request.LoginRequest
 import com.mansao.trianglesneacare.data.network.request.RegisterRequest
 import com.mansao.trianglesneacare.data.network.response.AutoCompleteAddressResponse
 import com.mansao.trianglesneacare.data.network.response.CreateCustomerAddressResponse
+import com.mansao.trianglesneacare.data.network.response.CustomerDetailAddressResponse
 import com.mansao.trianglesneacare.data.network.response.GeocodingResponse
 import com.mansao.trianglesneacare.data.network.response.GetCustomerAddressesResponse
 import com.mansao.trianglesneacare.data.network.response.GetDriversResponse
@@ -23,6 +25,8 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
+import retrofit2.http.Header
+import retrofit2.http.Query
 import java.io.File
 import javax.inject.Inject
 
@@ -41,7 +45,7 @@ interface AppRepository {
     ): RegisterDriverResponse
 
     suspend fun login(loginRequest: LoginRequest): LoginResponse
-    suspend fun refreshToken(refrehToken: String): OnlyAccessTokenResponse
+    suspend fun refreshToken(refreshToken: String): OnlyAccessTokenResponse
     suspend fun getProfile(token: String): ProfileResponse
     suspend fun getProfileDetail(token: String): GetProfileDetailResponse
     suspend fun getDrivers(): GetDriversResponse
@@ -53,6 +57,11 @@ interface AppRepository {
     ): CreateCustomerAddressResponse
 
     suspend fun deleteCustomerAddress(token: String, id: Int): OnlyMsgResponse
+    suspend fun getDetailCustomerAddresses(
+        token: String,
+        addressId: Int
+    ): CustomerDetailAddressResponse
+
     suspend fun updateCustomerAddress(
         token: String,
         id: Int,
@@ -129,8 +138,8 @@ class AppRepositoryImpl @Inject constructor(
     override suspend fun login(loginRequest: LoginRequest): LoginResponse =
         apiService.login(loginRequest)
 
-    override suspend fun refreshToken(refrehToken: String): OnlyAccessTokenResponse =
-        apiService.refreshToken(refrehToken)
+    override suspend fun refreshToken(refreshToken: String): OnlyAccessTokenResponse =
+        apiService.refreshToken(refreshToken)
 
     override suspend fun getProfile(token: String): ProfileResponse = apiService.getProfile(token)
     override suspend fun getProfileDetail(token: String): GetProfileDetailResponse =
@@ -142,6 +151,11 @@ class AppRepositoryImpl @Inject constructor(
 
     override suspend fun getCustomerAddresses(token: String): GetCustomerAddressesResponse =
         apiService.getCustomerAddresses(token)
+
+    override suspend fun getDetailCustomerAddresses(
+        token: String,
+        addressId: Int
+    ): CustomerDetailAddressResponse = apiService.getDetailCustomerAddresses(token, addressId)
 
     override suspend fun createCustomerAddress(
         token: String,
@@ -172,7 +186,7 @@ class AppRepositoryImpl @Inject constructor(
 
     //    preferences
     override suspend fun saveAccessToken(token: String) = appPreferences.saveAccessToken(token)
-    override suspend fun saveRefreshToken(token: String)  = appPreferences.saveRefreshToken(token)
+    override suspend fun saveRefreshToken(token: String) = appPreferences.saveRefreshToken(token)
 
     override suspend fun saveIsLoginState(isLogin: Boolean) =
         appPreferences.saveIsLoginState(isLogin)
@@ -184,7 +198,7 @@ class AppRepositoryImpl @Inject constructor(
         appPreferences.saveShowBalloonState(showBalloonState)
 
     override suspend fun getAccessToken(): String? = appPreferences.getAccessToken()
-    override suspend fun getRefreshToken(): String?  = appPreferences.getRefreshToken()
+    override suspend fun getRefreshToken(): String? = appPreferences.getRefreshToken()
 
     override suspend fun getUsername(): String? = appPreferences.getUsername()
 

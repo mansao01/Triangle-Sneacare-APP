@@ -5,6 +5,7 @@ import com.mansao.trianglesneacare.data.network.request.LoginRequest
 import com.mansao.trianglesneacare.data.network.request.RegisterRequest
 import com.mansao.trianglesneacare.data.network.response.AutoCompleteAddressResponse
 import com.mansao.trianglesneacare.data.network.response.CreateCustomerAddressResponse
+import com.mansao.trianglesneacare.data.network.response.CustomerDetailAddressResponse
 import com.mansao.trianglesneacare.data.network.response.GeocodingResponse
 import com.mansao.trianglesneacare.data.network.response.GetCustomerAddressesResponse
 import com.mansao.trianglesneacare.data.network.response.GetDriversResponse
@@ -76,6 +77,13 @@ interface ApiService {
     suspend fun getCustomerAddresses(
         @Header(ApiConst.AUTHORIZATION_KEY) token: String
     ): GetCustomerAddressesResponse
+
+    @GET(ApiConst.GET_DETAIL_CUSTOMER_ADDRESS)
+    suspend fun getDetailCustomerAddresses(
+        @Header(ApiConst.AUTHORIZATION_KEY) token: String,
+        @Query("addressId") addressId:Int
+    ): CustomerDetailAddressResponse
+
 
     @POST(ApiConst.CREATE_CUSTOMER_ADDRESS)
     suspend fun createCustomerAddress(

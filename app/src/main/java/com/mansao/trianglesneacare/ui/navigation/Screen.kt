@@ -20,7 +20,7 @@ sealed class Screen(val route: String) {
     object AddressList : Screen("addressList")
     object AddAddress : Screen("addAddress")
     object SearchAddress : Screen("searchAddress")
-    object EditAddress:Screen("editAddress")
+    object UpdateAddress:Screen("updateAddress")
     object Maps : Screen("maps")
 
     //driver

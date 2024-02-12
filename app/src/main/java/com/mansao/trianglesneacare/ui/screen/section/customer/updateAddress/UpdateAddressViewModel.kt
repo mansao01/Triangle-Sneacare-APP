@@ -1,10 +1,9 @@
 package com.mansao.trianglesneacare.ui.screen.section.customer.updateAddress
 
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mansao.trianglesneacare.data.AppRepositoryImpl
-import com.mansao.trianglesneacare.data.network.response.OnlyMsgResponse
+import com.mansao.trianglesneacare.data.network.response.CustomerDetailAddressResponse
 import com.mansao.trianglesneacare.ui.common.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,13 +14,25 @@ import javax.inject.Inject
 @HiltViewModel
 class UpdateAddressViewModel @Inject constructor(private val appRepositoryImpl: AppRepositoryImpl) :
     ViewModel() {
-    private var _uiState: MutableStateFlow<UiState<OnlyMsgResponse>> =
+    private var _uiState: MutableStateFlow<UiState<CustomerDetailAddressResponse>> =
         MutableStateFlow(UiState.Standby)
-    val uiState: StateFlow<UiState<OnlyMsgResponse>> = _uiState
+    val uiState: StateFlow<UiState<CustomerDetailAddressResponse>> = _uiState
 
     private var _deleteMessage: MutableStateFlow<String> =
         MutableStateFlow("")
     val deleteMessage: StateFlow<String> = _deleteMessage
+
+    private var _updateMessage: MutableStateFlow<String> =
+        MutableStateFlow("")
+    val updateMessage: StateFlow<String> = _updateMessage
+
+
+    fun getDetailAddress(addressId: Int) {
+        viewModelScope.launch {
+            val token = appRepositoryImpl.getAccessToken()
+            val result = appRepositoryImpl.getDetailCustomerAddresses("Bearer $token", addressId)
+        }
+    }
 
     fun updateAddress(
         id: Int,
@@ -39,9 +50,9 @@ class UpdateAddressViewModel @Inject constructor(private val appRepositoryImpl: 
                     fullAddress,
                     note
                 )
-                _uiState.value = UiState.Success(result)
+                _updateMessage.value = result.msg
             } catch (e: Exception) {
-                _uiState.value = UiState.Error(e.message.toString())
+                _updateMessage.value = e.message.toString()
 
             }
         }

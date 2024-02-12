@@ -43,6 +43,7 @@ import com.mansao.trianglesneacare.ui.screen.section.customer.home.CustomerHomeS
 import com.mansao.trianglesneacare.ui.screen.section.customer.maps.MapsScreen
 import com.mansao.trianglesneacare.ui.screen.section.customer.searchAddress.SearchAddressScreen
 import com.mansao.trianglesneacare.ui.screen.section.customer.transactionList.TransactionListScreen
+import com.mansao.trianglesneacare.ui.screen.section.customer.updateAddress.UpdateAddressScreen
 import com.mansao.trianglesneacare.ui.screen.section.driver.home.DriverHomeScreen
 import com.mansao.trianglesneacare.ui.screen.section.driver.map.MapScreen
 import com.mansao.trianglesneacare.utils.canGoBack
@@ -148,7 +149,7 @@ fun MainScreenContent(
                         navigateToSearchAddress = {
                             navController.navigate(Screen.SearchAddress.route)
                         }, navigateToEditAddress = {
-                            navController.navigate(Screen.EditAddress.route)
+                            navController.navigate(Screen.UpdateAddress.route)
                         })
                 }
 
@@ -181,8 +182,8 @@ fun MainScreenContent(
                     )
                 }
 
-                composable(Screen.EditAddress.route){
-
+                composable(Screen.UpdateAddress.route) {
+                    UpdateAddressScreen()
                 }
 
                 composable(Screen.Maps.route) {
