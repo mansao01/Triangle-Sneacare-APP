@@ -6,3 +6,10 @@ import androidx.compose.runtime.Composable
 fun UpdateAddressScreen() {
     
 }
+
+@Composable
+fun UpdateAddressComponent(
+
+) {
+
+}

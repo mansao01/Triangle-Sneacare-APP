@@ -27,36 +27,39 @@ class UpdateAddressViewModel @Inject constructor(private val appRepositoryImpl: 
     val updateMessage: StateFlow<String> = _updateMessage
 
 
-    fun getDetailAddress(addressId: Int) {
-        viewModelScope.launch {
+    fun getDetailAddress(addressId: Int) = viewModelScope.launch {
+        try {
             val token = appRepositoryImpl.getAccessToken()
             val result = appRepositoryImpl.getDetailCustomerAddresses("Bearer $token", addressId)
+            _uiState.value = UiState.Success(result)
+        } catch (e: Exception) {
+            _uiState.value = UiState.Error(e.message.toString())
         }
     }
+
 
     fun updateAddress(
         id: Int,
         receiverName: String,
         fullAddress: String,
         note: String
-    ) {
-        viewModelScope.launch {
-            try {
-                val token = appRepositoryImpl.getAccessToken()
-                val result = appRepositoryImpl.updateCustomerAddress(
-                    "Bearer $token",
-                    id,
-                    receiverName,
-                    fullAddress,
-                    note
-                )
-                _updateMessage.value = result.msg
-            } catch (e: Exception) {
-                _updateMessage.value = e.message.toString()
+    ) = viewModelScope.launch {
+        try {
+            val token = appRepositoryImpl.getAccessToken()
+            val result = appRepositoryImpl.updateCustomerAddress(
+                "Bearer $token",
+                id,
+                receiverName,
+                fullAddress,
+                note
+            )
+            _updateMessage.value = result.msg
+        } catch (e: Exception) {
+            _updateMessage.value = e.message.toString()
 
-            }
         }
     }
+
 
     fun deleteAddress(id: Int) {
         viewModelScope.launch {
