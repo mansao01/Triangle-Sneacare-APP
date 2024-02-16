@@ -46,6 +46,8 @@ class ProfileViewModel @Inject constructor(private val appRepositoryImpl: AppRep
             appRepositoryImpl.clearRoleName()
             appRepositoryImpl.clearUsername()
             appRepositoryImpl.saveIsLoginState(false)
+            appRepositoryImpl.saveShowBalloonState(true)
+
         }
     }
 

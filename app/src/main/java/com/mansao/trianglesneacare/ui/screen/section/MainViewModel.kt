@@ -22,15 +22,23 @@ class MainViewModel @Inject constructor(private val appRepositoryImpl: AppReposi
         MutableStateFlow(UiState.Standby)
     val uiState: Flow<UiState<OnlyMsgResponse>> = _uiState
 
+    private var _refreshTokenExpired: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    val refreshTokenExpired: Flow<Boolean> = _refreshTokenExpired
+
 
     init {
-        checkServerRunning()
+        if (!_refreshTokenExpired.value){
+            checkServiceAvailable()
+        }
     }
+
     private fun setLoadingState() {
         _uiState.value = UiState.Loading
     }
-     fun checkServerRunning() {
+
+    fun checkServiceAvailable() {
         setLoadingState()
+        updateAccessToken()
         viewModelScope.launch {
             try {
                 val result = appRepositoryImpl.checkServerIsRunning()
@@ -60,6 +68,27 @@ class MainViewModel @Inject constructor(private val appRepositoryImpl: AppReposi
                 val msg = jsonObject["msg"]
                 _uiState.value = UiState.Error(msg.toString())
             }
+        }
+    }
+
+    private fun updateAccessToken() = viewModelScope.launch {
+        try {
+            val refreshToken = appRepositoryImpl.getRefreshToken()
+            val updatedAccessToken = refreshToken?.let { appRepositoryImpl.refreshToken(it) }
+            updatedAccessToken?.accessToken?.let { appRepositoryImpl.saveAccessToken(it) }
+        } catch (e: Exception) {
+            _refreshTokenExpired.value = true
+        }
+    }
+
+    fun logout() {
+        setLoadingState()
+        viewModelScope.launch {
+            appRepositoryImpl.clearToken()
+            appRepositoryImpl.clearRoleName()
+            appRepositoryImpl.clearUsername()
+            appRepositoryImpl.saveIsLoginState(false)
+            appRepositoryImpl.saveShowBalloonState(true)
         }
     }
 }

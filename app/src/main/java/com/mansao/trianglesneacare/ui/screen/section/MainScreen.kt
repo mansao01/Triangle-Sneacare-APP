@@ -53,22 +53,29 @@ fun MainScreen(
     navController: NavHostController = rememberNavController(),
     authViewModel: AuthViewModel = hiltViewModel(),
     mainViewModel: MainViewModel = hiltViewModel(),
-    sharedViewModel: SharedViewModel = viewModel()
+    sharedViewModel: SharedViewModel = viewModel(),
+    navigateToLogin: () -> Unit
 ) {
+    mainViewModel.refreshTokenExpired.collectAsState(initial = false).value.let { isExpired ->
+        if (!isExpired) {
+            mainViewModel.uiState.collectAsState(initial = UiState.Loading).value.let { uiState ->
+                when (uiState) {
+                    is UiState.Standby -> {}
+                    is UiState.Loading -> LoadingDialog()
+                    is UiState.Success -> MainScreenContent(
+                        authViewModel = authViewModel,
+                        navController = navController,
+                        sharedViewModel = sharedViewModel
+                    )
 
-    mainViewModel.uiState.collectAsState(initial = UiState.Loading).value.let { uiState ->
-        when (uiState) {
-            is UiState.Standby -> {}
-            is UiState.Loading -> LoadingDialog()
-            is UiState.Success -> MainScreenContent(
-                authViewModel = authViewModel,
-                navController = navController,
-                sharedViewModel = sharedViewModel
-            )
-
-            is UiState.Error -> {
-                ServiceNotAvailable(action = { mainViewModel.checkServerRunning() })
+                    is UiState.Error -> {
+                        ServiceNotAvailable(action = { mainViewModel.checkServiceAvailable() })
+                    }
+                }
             }
+        } else {
+            navigateToLogin()
+            mainViewModel.logout()
         }
     }
 }
