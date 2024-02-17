@@ -91,6 +91,7 @@ fun SearchAddressScreen(
                     val latitude = location.latitude
                     val longitude = location.longitude
 
+//                    add gps checking is active or not
                     searchViewModel.setStandbyState()
                     navigateToMap()
                     sharedViewModel.addLocation(latitude, longitude)
@@ -131,6 +132,7 @@ fun SearchAddressScreen(
                                 override fun onLocationResult(location: Location) {
                                     val latitude = location.latitude
                                     val longitude = location.longitude
+//                    add gps checking is active or not
 
                                     navigateToMap()
                                     sharedViewModel.addLocation(latitude, longitude)
@@ -312,5 +314,4 @@ private fun getCurrentLocation(
         }
     }
 }
-
 

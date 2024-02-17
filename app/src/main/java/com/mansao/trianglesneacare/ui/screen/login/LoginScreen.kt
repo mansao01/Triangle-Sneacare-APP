@@ -1,4 +1,5 @@
 package com.mansao.trianglesneacare.ui.screen.login
+
 import android.widget.Toast
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.clickable
@@ -21,6 +22,7 @@ import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material.icons.outlined.Email
 import androidx.compose.material.icons.outlined.Lock
+import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -65,6 +67,7 @@ import com.mansao.trianglesneacare.ui.components.ForbiddenScreen
 import com.mansao.trianglesneacare.ui.components.HeaderText
 import com.mansao.trianglesneacare.ui.components.LoadingDialog
 import com.mansao.trianglesneacare.ui.navigation.Screen
+import com.mansao.trianglesneacare.ui.screen.SharedViewModel
 import com.mansao.trianglesneacare.ui.theme.Roboto
 import com.mansao.trianglesneacare.utils.rememberImeState
 
@@ -73,10 +76,10 @@ fun LoginScreen(
     loginViewModel: LoginViewModel = hiltViewModel(),
     navigateToMain: () -> Unit,
     navigateToRegister: () -> Unit,
-    authViewModel: AuthViewModel = hiltViewModel()
+    authViewModel: AuthViewModel = hiltViewModel(),
+    sharedViewModel: SharedViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
-
 
     authViewModel.loginState.collectAsState().value.let { isLogin ->
         if (isLogin) {
@@ -84,7 +87,8 @@ fun LoginScreen(
         } else {
             LoginComponent(
                 loginViewModel = loginViewModel,
-                navigateToRegister = navigateToRegister
+                navigateToRegister = navigateToRegister,
+                sharedViewModel = sharedViewModel
             )
             loginViewModel.uiState.collectAsState(initial = UiState.Standby).value.let { uiState ->
                 when (uiState) {
@@ -123,7 +127,8 @@ fun LoginScreen(
 @Composable
 fun LoginComponent(
     loginViewModel: LoginViewModel,
-    navigateToRegister: () -> Unit
+    navigateToRegister: () -> Unit,
+    sharedViewModel: SharedViewModel
 ) {
     val uiColor = if (isSystemInDarkTheme()) Color.White else Color.Black
     val imeState = rememberImeState()
@@ -152,6 +157,21 @@ fun LoginComponent(
                     .verticalScroll(scrollState)
                     .padding(horizontal = 30.dp)
             ) {
+                if (sharedViewModel.showSessionExpiredMessage) {
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                        shape = RoundedCornerShape(16.dp)
+                    ) {
+                        Text(
+                            text = "Session expired. Please log in again.",
+                            color = Color.Red,
+                            modifier = Modifier
+                                .padding(16.dp)
+                        )
+                    }
+                }
                 Spacer(modifier = Modifier.height(46.dp))
                 TopSection()
                 Spacer(modifier = Modifier.height(16.dp))
@@ -317,7 +337,10 @@ private fun isEmailValid(email: String): Boolean {
 fun NewLoginComponentPreview() {
     val loginViewModel: LoginViewModel = hiltViewModel()
     val navController: NavHostController = rememberNavController()
+    val sharedViewModel: SharedViewModel = hiltViewModel()
     LoginComponent(
         loginViewModel,
-        navigateToRegister = { navController.navigate(Screen.Register.route) })
+        navigateToRegister = { navController.navigate(Screen.Register.route) },
+        sharedViewModel
+    )
 }

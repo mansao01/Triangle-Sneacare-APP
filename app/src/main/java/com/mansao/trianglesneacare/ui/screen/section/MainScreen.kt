@@ -53,7 +53,7 @@ fun MainScreen(
     navController: NavHostController = rememberNavController(),
     authViewModel: AuthViewModel = hiltViewModel(),
     mainViewModel: MainViewModel = hiltViewModel(),
-    sharedViewModel: SharedViewModel = viewModel(),
+    sharedViewModel: SharedViewModel ,
     navigateToLogin: () -> Unit
 ) {
     mainViewModel.refreshTokenExpired.collectAsState(initial = false).value.let { isExpired ->
@@ -76,6 +76,7 @@ fun MainScreen(
         } else {
             navigateToLogin()
             mainViewModel.logout()
+            sharedViewModel.changeSessionExpiredState(true)
         }
     }
 }

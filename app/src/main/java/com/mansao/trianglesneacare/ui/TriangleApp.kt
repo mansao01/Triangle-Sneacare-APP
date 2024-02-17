@@ -1,11 +1,13 @@
 package com.mansao.trianglesneacare.ui
 
 import androidx.compose.runtime.Composable
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.mansao.trianglesneacare.ui.navigation.Screen
+import com.mansao.trianglesneacare.ui.screen.SharedViewModel
 import com.mansao.trianglesneacare.ui.screen.login.LoginScreen
 import com.mansao.trianglesneacare.ui.screen.register.RegisterScreen
 import com.mansao.trianglesneacare.ui.screen.section.MainScreen
@@ -14,7 +16,8 @@ import com.mansao.trianglesneacare.utils.canGoBack
 @Composable
 fun TriangleApp(
     navController: NavHostController = rememberNavController(),
-    startDestination: String
+    startDestination: String,
+    sharedViewModel: SharedViewModel = viewModel()
 ) {
     NavHost(navController = navController, startDestination = startDestination) {
 
@@ -38,10 +41,13 @@ fun TriangleApp(
         }
 
         composable(Screen.Main.route) {
-            MainScreen(navigateToLogin = {
-                navController.popBackStack()
-                navController.navigate(Screen.Login.route)
-            })
+            MainScreen(
+                navigateToLogin = {
+                    navController.popBackStack()
+                    navController.navigate(Screen.Login.route)
+                },
+                sharedViewModel = sharedViewModel
+            )
         }
     }
 }

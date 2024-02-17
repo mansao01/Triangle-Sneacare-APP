@@ -18,7 +18,6 @@ class SearchAddressViewModel @Inject constructor(private val appRepositoryImpl: 
         MutableStateFlow(UiState.Standby)
     val uiState: Flow<UiState<AutoCompleteAddressResponse>> = _uiState
 
-
     fun setLoadingState(){
         _uiState.value = UiState.Loading
     }

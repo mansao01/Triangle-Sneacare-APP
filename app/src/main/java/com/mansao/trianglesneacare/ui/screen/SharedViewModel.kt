@@ -15,6 +15,8 @@ class SharedViewModel : ViewModel() {
 
     var fullAddress by mutableStateOf<String?>(null)
 
+    var showSessionExpiredMessage by mutableStateOf(false)
+
     fun addPlace(newPredictionItem: PredictionsItem) {
         predictionItem = newPredictionItem
     }
@@ -25,6 +27,11 @@ class SharedViewModel : ViewModel() {
 
     fun addFullAddress(newAddress: String) {
         fullAddress = newAddress
+
+    }
+
+    fun changeSessionExpiredState(isExpired:Boolean){
+        showSessionExpiredMessage = isExpired
 
     }
 }
