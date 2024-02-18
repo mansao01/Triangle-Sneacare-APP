@@ -19,7 +19,7 @@ import com.airbnb.lottie.compose.rememberLottieComposition
 import com.mansao.trianglesneacare.R
 
 @Composable
-fun ForbiddenScreen() {
+fun ForbiddenDialog() {
     val dialogState = rememberSaveable { mutableStateOf(true) }
     val composition by
     rememberLottieComposition(spec = LottieCompositionSpec.RawRes(R.raw.no_acceess))

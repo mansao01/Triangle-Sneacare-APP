@@ -35,6 +35,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -61,6 +62,7 @@ import com.mansao.trianglesneacare.location.LocationCallback
 import com.mansao.trianglesneacare.ui.common.UiState
 import com.mansao.trianglesneacare.ui.components.AddressNotFound
 import com.mansao.trianglesneacare.ui.components.LoadingDialog
+import com.mansao.trianglesneacare.ui.components.LocationCheckingDialog
 import com.mansao.trianglesneacare.ui.screen.SharedViewModel
 
 
@@ -74,94 +76,115 @@ fun SearchAddressScreen(
     val context = LocalContext.current
     val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
 
-
     val permissions = arrayOf(
         Manifest.permission.ACCESS_COARSE_LOCATION,
         Manifest.permission.ACCESS_FINE_LOCATION
     )
 
-    val launcherMultiplePermissions = rememberLauncherForActivityResult(
-        ActivityResultContracts.RequestMultiplePermissions()
-    ) { permissionsMap ->
-        val areGranted = permissionsMap.values.all { it }
-        if (areGranted) {
-            searchViewModel.setLoadingState()
-            getCurrentLocation(fusedLocationClient, object : LocationCallback {
-                override fun onLocationResult(location: Location) {
-                    val latitude = location.latitude
-                    val longitude = location.longitude
+    var showLocationAlert by remember { mutableStateOf(false) } // State variable for showing location alert
+//    var showLocationAlert = false
+    searchViewModel.gpsProviderState.collectAsState(initial = false).value.let { isGpsActive ->
 
-//                    add gps checking is active or not
-                    searchViewModel.setStandbyState()
-                    navigateToMap()
-                    sharedViewModel.addLocation(latitude, longitude)
-                }
+
+        if (showLocationAlert) {
+            LocationCheckingDialog(action = {
+                searchViewModel.isGpsActive(context)
+                showLocationAlert = false
             })
-        } else {
-//            hey future me, maybe u can give a alert dialog to warn customer, they need it to use the feature
-            Toast.makeText(context, "Permission Denied", Toast.LENGTH_SHORT).show()
         }
-    }
 
-
-    Scaffold(
-        topBar = { SearchAddressTopBar(navigateBack = navigateBack) }
-    ) {
-        Surface(modifier = Modifier.padding(it)) {
-            Column(modifier = Modifier.fillMaxSize()) {
-                SearchBarAddressComponent(searchViewModel = searchViewModel)
-                Spacer(modifier = Modifier.height(8.dp))
-
-                ListItem(
-                    headlineContent = {
-                        Text(
-                            text = "Use my current location",
-                            fontWeight = FontWeight.Bold
-                        )
-                    },
-                    leadingContent = {
-                        Icon(
-                            imageVector = Icons.Outlined.LocationSearching,
-                            contentDescription = null
-                        )
-                    },
-                    modifier = Modifier.clickable {
-                        if (hasLocationPermissions(context, permissions)) {
-                            searchViewModel.setLoadingState()
-                            getCurrentLocation(fusedLocationClient, object : LocationCallback {
-                                override fun onLocationResult(location: Location) {
-                                    val latitude = location.latitude
-                                    val longitude = location.longitude
-//                    add gps checking is active or not
-
-                                    navigateToMap()
-                                    sharedViewModel.addLocation(latitude, longitude)
-                                    searchViewModel.setStandbyState()
-                                }
-                            })
-                        } else {
-                            launcherMultiplePermissions.launch(permissions)
+        LaunchedEffect(isGpsActive) {
+            searchViewModel.isGpsActive(context)
+        }
+        val launcherMultiplePermissions = rememberLauncherForActivityResult(
+            ActivityResultContracts.RequestMultiplePermissions()
+        ) { permissionsMap ->
+            val areGranted = permissionsMap.values.all { it }
+            if (areGranted) {
+                searchViewModel.isGpsActive(context)
+                if (isGpsActive) {
+                    searchViewModel.setLoadingState()
+                    getCurrentLocation(fusedLocationClient, object : LocationCallback {
+                        override fun onLocationResult(location: Location) {
+                            val latitude = location.latitude
+                            val longitude = location.longitude
+                            searchViewModel.setStandbyState()
+                            navigateToMap()
+                            sharedViewModel.addLocation(latitude, longitude)
                         }
-                    }
-                )
+                    })
+                }
+            } else {
+                // hey future me, maybe u can give a alert dialog to warn customer, they need it to use the feature
+                Toast.makeText(context, "Permission Denied", Toast.LENGTH_SHORT).show()
+            }
+        }
 
-                searchViewModel.uiState.collectAsState(initial = UiState.Standby).value.let { uiState ->
-                    when (uiState) {
-                        is UiState.Standby -> {}
-                        is UiState.Loading -> LoadingDialog()
-                        is UiState.Success -> SearchAddressComponent(
-                            addressPrediction = uiState.data.data.predictions,
-                            navigateToMap = navigateToMap,
-                            sharedViewModel = sharedViewModel
-                        )
+        Scaffold(
+            topBar = { SearchAddressTopBar(navigateBack = navigateBack) }
+        ) {
+            Surface(modifier = Modifier.padding(it)) {
+                Column(modifier = Modifier.fillMaxSize()) {
+                    SearchBarAddressComponent(searchViewModel = searchViewModel)
+                    Spacer(modifier = Modifier.height(8.dp))
 
-                        is UiState.Error -> {}
+                    ListItem(
+                        headlineContent = {
+                            Text(
+                                text = "Use my current location",
+                                fontWeight = FontWeight.Bold
+                            )
+                        },
+                        leadingContent = {
+                            Icon(
+                                imageVector = Icons.Outlined.LocationSearching,
+                                contentDescription = null
+                            )
+                        },
+                        modifier = Modifier.clickable {
+                            if (!isGpsActive && !showLocationAlert) { // Update the condition
+                                showLocationAlert = true // Set the alert flag
+                            }
+                            searchViewModel.isGpsActive(context)
+                            if (hasLocationPermissions(context, permissions)) {
+                                if (isGpsActive) {
+                                    searchViewModel.setLoadingState()
+                                    getCurrentLocation(
+                                        fusedLocationClient,
+                                        object : LocationCallback {
+                                            override fun onLocationResult(location: Location) {
+                                                val latitude = location.latitude
+                                                val longitude = location.longitude
+                                                navigateToMap()
+                                                sharedViewModel.addLocation(latitude, longitude)
+                                                searchViewModel.setStandbyState()
+                                            }
+                                        })
+                                }
+
+                            } else {
+                                launcherMultiplePermissions.launch(permissions)
+                            }
+                        }
+                    )
+
+                    searchViewModel.uiState.collectAsState(initial = UiState.Standby).value.let { uiState ->
+                        when (uiState) {
+                            is UiState.Standby -> {}
+                            is UiState.Loading -> LoadingDialog()
+                            is UiState.Success -> SearchAddressComponent(
+                                addressPrediction = uiState.data.data.predictions,
+                                navigateToMap = navigateToMap,
+                                sharedViewModel = sharedViewModel
+                            )
+
+                            is UiState.Error -> {}
+                        }
                     }
                 }
             }
         }
     }
-
 }
 
 

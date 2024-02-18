@@ -1,30 +1,44 @@
 package com.mansao.trianglesneacare.ui.screen.section.customer.searchAddress
 
+import android.content.Context
+import android.location.LocationManager
+import android.os.Build
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mansao.trianglesneacare.data.AppRepositoryImpl
 import com.mansao.trianglesneacare.data.network.response.AutoCompleteAddressResponse
 import com.mansao.trianglesneacare.ui.common.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class SearchAddressViewModel @Inject constructor(private val appRepositoryImpl: AppRepositoryImpl) :
+class SearchAddressViewModel @Inject constructor(
+    private val appRepositoryImpl: AppRepositoryImpl,
+    @ApplicationContext application: Context,
+) :
     ViewModel() {
     private var _uiState: MutableStateFlow<UiState<AutoCompleteAddressResponse>> =
         MutableStateFlow(UiState.Standby)
     val uiState: Flow<UiState<AutoCompleteAddressResponse>> = _uiState
 
-    fun setLoadingState(){
+    private var _gpsProviderState: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    val gpsProviderState: Flow<Boolean> = _gpsProviderState
+
+    init {
+        isGpsActive(application)
+    }
+    fun setLoadingState() {
         _uiState.value = UiState.Loading
     }
 
-    fun setStandbyState(){
+    fun setStandbyState() {
         _uiState.value = UiState.Standby
     }
+
     fun autoCompleteAddress(address: String) {
         viewModelScope.launch {
             try {
@@ -36,5 +50,13 @@ class SearchAddressViewModel @Inject constructor(private val appRepositoryImpl: 
             }
         }
     }
+
+     fun isGpsActive(context: Context) {
+        val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            _gpsProviderState.value = locationManager.isLocationEnabled
+        }
+    }
+
 
 }

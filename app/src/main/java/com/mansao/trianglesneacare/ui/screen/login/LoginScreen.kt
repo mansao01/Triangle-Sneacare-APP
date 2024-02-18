@@ -63,7 +63,7 @@ import com.mansao.trianglesneacare.R
 import com.mansao.trianglesneacare.data.network.request.LoginRequest
 import com.mansao.trianglesneacare.ui.AuthViewModel
 import com.mansao.trianglesneacare.ui.common.UiState
-import com.mansao.trianglesneacare.ui.components.ForbiddenScreen
+import com.mansao.trianglesneacare.ui.components.ForbiddenDialog
 import com.mansao.trianglesneacare.ui.components.HeaderText
 import com.mansao.trianglesneacare.ui.components.LoadingDialog
 import com.mansao.trianglesneacare.ui.navigation.Screen
@@ -105,7 +105,7 @@ fun LoginScreen(
                     is UiState.Error -> {
                         loginViewModel.showDialog.collectAsState().value.let { showDialog ->
                             if (showDialog) {
-                                ForbiddenScreen()
+                                ForbiddenDialog()
                             } else {
                                 Toast.makeText(context, uiState.errorMessage, Toast.LENGTH_SHORT)
                                     .show()
