@@ -4,7 +4,6 @@ import android.widget.Toast
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -53,12 +52,9 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import com.mansao.trianglesneacare.R
 import com.mansao.trianglesneacare.data.network.request.LoginRequest
 import com.mansao.trianglesneacare.ui.AuthViewModel
@@ -66,7 +62,6 @@ import com.mansao.trianglesneacare.ui.common.UiState
 import com.mansao.trianglesneacare.ui.components.ForbiddenDialog
 import com.mansao.trianglesneacare.ui.components.HeaderText
 import com.mansao.trianglesneacare.ui.components.LoadingDialog
-import com.mansao.trianglesneacare.ui.navigation.Screen
 import com.mansao.trianglesneacare.ui.screen.SharedViewModel
 import com.mansao.trianglesneacare.ui.theme.Roboto
 import com.mansao.trianglesneacare.utils.rememberImeState
@@ -76,6 +71,7 @@ fun LoginScreen(
     loginViewModel: LoginViewModel = hiltViewModel(),
     navigateToMain: () -> Unit,
     navigateToRegister: () -> Unit,
+    navigateToInputEmail: () -> Unit,
     authViewModel: AuthViewModel = hiltViewModel(),
     sharedViewModel: SharedViewModel = hiltViewModel()
 ) {
@@ -88,7 +84,8 @@ fun LoginScreen(
             LoginComponent(
                 loginViewModel = loginViewModel,
                 navigateToRegister = navigateToRegister,
-                sharedViewModel = sharedViewModel
+                sharedViewModel = sharedViewModel,
+                navigateToInputEmail = navigateToInputEmail
             )
             loginViewModel.uiState.collectAsState(initial = UiState.Standby).value.let { uiState ->
                 when (uiState) {
@@ -120,7 +117,6 @@ fun LoginScreen(
         }
     }
 
-
 }
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -128,6 +124,7 @@ fun LoginScreen(
 fun LoginComponent(
     loginViewModel: LoginViewModel,
     navigateToRegister: () -> Unit,
+    navigateToInputEmail: () -> Unit,
     sharedViewModel: SharedViewModel
 ) {
     val uiColor = if (isSystemInDarkTheme()) Color.White else Color.Black
@@ -178,7 +175,6 @@ fun LoginComponent(
                 Column(
                     modifier = Modifier
                         .fillMaxWidth(),
-                    verticalArrangement = Arrangement.Center
                 ) {
                     OutlinedTextField(
                         value = email,
@@ -242,6 +238,11 @@ fun LoginComponent(
                             .fillMaxWidth(),
                         shape = RoundedCornerShape(16.dp)
                     )
+                    ForgotPassword(
+                        navigateToInputEmail = { navigateToInputEmail()},
+                        modifier = Modifier.align(Alignment.End)
+                            .padding(top = 4.dp)
+                    )
                     OutlinedButton(
                         enabled = isButtonEnable,
                         onClick = {
@@ -253,7 +254,7 @@ fun LoginComponent(
                         },
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(top = 16.dp)
+                            .padding(top = 8.dp)
                     ) {
                         Text(
                             text = stringResource(id = R.string.login),
@@ -328,19 +329,19 @@ fun RegisterText(
     )
 }
 
-private fun isEmailValid(email: String): Boolean {
-    return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
+@Composable
+fun ForgotPassword(
+    navigateToInputEmail: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Text(
+        text = "Forgot Password",
+        modifier = modifier
+            .clickable { navigateToInputEmail() },
+    )
+
 }
 
-@Preview(showSystemUi = true)
-@Composable
-fun NewLoginComponentPreview() {
-    val loginViewModel: LoginViewModel = hiltViewModel()
-    val navController: NavHostController = rememberNavController()
-    val sharedViewModel: SharedViewModel = hiltViewModel()
-    LoginComponent(
-        loginViewModel,
-        navigateToRegister = { navController.navigate(Screen.Register.route) },
-        sharedViewModel
-    )
+private fun isEmailValid(email: String): Boolean {
+    return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
 }

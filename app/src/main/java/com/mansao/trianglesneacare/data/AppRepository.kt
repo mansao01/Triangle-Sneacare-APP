@@ -1,6 +1,5 @@
 package com.mansao.trianglesneacare.data
 
-import com.mansao.trianglesneacare.data.network.ApiConst
 import com.mansao.trianglesneacare.data.network.ApiService
 import com.mansao.trianglesneacare.data.network.request.CreateCustomerAddressRequest
 import com.mansao.trianglesneacare.data.network.request.LoginRequest
@@ -25,8 +24,6 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
-import retrofit2.http.Header
-import retrofit2.http.Query
 import java.io.File
 import javax.inject.Inject
 
@@ -47,6 +44,8 @@ interface AppRepository {
     suspend fun login(loginRequest: LoginRequest): LoginResponse
     suspend fun refreshToken(refreshToken: String): OnlyAccessTokenResponse
     suspend fun getProfile(token: String): ProfileResponse
+    suspend fun sendResetPassword(email: String): OnlyMsgResponse
+    suspend fun verifyOTP(email: String, otp: String): OnlyMsgResponse
     suspend fun getProfileDetail(token: String): GetProfileDetailResponse
     suspend fun getDrivers(): GetDriversResponse
     suspend fun logout(token: String): OnlyMsgResponse
@@ -141,6 +140,10 @@ class AppRepositoryImpl @Inject constructor(
     override suspend fun refreshToken(refreshToken: String): OnlyAccessTokenResponse =
         apiService.refreshToken(refreshToken)
 
+    override suspend fun sendResetPassword(email: String): OnlyMsgResponse =
+        apiService.sendResetPassword(email)
+
+    override suspend fun verifyOTP(email: String, otp: String) = apiService.verifyOtp(email, otp)
     override suspend fun getProfile(token: String): ProfileResponse = apiService.getProfile(token)
     override suspend fun getProfileDetail(token: String): GetProfileDetailResponse =
         apiService.getProfileDetail(token)

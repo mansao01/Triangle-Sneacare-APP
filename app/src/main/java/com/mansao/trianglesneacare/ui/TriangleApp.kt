@@ -9,6 +9,7 @@ import androidx.navigation.compose.rememberNavController
 import com.mansao.trianglesneacare.ui.navigation.Screen
 import com.mansao.trianglesneacare.ui.screen.SharedViewModel
 import com.mansao.trianglesneacare.ui.screen.login.LoginScreen
+import com.mansao.trianglesneacare.ui.screen.passwordReset.inputEmail.InputEmailScreen
 import com.mansao.trianglesneacare.ui.screen.register.RegisterScreen
 import com.mansao.trianglesneacare.ui.screen.section.MainScreen
 import com.mansao.trianglesneacare.utils.canGoBack
@@ -36,8 +37,19 @@ fun TriangleApp(
                 },
                 navigateToRegister = {
                     navController.navigate(Screen.Register.route)
+                },
+                navigateToInputEmail = {
+                    navController.navigate(Screen.InputEmail.route)
                 }
             )
+        }
+
+        composable(Screen.InputEmail.route) {
+            InputEmailScreen(navigateBack = {
+                if (navController.canGoBack) {
+                    navController.popBackStack()
+                }
+            })
         }
 
         composable(Screen.Main.route) {

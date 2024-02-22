@@ -25,6 +25,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -317,60 +318,6 @@ fun MapsScreenComponentWithLocation(
     }
 }
 
-
-//fun getDetailLocation(latitude: Double, longitude: Double, context: Context): LocationDetail {
-//    val geocoder = Geocoder(context, Locale.getDefault())
-//
-//    var locationDetail = LocationDetail()
-//
-//    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-//        geocoder.getFromLocation(
-//            latitude, longitude, 1
-//        ) { addresses ->
-//            val address = addresses[0]
-//            val addressText = address.getAddressLine(0) ?: ""
-//            val city = address.locality ?: ""
-//            val state = address.adminArea ?: ""
-//            val country = address.countryName ?: ""
-//            val subCity = address.subAdminArea ?: "" //kabupaten
-//            val village = address.subLocality ?: "" //desa
-//            val roadName = address.thoroughfare ?: ""
-//
-//            locationDetail =
-//                LocationDetail(addressText, city, state, country, subCity, village, roadName)
-//        }
-//    } else {
-//        try {
-//            val addresses: MutableList<Address>? = geocoder.getFromLocation(latitude, longitude, 1)
-//            return if (addresses!!.isNotEmpty()) {
-//                val address = addresses[0]
-//                Log.d("full location", address.toString())
-//
-//                LocationDetail(
-//                    address.getAddressLine(0) ?: "",
-//                    address.locality ?: "",
-//                    address.adminArea ?: "",
-//                    address.countryName ?: "",
-//                    address.subAdminArea ?: "",
-//                    address.subLocality ?: "",
-//                    address.thoroughfare ?: ""
-//                )
-//            } else {
-//                LocationDetail("", "", "", "", "", "")
-//            }
-//        } catch (e: Exception) {
-//            e.printStackTrace()
-//            locationDetail = LocationDetail(
-//                address = "Error retrieving location details"
-//
-//            )
-//        }
-//    }
-//
-//    return locationDetail
-//}
-
-
 fun calculateRadius(center: LatLng, point: LatLng): Double {
     val result = FloatArray(1)
     Location.distanceBetween(
@@ -392,21 +339,19 @@ fun MapTopBar(
 
     TopAppBar(
         title = {
-
             Text(
                 text = if (placeId.isNotEmpty()) stringResource(R.string.location_scope) else stringResource(
                     R.string.your_location
                 )
             )
-
-
         },
         navigationIcon = {
 
             IconButton(onClick = { navigateBack() }) {
                 Icon(imageVector = Icons.Outlined.ArrowBack, contentDescription = null)
             }
-        }
+        },
+        colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
     )
 
 }

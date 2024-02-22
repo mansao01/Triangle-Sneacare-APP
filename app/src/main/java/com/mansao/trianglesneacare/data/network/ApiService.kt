@@ -56,8 +56,19 @@ interface ApiService {
 
     @POST(ApiConst.REFRESH_ACCESS_TOKEN)
     suspend fun refreshToken(
-        @Query("refreshToken") refreshToken:String
-    ):OnlyAccessTokenResponse
+        @Query("refreshToken") refreshToken: String
+    ): OnlyAccessTokenResponse
+
+    @POST(ApiConst.SEND_RESET_PASSWORD)
+    suspend fun sendResetPassword(
+        @Query("email") email: String
+    ): OnlyMsgResponse
+
+    @POST(ApiConst.VERIFY_OTP)
+    suspend fun verifyOtp(
+        @Query("email") email: String,
+        @Query("otp") otp: String
+    ): OnlyMsgResponse
 
     @GET(ApiConst.PROFILE)
     suspend fun getProfile(
@@ -81,7 +92,7 @@ interface ApiService {
     @GET(ApiConst.GET_DETAIL_CUSTOMER_ADDRESS)
     suspend fun getDetailCustomerAddresses(
         @Header(ApiConst.AUTHORIZATION_KEY) token: String,
-        @Query("addressId") addressId:Int
+        @Query("addressId") addressId: Int
     ): CustomerDetailAddressResponse
 
 
@@ -95,7 +106,7 @@ interface ApiService {
     suspend fun deleteCustomerAddress(
         @Header(ApiConst.AUTHORIZATION_KEY) token: String,
         @Query("id") id: Int
-    ):OnlyMsgResponse
+    ): OnlyMsgResponse
 
     @PUT(ApiConst.UPDATE_CUSTOMER_ADDRESS)
     suspend fun updateCustomerAddress(
@@ -104,7 +115,7 @@ interface ApiService {
         @Query("receiverName") receiverName: String,
         @Query("fullAddress") fullAddress: String,
         @Query("note") note: String,
-    ):OnlyMsgResponse
+    ): OnlyMsgResponse
 
     @GET(ApiConst.AUTO_COMPLETE_ADDRESS)
     suspend fun autoCompleteAddress(

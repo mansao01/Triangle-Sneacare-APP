@@ -7,6 +7,7 @@ import android.os.Build
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.android.gms.maps.model.LatLng
 import com.mansao.trianglesneacare.data.AppRepositoryImpl
 import com.mansao.trianglesneacare.data.network.response.GeocodingResponse
 import com.mansao.trianglesneacare.ui.common.UiState
@@ -32,6 +33,9 @@ class MapsViewModel @Inject constructor(private val appRepositoryImpl: AppReposi
     private var _showBalloonState: MutableStateFlow<Boolean> = MutableStateFlow(true)
     val showBalloonState: StateFlow<Boolean> = _showBalloonState
 
+    private var _markerPosition = MutableStateFlow(LatLng(0.0, 0.0))
+    val markerPosition: StateFlow<LatLng> = _markerPosition
+
     init {
         viewModelScope.launch {
             appRepositoryImpl.getBalloonState().collect { showBalloon ->
@@ -40,6 +44,9 @@ class MapsViewModel @Inject constructor(private val appRepositoryImpl: AppReposi
         }
     }
 
+    fun updateMarkerPosition(latitude: Double, longitude: Double) {
+        _markerPosition.value = LatLng(latitude, longitude)
+    }
     fun getLocationFromPlaceId(placeId: String) {
         _uiState.value = UiState.Loading
         viewModelScope.launch {

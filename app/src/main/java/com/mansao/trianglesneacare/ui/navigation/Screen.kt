@@ -7,6 +7,9 @@ sealed class Screen(val route: String) {
     object Profile : Screen("profile")
     object ProfileEdit : Screen("profileEdit")
     object Main : Screen("main")
+    object InputEmail:Screen("inputEmail")
+    object OTPVerification:Screen("otpVerification")
+
 
     //    admin
     object AdminHome : Screen("adminHome")

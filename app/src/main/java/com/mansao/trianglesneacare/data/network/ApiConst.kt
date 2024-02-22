@@ -11,6 +11,8 @@ object ApiConst {
     const val REGISTER_DRIVER = "registerDriver"
     const val PROFILE = "profile"
     const val PROFILE_DETAIL = "profile/detail"
+    const val SEND_RESET_PASSWORD = "sendResetPassword"
+    const val VERIFY_OTP = "verifyOtp"
     const val DRIVERS = "drivers"
     const val LOGOUT = "logout"
     const val GET_CUSTOMER_ADDRESS = "getCustomerAddress"
