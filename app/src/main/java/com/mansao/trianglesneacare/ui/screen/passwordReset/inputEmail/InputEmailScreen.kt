@@ -19,6 +19,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -35,36 +36,51 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.mansao.trianglesneacare.R
 import com.mansao.trianglesneacare.ui.common.UiState
 import com.mansao.trianglesneacare.ui.components.LoadingDialog
+import com.mansao.trianglesneacare.ui.screen.SharedViewModel
 import com.mansao.trianglesneacare.ui.screen.passwordReset.PasswordResetViewModel
 
 @Composable
 fun InputEmailScreen(
     passwordResetViewModel: PasswordResetViewModel = hiltViewModel(),
-    navigateBack: () -> Unit
+    sharedViewModel: SharedViewModel,
+    navigateBack: () -> Unit,
+    navigateToVerifyOTP: () -> Unit
 ) {
 
     val context = LocalContext.current
 
     Scaffold(topBar = { InputEmailTopBar(navigateBack = navigateBack) }) {
         Surface(modifier = Modifier.padding(it)) {
-            passwordResetViewModel.sendResetPasswordUiState.collectAsState().value.let { uiState ->
+            passwordResetViewModel.uiState.collectAsState().value.let { uiState ->
                 when (uiState) {
                     is UiState.Standby -> {}
                     is UiState.Loading -> LoadingDialog()
-                    is UiState.Success -> Toast.makeText(
-                        context,
-                        uiState.data.msg,
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    is UiState.Success -> {
+                        LaunchedEffect(Unit) {
+                            Toast.makeText(
+                                context,
+                                uiState.data.msg,
+                                Toast.LENGTH_SHORT
+                            ).show()
 
-                    is UiState.Error -> Toast.makeText(
-                        context,
-                        uiState.errorMessage,
-                        Toast.LENGTH_SHORT
-                    ).show()
+                            navigateToVerifyOTP()
+                        }
+
+                    }
+
+                    is UiState.Error -> LaunchedEffect(Unit) {
+                        Toast.makeText(
+                            context,
+                            uiState.errorMessage,
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
                 }
             }
-            InputEmailComponent(passwordResetViewModel = passwordResetViewModel)
+            InputEmailComponent(
+                passwordResetViewModel = passwordResetViewModel,
+                sharedViewModel = sharedViewModel
+            )
         }
     }
 
@@ -73,7 +89,8 @@ fun InputEmailScreen(
 
 @Composable
 fun InputEmailComponent(
-    passwordResetViewModel: PasswordResetViewModel
+    passwordResetViewModel: PasswordResetViewModel,
+    sharedViewModel: SharedViewModel
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
@@ -99,14 +116,16 @@ fun InputEmailComponent(
         Spacer(modifier = Modifier.height(12.dp))
         OutlinedTextField(
             value = email,
-            onValueChange = { email = it },
+            onValueChange = { email = it.trim() },
             label = {
                 Text(
                     text = stringResource(
                         id = R.string.email
                     )
                 )
-            }, modifier = modifier
+            },
+            maxLines = 1,
+            modifier = modifier
         )
         Spacer(modifier = Modifier.height(4.dp))
 
@@ -114,6 +133,7 @@ fun InputEmailComponent(
             onClick = {
                 if (email.isNotEmpty()) {
                     passwordResetViewModel.sendResetPassword(email)
+                    sharedViewModel.addEmail(email)
                 }
             },
             enabled = email.isNotEmpty(),

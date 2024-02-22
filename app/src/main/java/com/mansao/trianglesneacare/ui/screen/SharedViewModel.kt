@@ -17,6 +17,8 @@ class SharedViewModel : ViewModel() {
 
     var showSessionExpiredMessage by mutableStateOf(false)
 
+    var email by mutableStateOf("")
+
     fun addPlace(newPredictionItem: PredictionsItem) {
         predictionItem = newPredictionItem
     }
@@ -30,8 +32,12 @@ class SharedViewModel : ViewModel() {
 
     }
 
-    fun changeSessionExpiredState(isExpired:Boolean){
+    fun changeSessionExpiredState(isExpired: Boolean) {
         showSessionExpiredMessage = isExpired
 
+    }
+
+    fun addEmail(newEmail: String) {
+        email = newEmail
     }
 }

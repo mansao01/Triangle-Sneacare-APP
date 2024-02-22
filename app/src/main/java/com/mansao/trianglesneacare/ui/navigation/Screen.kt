@@ -9,6 +9,7 @@ sealed class Screen(val route: String) {
     object Main : Screen("main")
     object InputEmail:Screen("inputEmail")
     object OTPVerification:Screen("otpVerification")
+    object PasswordChange:Screen("passwordChange")
 
 
     //    admin

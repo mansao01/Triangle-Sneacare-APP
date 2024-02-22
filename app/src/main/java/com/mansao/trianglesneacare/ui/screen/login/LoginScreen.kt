@@ -47,6 +47,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -280,7 +281,6 @@ fun LoginComponent(
 @Composable
 private fun TopSection() {
     Column(modifier = Modifier.fillMaxWidth()) {
-
         Icon(
             painter = painterResource(
                 id = R.drawable.default_logo
@@ -336,6 +336,8 @@ fun ForgotPassword(
 ) {
     Text(
         text = "Forgot Password",
+        style =MaterialTheme.typography.labelMedium,
+        fontStyle = FontStyle.Italic,
         modifier = modifier
             .clickable { navigateToInputEmail() },
     )
