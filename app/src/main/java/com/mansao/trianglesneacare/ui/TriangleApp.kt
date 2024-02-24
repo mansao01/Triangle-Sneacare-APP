@@ -85,7 +85,9 @@ fun TriangleApp(
                         navController.popBackStack()
                         navController.popBackStack()
                     }
-                })
+                },
+                sharedViewModel = sharedViewModel
+            )
         }
 
         composable(Screen.Main.route) {

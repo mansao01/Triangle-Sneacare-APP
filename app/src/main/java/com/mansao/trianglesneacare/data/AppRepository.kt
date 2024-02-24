@@ -46,6 +46,12 @@ interface AppRepository {
     suspend fun getProfile(token: String): ProfileResponse
     suspend fun sendResetPassword(email: String): OnlyMsgResponse
     suspend fun verifyOTP(email: String, otp: String): OnlyMsgResponse
+    suspend fun resetPassword(
+        email: String,
+        password: String,
+        confirmPassword: String
+    ): OnlyMsgResponse
+
     suspend fun getProfileDetail(token: String): GetProfileDetailResponse
     suspend fun getDrivers(): GetDriversResponse
     suspend fun logout(token: String): OnlyMsgResponse
@@ -144,6 +150,10 @@ class AppRepositoryImpl @Inject constructor(
         apiService.sendResetPassword(email)
 
     override suspend fun verifyOTP(email: String, otp: String) = apiService.verifyOtp(email, otp)
+
+    override suspend fun resetPassword(email: String, password: String, confirmPassword: String) =
+        apiService.resetPassword(email, password, confirmPassword)
+
     override suspend fun getProfile(token: String): ProfileResponse = apiService.getProfile(token)
     override suspend fun getProfileDetail(token: String): GetProfileDetailResponse =
         apiService.getProfileDetail(token)

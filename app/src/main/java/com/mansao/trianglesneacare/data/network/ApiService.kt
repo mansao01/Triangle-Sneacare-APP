@@ -23,6 +23,7 @@ import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Multipart
+import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Part
@@ -69,6 +70,13 @@ interface ApiService {
         @Query("email") email: String,
         @Query("otp") otp: String
     ): OnlyMsgResponse
+
+    @PATCH(ApiConst.RESET_PASSWORD)
+    suspend fun resetPassword(
+        @Query("email") email:String,
+        @Query("password") password:String,
+        @Query("confirmPassword") confirmPassword:String,
+    ):OnlyMsgResponse
 
     @GET(ApiConst.PROFILE)
     suspend fun getProfile(

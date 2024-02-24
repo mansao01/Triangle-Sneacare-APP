@@ -13,6 +13,7 @@ object ApiConst {
     const val PROFILE_DETAIL = "profile/detail"
     const val SEND_RESET_PASSWORD = "sendResetPassword"
     const val VERIFY_OTP = "verifyOtp"
+    const val RESET_PASSWORD = "resetPassword"
     const val DRIVERS = "drivers"
     const val LOGOUT = "logout"
     const val GET_CUSTOMER_ADDRESS = "getCustomerAddress"

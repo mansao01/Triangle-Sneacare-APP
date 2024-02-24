@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -33,7 +34,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.mansao.trianglesneacare.ui.common.UiState
 import com.mansao.trianglesneacare.ui.components.LoadingDialog
@@ -47,22 +50,16 @@ fun OTPVerificationScreen(
     navigateToPasswordChange: () -> Unit,
     navigateBack: () -> Unit
 ) {
+    passwordResetViewModel.setStandByState()
     val context = LocalContext.current
     Scaffold(topBar = { OTPVerificationTopBar(navigateBack = navigateBack) }) {
         Surface(modifier = Modifier.padding(it)) {
-            passwordResetViewModel.uiState.collectAsState().value.let { uiState ->
+            passwordResetViewModel.uiState.collectAsState(initial = UiState.Standby).value.let { uiState ->
                 when (uiState) {
                     is UiState.Standby -> {}
                     is UiState.Loading -> LoadingDialog()
                     is UiState.Success -> {
                         LaunchedEffect(Unit) {
-
-                            Toast.makeText(
-                                context,
-                                uiState.data.msg,
-                                Toast.LENGTH_SHORT
-                            ).show()
-
                             navigateToPasswordChange()
                         }
                     }
@@ -94,13 +91,31 @@ fun OTPVerificationComponent(
 
 ) {
     Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
         modifier = Modifier.fillMaxWidth()
     ) {
+        val modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp)
+
+        Text(
+            text = "Reset Password",
+            style = MaterialTheme.typography.displaySmall,
+            fontWeight = FontWeight.Bold,
+            fontSize = 26.sp,
+            modifier = modifier
+        )
+        Spacer(modifier = Modifier.height(12.dp))
+        Text(
+            text = "Please enter your email address below. We will send you an OTP through email to reset your password.",
+            style = MaterialTheme.typography.labelMedium,
+            modifier = modifier
+        )
+        Spacer(modifier = Modifier.height(22.dp))
         OTPTextField(
             sharedViewModel = sharedViewModel,
-            passwordResetViewModel = passwordResetViewModel
+            passwordResetViewModel = passwordResetViewModel,
+            modifier = Modifier.align(Alignment.CenterHorizontally)
         )
 
     }
@@ -109,7 +124,8 @@ fun OTPVerificationComponent(
 @Composable
 fun OTPTextField(
     sharedViewModel: SharedViewModel,
-    passwordResetViewModel: PasswordResetViewModel
+    passwordResetViewModel: PasswordResetViewModel,
+    modifier: Modifier = Modifier
 ) {
     var otpText by remember {
         mutableStateOf("")
@@ -124,6 +140,7 @@ fun OTPTextField(
                 otpText = it.uppercase()
             }
         },
+        modifier = modifier
     ) {
         Row(
             horizontalArrangement = Arrangement.spacedBy(10.dp)

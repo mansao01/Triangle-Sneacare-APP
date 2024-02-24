@@ -48,21 +48,16 @@ fun InputEmailScreen(
 ) {
 
     val context = LocalContext.current
+    passwordResetViewModel.setStandByState()
 
     Scaffold(topBar = { InputEmailTopBar(navigateBack = navigateBack) }) {
         Surface(modifier = Modifier.padding(it)) {
-            passwordResetViewModel.uiState.collectAsState().value.let { uiState ->
+            passwordResetViewModel.uiState.collectAsState(initial = UiState.Standby).value.let { uiState ->
                 when (uiState) {
                     is UiState.Standby -> {}
                     is UiState.Loading -> LoadingDialog()
                     is UiState.Success -> {
                         LaunchedEffect(Unit) {
-                            Toast.makeText(
-                                context,
-                                uiState.data.msg,
-                                Toast.LENGTH_SHORT
-                            ).show()
-
                             navigateToVerifyOTP()
                         }
 

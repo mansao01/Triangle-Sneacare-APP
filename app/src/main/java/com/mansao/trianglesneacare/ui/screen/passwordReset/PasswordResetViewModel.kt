@@ -24,6 +24,10 @@ class PasswordResetViewModel @Inject constructor(private val appRepositoryImpl: 
         _uiState.value = UiState.Loading
     }
 
+     fun setStandByState(){
+        _uiState.value = UiState.Standby
+    }
+
     fun sendResetPassword(email: String) = viewModelScope.launch {
         setLoadingState()
         try {
@@ -34,15 +38,17 @@ class PasswordResetViewModel @Inject constructor(private val appRepositoryImpl: 
                 is IOException -> """
                         {"msg": "Service unavailable"}
                     """.trimIndent()
+
                 is HttpException -> {
                     when (e.code()) {
                         404 -> e.response()?.errorBody()?.string().toString()
                         // Add more cases for specific HTTP error codes if needed
-                        else ->  """
+                        else -> """
                                 {"msg": "Error code ${e.message()}"}
                             """.trimIndent()
                     }
                 }
+
                 else -> """
                         {"msg": "Service unavailable"}
                     """.trimIndent()
@@ -66,15 +72,17 @@ class PasswordResetViewModel @Inject constructor(private val appRepositoryImpl: 
                 is IOException -> """
                         {"msg": "Service unavailable"}
                     """.trimIndent()
+
                 is HttpException -> {
                     when (e.code()) {
                         404 -> e.response()?.errorBody()?.string().toString()
                         // Add more cases for specific HTTP error codes if needed
-                        else ->  """
+                        else -> """
                                 {"msg": "Error code ${e.message()}"}
                             """.trimIndent()
                     }
                 }
+
                 else -> """
                         {"msg": "Service unavailable"}
                     """.trimIndent()
@@ -86,4 +94,38 @@ class PasswordResetViewModel @Inject constructor(private val appRepositoryImpl: 
 
         }
     }
+
+    fun resetPassword(email: String, password: String, confirmPassword: String) =
+        viewModelScope.launch {
+            setLoadingState()
+            try {
+                val result = appRepositoryImpl.resetPassword(email, password, confirmPassword)
+
+                _uiState.value = UiState.Success(result)
+            } catch (e: Exception) {
+                val errorMessage = when (e) {
+                    is IOException -> """
+                        {"msg": "Service unavailable"}
+                    """.trimIndent()
+
+                    is HttpException -> {
+                        when (e.code()) {
+                            404 -> e.response()?.errorBody()?.string().toString()
+                            // Add more cases for specific HTTP error codes if needed
+                            else -> """
+                                {"msg": "Error code ${e.message()}"}
+                            """.trimIndent()
+                        }
+                    }
+
+                    else -> """
+                        {"msg": "Service unavailable"}
+                    """.trimIndent()
+                }
+                val gson = Gson()
+                val jsonObject = gson.fromJson(errorMessage, Map::class.java) as Map<*, *>
+                val msg = jsonObject["msg"]
+                _uiState.value = UiState.Error(msg.toString())
+            }
+        }
 }
