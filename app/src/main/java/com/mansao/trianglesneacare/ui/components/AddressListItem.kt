@@ -15,11 +15,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.mansao.trianglesneacare.R
 import com.mansao.trianglesneacare.data.network.response.AddressItem
+import com.mansao.trianglesneacare.ui.screen.SharedViewModel
 
 @Composable
 fun AddressListItem(
     address: AddressItem,
-    navigateToEditAddress: () -> Unit
+    navigateToEditAddress: () -> Unit,
+    sharedViewModel: SharedViewModel
 ) {
     Card(
         modifier = Modifier
@@ -41,7 +43,10 @@ fun AddressListItem(
             Spacer(modifier = Modifier.height(8.dp))
 
             Button(
-                onClick = { navigateToEditAddress() },
+                onClick = {
+                    navigateToEditAddress()
+                    sharedViewModel.addAddressId(address.id)
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp)

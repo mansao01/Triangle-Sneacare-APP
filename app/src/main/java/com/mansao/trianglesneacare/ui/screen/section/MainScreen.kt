@@ -14,7 +14,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -53,7 +52,7 @@ fun MainScreen(
     navController: NavHostController = rememberNavController(),
     authViewModel: AuthViewModel = hiltViewModel(),
     mainViewModel: MainViewModel = hiltViewModel(),
-    sharedViewModel: SharedViewModel ,
+    sharedViewModel: SharedViewModel,
     navigateToLogin: () -> Unit
 ) {
     mainViewModel.refreshTokenExpired.collectAsState(initial = false).value.let { isExpired ->
@@ -158,7 +157,9 @@ fun MainScreenContent(
                             navController.navigate(Screen.SearchAddress.route)
                         }, navigateToEditAddress = {
                             navController.navigate(Screen.UpdateAddress.route)
-                        })
+                        },
+                        sharedViewModel = sharedViewModel
+                    )
                 }
 
                 composable(Screen.AddAddress.route) {
@@ -191,7 +192,11 @@ fun MainScreenContent(
                 }
 
                 composable(Screen.UpdateAddress.route) {
-                    UpdateAddressScreen()
+                    UpdateAddressScreen(sharedViewModel = sharedViewModel, navigateBack = {
+                        if (navController.canGoBack) {
+                            navController.popBackStack()
+                        }
+                    })
                 }
 
                 composable(Screen.Maps.route) {

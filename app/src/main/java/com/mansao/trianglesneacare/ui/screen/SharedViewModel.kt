@@ -19,6 +19,8 @@ class SharedViewModel : ViewModel() {
 
     var email by mutableStateOf("")
 
+    var addressId by mutableStateOf(0)
+
     fun addPlace(newPredictionItem: PredictionsItem) {
         predictionItem = newPredictionItem
     }
@@ -39,5 +41,9 @@ class SharedViewModel : ViewModel() {
 
     fun addEmail(newEmail: String) {
         email = newEmail
+    }
+
+    fun addAddressId(newId:Int){
+        addressId = newId
     }
 }

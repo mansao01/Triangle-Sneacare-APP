@@ -31,6 +31,7 @@ import com.mansao.trianglesneacare.data.network.response.AddressItem
 import com.mansao.trianglesneacare.ui.common.UiState
 import com.mansao.trianglesneacare.ui.components.AddressListItem
 import com.mansao.trianglesneacare.ui.components.LoadingDialog
+import com.mansao.trianglesneacare.ui.screen.SharedViewModel
 
 @Composable
 fun AddressListScreen(
@@ -38,8 +39,9 @@ fun AddressListScreen(
     navigateToEditAddress: () -> Unit,
     navigateToSearchAddress: () -> Unit,
     viewModel: AddressListViewModel = hiltViewModel(),
+    sharedViewModel: SharedViewModel
 
-    ) {
+) {
     LaunchedEffect(key1 = Unit) {
         viewModel.getAddresses()
     }
@@ -60,7 +62,8 @@ fun AddressListScreen(
                     is UiState.Loading -> LoadingDialog()
                     is UiState.Success -> AddressListComponent(
                         address = uiState.data.address,
-                        navigateToEditAddress = navigateToEditAddress
+                        navigateToEditAddress = navigateToEditAddress,
+                        sharedViewModel = sharedViewModel
                     )
 
                     is UiState.Error -> Toast.makeText(
@@ -77,11 +80,16 @@ fun AddressListScreen(
 @Composable
 fun AddressListComponent(
     address: List<AddressItem>,
-    navigateToEditAddress: () -> Unit
+    navigateToEditAddress: () -> Unit,
+    sharedViewModel: SharedViewModel
 ) {
     LazyColumn {
         items(address) {
-            AddressListItem(address = it, navigateToEditAddress = navigateToEditAddress)
+            AddressListItem(
+                address = it,
+                navigateToEditAddress = navigateToEditAddress,
+                sharedViewModel = sharedViewModel
+            )
         }
     }
 }

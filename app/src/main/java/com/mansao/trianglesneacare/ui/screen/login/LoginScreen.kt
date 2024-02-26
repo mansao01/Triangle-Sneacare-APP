@@ -241,8 +241,9 @@ fun LoginComponent(
                     )
                     ForgotPassword(
                         navigateToInputEmail = { navigateToInputEmail()},
-                        modifier = Modifier.align(Alignment.End)
-                            .padding(top = 4.dp)
+                        modifier = Modifier
+                            .align(Alignment.End)
+                            .padding(top = 8.dp, end = 8.dp)
                     )
                     OutlinedButton(
                         enabled = isButtonEnable,
@@ -322,7 +323,7 @@ fun RegisterText(
                 )
             ) {
                 append("")
-                append("Create now")
+                append(" Create now")
             }
         },
         modifier = modifier
@@ -335,9 +336,10 @@ fun ForgotPassword(
     modifier: Modifier = Modifier
 ) {
     Text(
-        text = "Forgot Password",
+        text = stringResource(R.string.forgot_password),
         style =MaterialTheme.typography.labelMedium,
         fontStyle = FontStyle.Italic,
+        fontSize = 12.sp,
         modifier = modifier
             .clickable { navigateToInputEmail() },
     )

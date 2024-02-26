@@ -6,6 +6,7 @@ import com.mansao.trianglesneacare.data.AppRepositoryImpl
 import com.mansao.trianglesneacare.data.network.response.CustomerDetailAddressResponse
 import com.mansao.trianglesneacare.ui.common.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -18,16 +19,14 @@ class UpdateAddressViewModel @Inject constructor(private val appRepositoryImpl: 
         MutableStateFlow(UiState.Standby)
     val uiState: StateFlow<UiState<CustomerDetailAddressResponse>> = _uiState
 
-    private var _deleteMessage: MutableStateFlow<String> =
-        MutableStateFlow("")
-    val deleteMessage: StateFlow<String> = _deleteMessage
-
-    private var _updateMessage: MutableStateFlow<String> =
-        MutableStateFlow("")
-    val updateMessage: StateFlow<String> = _updateMessage
-
+    private var _actionSuccess = MutableStateFlow(false)
+    val actionSuccess:Flow<Boolean> = _actionSuccess
+    private fun setLoadingState(){
+        _uiState.value = UiState.Loading
+    }
 
     fun getDetailAddress(addressId: Int) = viewModelScope.launch {
+        setLoadingState()
         try {
             val token = appRepositoryImpl.getAccessToken()
             val result = appRepositoryImpl.getDetailCustomerAddresses("Bearer $token", addressId)
@@ -42,33 +41,42 @@ class UpdateAddressViewModel @Inject constructor(private val appRepositoryImpl: 
         id: Int,
         receiverName: String,
         fullAddress: String,
-        note: String
+        note: String,
+        title: String,
+        phone: String
     ) = viewModelScope.launch {
+        setLoadingState()
         try {
             val token = appRepositoryImpl.getAccessToken()
-            val result = appRepositoryImpl.updateCustomerAddress(
+            appRepositoryImpl.updateCustomerAddress(
                 "Bearer $token",
                 id,
                 receiverName,
                 fullAddress,
-                note
+                note,
+                title,
+                phone
             )
-            _updateMessage.value = result.msg
+            _actionSuccess.value = true
         } catch (e: Exception) {
-            _updateMessage.value = e.message.toString()
+            _actionSuccess.value = false
+
 
         }
     }
 
 
     fun deleteAddress(id: Int) {
+        setLoadingState()
         viewModelScope.launch {
             try {
                 val token = appRepositoryImpl.getAccessToken()
-                val result = appRepositoryImpl.deleteCustomerAddress("Bearer $token", id)
-                _deleteMessage.value = result.msg
+                appRepositoryImpl.deleteCustomerAddress("Bearer $token", id)
+                _actionSuccess.value = true
+
             } catch (e: Exception) {
-                _deleteMessage.value = e.message.toString()
+                _actionSuccess.value = false
+
             }
         }
     }

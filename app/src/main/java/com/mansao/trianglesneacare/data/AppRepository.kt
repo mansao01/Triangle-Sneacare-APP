@@ -72,7 +72,9 @@ interface AppRepository {
         id: Int,
         receiverName: String,
         fullAddress: String,
-        note: String
+        note: String,
+        title:String,
+        phone: String
     ): OnlyMsgResponse
 
     suspend fun autoCompleteAddress(address: String): AutoCompleteAddressResponse
@@ -184,9 +186,11 @@ class AppRepositoryImpl @Inject constructor(
         id: Int,
         receiverName: String,
         fullAddress: String,
-        note: String
+        note: String,
+        title:String,
+        phone: String
     ): OnlyMsgResponse =
-        apiService.updateCustomerAddress(token, id, receiverName, fullAddress, note)
+        apiService.updateCustomerAddress(token, id, receiverName, fullAddress, note, title, phone)
 
     override suspend fun autoCompleteAddress(address: String): AutoCompleteAddressResponse =
         apiService.autoCompleteAddress(address)

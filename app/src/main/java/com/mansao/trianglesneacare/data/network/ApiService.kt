@@ -123,6 +123,8 @@ interface ApiService {
         @Query("receiverName") receiverName: String,
         @Query("fullAddress") fullAddress: String,
         @Query("note") note: String,
+        @Query("title") title: String,
+        @Query("phone") phone: String,
     ): OnlyMsgResponse
 
     @GET(ApiConst.AUTO_COMPLETE_ADDRESS)
