@@ -50,5 +50,5 @@ val Typography = Typography(
         fontFamily = Roboto,
         fontWeight = FontWeight.Normal,
         fontSize = 14.sp
-    )
+    ),
 )

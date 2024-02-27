@@ -111,6 +111,7 @@ fun UpdateAddressComponent(
         val modifier = Modifier
             .align(Alignment.CenterHorizontally)
             .fillMaxWidth()
+            .padding(top = 4.dp)
 
         OutlinedTextField(
             value = addressLabel,
@@ -157,24 +158,28 @@ fun UpdateAddressComponent(
         OutlinedTextField(
             value = notes,
             onValueChange = { notes = it },
-            label = { Text(text = stringResource(R.string.receiver_name)) },
+            label = { Text(text = stringResource(R.string.notes_to_courier)) },
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Text),
             modifier = modifier,
             shape = RoundedCornerShape(16.dp)
 
         )
 
-        Button(onClick = {
-            updateAddress(
-                addressId,
-                receiverName,
-                fullAddress,
-                notes,
-                addressLabel,
-                phone,
-                updateAddressViewModel
-            )
-        }) {
+        Button(
+            onClick = {
+                updateAddress(
+                    addressId,
+                    receiverName,
+                    fullAddress,
+                    notes,
+                    addressLabel,
+                    phone,
+                    updateAddressViewModel
+                )
+            },
+            modifier = modifier
+                .padding(top = 8.dp)
+        ) {
             Text(text = stringResource(id = R.string.update))
         }
 
