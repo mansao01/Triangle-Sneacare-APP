@@ -3,7 +3,9 @@ package com.mansao.trianglesneacare.ui.screen.section.customer.updateAddress
 import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -26,7 +28,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -108,63 +109,68 @@ fun UpdateAddressComponent(
     Column(
         modifier = Modifier.fillMaxWidth()
     ) {
-        val modifier = Modifier
-            .align(Alignment.CenterHorizontally)
-            .fillMaxWidth()
-            .padding(top = 4.dp)
+        Spacer(modifier = Modifier.height(16.dp)) // Add some spacing at the top
 
+        // Define a modifier for text fields and button
+        val modifier = Modifier
+            .padding(horizontal = 16.dp)
+            .fillMaxWidth()
+
+        // Address Label TextField
         OutlinedTextField(
             value = addressLabel,
             onValueChange = { addressLabel = it },
             label = { Text(text = stringResource(R.string.address_label)) },
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Text),
             singleLine = true,
-            modifier = modifier,
+            modifier = modifier.padding(top = 4.dp, bottom = 8.dp), // Add vertical padding
             shape = RoundedCornerShape(16.dp)
         )
 
+        // Full Address TextField
         OutlinedTextField(
             value = fullAddress,
             onValueChange = { fullAddress = it },
             label = { Text(text = stringResource(R.string.full_address)) },
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Text),
             singleLine = true,
-            modifier = modifier,
+            modifier = modifier.padding(bottom = 8.dp), // Add bottom padding
             shape = RoundedCornerShape(16.dp)
-
         )
 
+        // Receiver Name TextField
         OutlinedTextField(
             value = receiverName,
             onValueChange = { receiverName = it },
             label = { Text(text = stringResource(R.string.receiver_name)) },
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Text),
             singleLine = true,
-            modifier = modifier,
+            modifier = modifier.padding(bottom = 8.dp), // Add bottom padding
             shape = RoundedCornerShape(16.dp)
-
         )
 
+        // Phone TextField
         OutlinedTextField(
             value = phone,
             onValueChange = { phone = it },
             label = { Text(text = stringResource(R.string.phone)) },
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Text),
             singleLine = true,
-            modifier = modifier,
+            modifier = modifier.padding(bottom = 8.dp), // Add bottom padding
             shape = RoundedCornerShape(16.dp)
-
         )
+
+        // Notes TextField
         OutlinedTextField(
             value = notes,
             onValueChange = { notes = it },
             label = { Text(text = stringResource(R.string.notes_to_courier)) },
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Text),
-            modifier = modifier,
+            modifier = modifier.padding(bottom = 16.dp), // Add larger bottom padding
             shape = RoundedCornerShape(16.dp)
-
         )
 
+        // Update Button
         Button(
             onClick = {
                 updateAddress(
@@ -177,13 +183,12 @@ fun UpdateAddressComponent(
                     updateAddressViewModel
                 )
             },
-            modifier = modifier
-                .padding(top = 8.dp)
+            modifier = modifier.padding(bottom = 16.dp) // Add bottom padding
         ) {
             Text(text = stringResource(id = R.string.update))
         }
-
     }
+
 }
 
 private fun updateAddress(

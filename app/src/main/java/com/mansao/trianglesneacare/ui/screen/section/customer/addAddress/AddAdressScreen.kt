@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -34,7 +33,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -102,8 +100,10 @@ fun AddAddressContent(
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .padding(horizontal = 4.dp)
+            .padding(horizontal = 16.dp)
+            .padding(top = 8.dp) // Add top padding for better spacing
     ) {
+        // Address Label TextField
         OutlinedTextField(
             value = addressLabel,
             onValueChange = { addressLabel = it },
@@ -116,18 +116,15 @@ fun AddAddressContent(
             },
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Text),
             singleLine = true,
-            keyboardActions = KeyboardActions(
-                onNext = {
-                    KeyboardActions.Default.onNext
-                }
-            ),
             modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .padding(bottom = 8.dp), // Add bottom padding
             shape = RoundedCornerShape(16.dp)
-
         )
+
         Spacer(modifier = Modifier.height(8.dp))
+
+        // Full Address TextField
         OutlinedTextField(
             value = getFullAddress ?: fullAddress,
             onValueChange = {
@@ -146,24 +143,18 @@ fun AddAddressContent(
             },
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Text),
             singleLine = true,
-            keyboardActions = KeyboardActions(
-                onDone = {
-                    KeyboardActions.Default.onNext
-                }
-            ),
             modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .padding(bottom = 8.dp), // Add bottom padding
             shape = RoundedCornerShape(16.dp)
-
         )
 
         Spacer(modifier = Modifier.height(8.dp))
+
+        // Receiver Name TextField
         OutlinedTextField(
             value = receiverName,
-            onValueChange = {
-                receiverName = it
-            },
+            onValueChange = { receiverName = it },
             label = { Text(text = stringResource(R.string.receiver_name)) },
             leadingIcon = {
                 Icon(
@@ -173,23 +164,18 @@ fun AddAddressContent(
             },
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Text),
             singleLine = true,
-            keyboardActions = KeyboardActions(
-                onDone = {
-                    KeyboardActions.Default.onNext
-                }
-            ),
             modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .padding(bottom = 8.dp), // Add bottom padding
             shape = RoundedCornerShape(16.dp)
         )
 
         Spacer(modifier = Modifier.height(8.dp))
+
+        // Notes TextField
         OutlinedTextField(
             value = notes,
-            onValueChange = {
-                notes = it
-            },
+            onValueChange = { notes = it },
             label = { Text(text = stringResource(R.string.notes_to_courier)) },
             leadingIcon = {
                 Icon(
@@ -198,23 +184,19 @@ fun AddAddressContent(
                 )
             },
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Text),
-            keyboardActions = KeyboardActions(
-                onDone = {
-                    KeyboardActions.Default.onNext
-                }
-            ),
+            singleLine = true,
             modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .padding(bottom = 8.dp), // Add bottom padding
             shape = RoundedCornerShape(16.dp)
         )
 
         Spacer(modifier = Modifier.height(8.dp))
+
+        // Phone TextField
         OutlinedTextField(
             value = phone,
-            onValueChange = {
-                phone = it
-            },
+            onValueChange = { phone = it },
             label = { Text(text = "Phone Number") },
             leadingIcon = {
                 Icon(
@@ -224,18 +206,13 @@ fun AddAddressContent(
             },
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Text),
             singleLine = true,
-            keyboardActions = KeyboardActions(
-                onDone = {
-                    KeyboardActions.Default.onNext
-                }
-            ),
-            modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(16.dp)
         )
+
         Spacer(modifier = Modifier.height(16.dp))
 
+        // Save Button
         Button(
             onClick = {
                 addAddressViewModel.createCustomerAddress(
@@ -249,9 +226,7 @@ fun AddAddressContent(
                 )
             },
             enabled = isButtonEnable,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 12.dp)
+            modifier = Modifier.fillMaxWidth()
         ) {
             Text(text = stringResource(R.string.save))
         }
