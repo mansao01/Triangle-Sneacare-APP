@@ -103,7 +103,8 @@ fun MainScreenContent(
                 currentRoute != Screen.SearchAddress.route &&
                 currentRoute != Screen.AddressList.route &&
                 currentRoute != Screen.Maps.route &&
-                currentRoute != Screen.AddAddress.route
+                currentRoute != Screen.AddAddress.route &&
+                currentRoute != Screen.ProfileEdit.route
             ) {
                 MainBottomBar(
                     navController = navController,
@@ -133,7 +134,7 @@ fun MainScreenContent(
 
                 composable(Screen.ProfileEdit.route) {
                     ProfileEditScreen(
-                        navigateBack = {}
+                        navigateBack = { if (navController.canGoBack) navController.popBackStack() }
                     )
                 }
 
