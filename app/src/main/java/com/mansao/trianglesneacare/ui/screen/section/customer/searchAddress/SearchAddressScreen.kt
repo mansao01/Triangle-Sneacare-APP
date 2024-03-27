@@ -122,8 +122,8 @@ fun SearchAddressScreen(
 
         Scaffold(
             topBar = { SearchAddressTopBar(navigateBack = navigateBack) }
-        ) {
-            Surface(modifier = Modifier.padding(it)) {
+        ) { scaffoldPadding ->
+            Surface(modifier = Modifier.padding(scaffoldPadding)) {
                 Column(modifier = Modifier.fillMaxSize()) {
                     SearchBarAddressComponent(searchViewModel = searchViewModel)
                     Spacer(modifier = Modifier.height(8.dp))

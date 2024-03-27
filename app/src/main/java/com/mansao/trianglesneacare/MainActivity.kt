@@ -32,6 +32,7 @@ class MainActivity : ComponentActivity() {
             )
         )
         super.onCreate(savedInstanceState)
+        actionBar?.hide()
         WindowCompat.setDecorFitsSystemWindows(window, false)
         setContent {
             installSplashScreen().setKeepOnScreenCondition { !authViewModel.isLoading.value }

@@ -126,6 +126,8 @@ dependencies {
 //    balloon
     implementation("com.github.skydoves:balloon-compose:1.6.4")
 
+//    midtrans
+    implementation("com.midtrans:uikit:2.0.0-SANDBOX")
 
     implementation("androidx.exifinterface:exifinterface:1.3.6")
 

@@ -54,8 +54,8 @@ fun AddressListScreen(
                 navigateToSearchAddress = navigateToSearchAddress
             )
         }
-    ) {
-        Surface(modifier = Modifier.padding(it)) {
+    ) { scaffoldPadding ->
+        Surface(modifier = Modifier.padding(scaffoldPadding)) {
             viewModel.uiState.collectAsState(initial = UiState.Standby).value.let { uiState ->
                 when (uiState) {
                     is UiState.Standby -> {}

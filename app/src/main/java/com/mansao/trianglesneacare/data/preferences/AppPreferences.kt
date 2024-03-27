@@ -21,8 +21,8 @@ val Context.dataStore: DataStore<Preferences> by preferencesDataStore("triangle"
 class AppPreferences @Inject constructor(@ApplicationContext val context: Context) {
     private val dataStore = context.dataStore
 
-    private val accessTokenKey = stringPreferencesKey("access_token")
-    private val refreshTokenKey = stringPreferencesKey("refresh_token")
+    private val accessTokenKey = stringPreferencesKey("access_key")
+    private val refreshTokenKey = stringPreferencesKey("refresh_key")
     private val isLoginState = booleanPreferencesKey("is_login")
     private val username = stringPreferencesKey("username")
     private val roleName = stringPreferencesKey("role")

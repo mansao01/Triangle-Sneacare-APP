@@ -31,6 +31,7 @@ class ProfileViewModel @Inject constructor(private val appRepositoryImpl: AppRep
             uiState = ProfileUiState.Loading
             uiState = try {
                 val token = appRepositoryImpl.getAccessToken()
+                Log.d("access token", token.toString())
                 val profile = appRepositoryImpl.getProfile("Bearer $token")
                 ProfileUiState.Success(profile)
             } catch (e: Exception) {
