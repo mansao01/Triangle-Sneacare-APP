@@ -14,6 +14,7 @@ sealed class Screen(val route: String) {
 
     //    admin
     object AdminHome : Screen("adminHome")
+    object Services : Screen("services")
     object DriverManagement : Screen("driverManagement")
     object DriverRegistration : Screen("driverRegistration")
 

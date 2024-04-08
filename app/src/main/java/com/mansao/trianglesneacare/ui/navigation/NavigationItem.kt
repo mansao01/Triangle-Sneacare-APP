@@ -4,8 +4,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.ListAlt
+import androidx.compose.material.icons.filled.LocalLaundryService
 import androidx.compose.material.icons.filled.Map
-import androidx.compose.material.icons.filled.Motorcycle
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -27,10 +27,10 @@ data class BottomNavigationItem(
                 contentDescription = "Home"
             ),
             BottomNavigationItem(
-                title = "Driver management",
-                icon = Icons.Filled.Motorcycle,
-                screen = Screen.DriverManagement.route,
-                contentDescription = "Driver management"
+                title = "Services",
+                icon = Icons.Filled.LocalLaundryService,
+                screen = Screen.Services.route,
+                contentDescription = "Home"
             ),
             BottomNavigationItem(
                 title = "Profile",

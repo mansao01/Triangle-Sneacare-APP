@@ -35,6 +35,7 @@ import com.mansao.trianglesneacare.ui.screen.section.admin.driverManagement.Driv
 import com.mansao.trianglesneacare.ui.screen.section.admin.driverManagement.DriverManagementViewModel
 import com.mansao.trianglesneacare.ui.screen.section.admin.driverRegistrarion.DriverRegistrationScreen
 import com.mansao.trianglesneacare.ui.screen.section.admin.home.AdminHomeScreen
+import com.mansao.trianglesneacare.ui.screen.section.admin.services.ServicesScreen
 import com.mansao.trianglesneacare.ui.screen.section.customer.addAddress.AddAddressScreen
 import com.mansao.trianglesneacare.ui.screen.section.customer.addressList.AddressListScreen
 import com.mansao.trianglesneacare.ui.screen.section.customer.cart.CartScreen
@@ -218,6 +219,10 @@ fun MainScreenContent(
                 composable(Screen.AdminHome.route) {
                     AdminHomeScreen()
                 }
+                composable(Screen.Services.route){
+                    ServicesScreen()
+                }
+
                 composable(Screen.DriverManagement.route) {
                     val driverManagementViewModel: DriverManagementViewModel = hiltViewModel()
                     DriverManagementScreen(
