@@ -31,6 +31,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -87,7 +88,7 @@ fun AddAddressContent(
     addAddressViewModel: AddAddressViewModel
 ) {
     var addressLabel by rememberSaveable { mutableStateOf("") }
-    var getFullAddress by rememberSaveable { mutableStateOf(sharedViewModel.fullAddress) }
+    var getFullAddress by remember{ mutableStateOf(sharedViewModel.fullAddress) }
     var fullAddress by rememberSaveable { mutableStateOf("") }
     var notes by rememberSaveable { mutableStateOf("") }
     var receiverName by rememberSaveable { mutableStateOf("") }

@@ -8,6 +8,7 @@ import com.mansao.trianglesneacare.data.network.response.AutoCompleteAddressResp
 import com.mansao.trianglesneacare.data.network.response.CreateCustomerAddressResponse
 import com.mansao.trianglesneacare.data.network.response.CustomerDetailAddressResponse
 import com.mansao.trianglesneacare.data.network.response.GeocodingResponse
+import com.mansao.trianglesneacare.data.network.response.GetCategoriesResponse
 import com.mansao.trianglesneacare.data.network.response.GetCustomerAddressesResponse
 import com.mansao.trianglesneacare.data.network.response.GetDriversResponse
 import com.mansao.trianglesneacare.data.network.response.GetProfileDetailResponse
@@ -73,7 +74,7 @@ interface AppRepository {
         receiverName: String,
         fullAddress: String,
         note: String,
-        title:String,
+        title: String,
         phone: String
     ): OnlyMsgResponse
 
@@ -81,6 +82,7 @@ interface AppRepository {
 
     suspend fun geocodeWithAddress(address: String): GeocodingResponse
     suspend fun geocodeWithPlaceId(placeId: String): GeocodingResponse
+    suspend fun getCategories(): GetCategoriesResponse
 
     //    preferences
     suspend fun saveAccessToken(token: String)
@@ -187,7 +189,7 @@ class AppRepositoryImpl @Inject constructor(
         receiverName: String,
         fullAddress: String,
         note: String,
-        title:String,
+        title: String,
         phone: String
     ): OnlyMsgResponse =
         apiService.updateCustomerAddress(token, id, receiverName, fullAddress, note, title, phone)
@@ -200,6 +202,8 @@ class AppRepositoryImpl @Inject constructor(
 
     override suspend fun geocodeWithPlaceId(placeId: String): GeocodingResponse =
         apiService.geocodeWithPlaceId(placeId)
+
+    override suspend fun getCategories(): GetCategoriesResponse = apiService.getCategories()
 
     //    preferences
     override suspend fun saveAccessToken(token: String) = appPreferences.saveAccessToken(token)

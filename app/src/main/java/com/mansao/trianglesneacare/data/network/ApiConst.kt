@@ -2,6 +2,7 @@ package com.mansao.trianglesneacare.data.network
 
 object ApiConst {
     const val PRODUCTION_BASE_URL = "https://triangle-api-dot-coffeebid-capstone.et.r.appspot.com/v1/"
+    const val SANDBOX_BASE_URL = "https://triangle-api-sandbox-dot-coffeebid-capstone.et.r.appspot.com/v1/"
     const val LOCAL_BASE_URL = "http://192.168.18.162:8080/v1/"
     const val AUTHORIZATION_KEY = "Authorization"
     const val CHECK_SERVER = "test"
@@ -24,4 +25,9 @@ object ApiConst {
     const val UPDATE_CUSTOMER_ADDRESS = "customerAddress/update"
     const val GEOCODING_ADDRESS = "geoCodeWithAddress"
     const val GEOCODING_PLACE_ID = "geoCodeWithPlaceId"
+
+//    admin
+    const val CREATE_NEW_CATEGORY = "addCategory"
+    const val GET_CATEGORIES = "categories"
+    const val CREATE_NEW_SERVICE = "addService"
 }

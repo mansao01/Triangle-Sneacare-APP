@@ -7,6 +7,7 @@ import com.mansao.trianglesneacare.data.network.response.AutoCompleteAddressResp
 import com.mansao.trianglesneacare.data.network.response.CreateCustomerAddressResponse
 import com.mansao.trianglesneacare.data.network.response.CustomerDetailAddressResponse
 import com.mansao.trianglesneacare.data.network.response.GeocodingResponse
+import com.mansao.trianglesneacare.data.network.response.GetCategoriesResponse
 import com.mansao.trianglesneacare.data.network.response.GetCustomerAddressesResponse
 import com.mansao.trianglesneacare.data.network.response.GetDriversResponse
 import com.mansao.trianglesneacare.data.network.response.GetProfileDetailResponse
@@ -147,4 +148,8 @@ interface ApiService {
     suspend fun logout(
         @Header(ApiConst.AUTHORIZATION_KEY) token: String
     ): OnlyMsgResponse
+
+//    admin
+    @GET(ApiConst.GET_CATEGORIES)
+    suspend fun getCategories():GetCategoriesResponse
 }
