@@ -30,4 +30,5 @@ object ApiConst {
     const val CREATE_NEW_CATEGORY = "addCategory"
     const val GET_CATEGORIES = "categories"
     const val CREATE_NEW_SERVICE = "addService"
+    const val GET_SERVICES_BY_CATEGORY = "servicesByCategory"
 }

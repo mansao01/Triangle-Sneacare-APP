@@ -1,8 +1,10 @@
 package com.mansao.trianglesneacare.data.network
 
+import com.mansao.trianglesneacare.data.network.request.AddServiceRequest
 import com.mansao.trianglesneacare.data.network.request.CreateCustomerAddressRequest
 import com.mansao.trianglesneacare.data.network.request.LoginRequest
 import com.mansao.trianglesneacare.data.network.request.RegisterRequest
+import com.mansao.trianglesneacare.data.network.response.AddServiceResponse
 import com.mansao.trianglesneacare.data.network.response.AutoCompleteAddressResponse
 import com.mansao.trianglesneacare.data.network.response.CreateCustomerAddressResponse
 import com.mansao.trianglesneacare.data.network.response.CustomerDetailAddressResponse
@@ -11,6 +13,7 @@ import com.mansao.trianglesneacare.data.network.response.GetCategoriesResponse
 import com.mansao.trianglesneacare.data.network.response.GetCustomerAddressesResponse
 import com.mansao.trianglesneacare.data.network.response.GetDriversResponse
 import com.mansao.trianglesneacare.data.network.response.GetProfileDetailResponse
+import com.mansao.trianglesneacare.data.network.response.GetServicesByCategoryIdResponse
 import com.mansao.trianglesneacare.data.network.response.LoginResponse
 import com.mansao.trianglesneacare.data.network.response.OnlyAccessTokenResponse
 import com.mansao.trianglesneacare.data.network.response.OnlyMsgResponse
@@ -74,10 +77,10 @@ interface ApiService {
 
     @PATCH(ApiConst.RESET_PASSWORD)
     suspend fun resetPassword(
-        @Query("email") email:String,
-        @Query("password") password:String,
-        @Query("confirmPassword") confirmPassword:String,
-    ):OnlyMsgResponse
+        @Query("email") email: String,
+        @Query("password") password: String,
+        @Query("confirmPassword") confirmPassword: String,
+    ): OnlyMsgResponse
 
     @GET(ApiConst.PROFILE)
     suspend fun getProfile(
@@ -149,7 +152,17 @@ interface ApiService {
         @Header(ApiConst.AUTHORIZATION_KEY) token: String
     ): OnlyMsgResponse
 
-//    admin
+    //    admin
     @GET(ApiConst.GET_CATEGORIES)
-    suspend fun getCategories():GetCategoriesResponse
+    suspend fun getCategories(): GetCategoriesResponse
+
+    @GET(ApiConst.GET_SERVICES_BY_CATEGORY)
+    suspend fun getServicesByCategoryId(
+        @Query("categoryId") categoryId: Int
+    ) :GetServicesByCategoryIdResponse
+
+    @POST(ApiConst.CREATE_NEW_SERVICE)
+    suspend fun addService(
+        @Body addServiceRequest: AddServiceRequest
+    ): AddServiceResponse
 }

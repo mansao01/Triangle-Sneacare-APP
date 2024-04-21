@@ -7,14 +7,18 @@ sealed class Screen(val route: String) {
     object Profile : Screen("profile")
     object ProfileEdit : Screen("profileEdit")
     object Main : Screen("main")
-    object InputEmail:Screen("inputEmail")
-    object OTPVerification:Screen("otpVerification")
-    object PasswordChange:Screen("passwordChange")
+    object InputEmail : Screen("inputEmail")
+    object OTPVerification : Screen("otpVerification")
+    object PasswordChange : Screen("passwordChange")
 
 
     //    admin
     object AdminHome : Screen("adminHome")
-    object Services : Screen("services")
+    object Categories : Screen("categories")
+    object Services : Screen("categories/services/{categoryId}") {
+        fun createRoute(categoryId: Int) = "categories/services/$categoryId"
+    }
+
     object DriverManagement : Screen("driverManagement")
     object DriverRegistration : Screen("driverRegistration")
 
@@ -25,7 +29,7 @@ sealed class Screen(val route: String) {
     object AddressList : Screen("addressList")
     object AddAddress : Screen("addAddress")
     object SearchAddress : Screen("searchAddress")
-    object UpdateAddress:Screen("updateAddress")
+    object UpdateAddress : Screen("updateAddress")
     object Maps : Screen("maps")
 
     //driver

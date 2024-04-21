@@ -16,10 +16,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.mansao.trianglesneacare.R
 import com.mansao.trianglesneacare.ui.AuthViewModel
 import com.mansao.trianglesneacare.ui.common.UiState
@@ -31,6 +33,7 @@ import com.mansao.trianglesneacare.ui.screen.SharedViewModel
 import com.mansao.trianglesneacare.ui.screen.profile.ProfileScreen
 import com.mansao.trianglesneacare.ui.screen.profile.ProfileViewModel
 import com.mansao.trianglesneacare.ui.screen.profileEdit.ProfileEditScreen
+import com.mansao.trianglesneacare.ui.screen.section.admin.categories.CategoriesScreen
 import com.mansao.trianglesneacare.ui.screen.section.admin.driverManagement.DriverManagementScreen
 import com.mansao.trianglesneacare.ui.screen.section.admin.driverManagement.DriverManagementViewModel
 import com.mansao.trianglesneacare.ui.screen.section.admin.driverRegistrarion.DriverRegistrationScreen
@@ -219,8 +222,20 @@ fun MainScreenContent(
                 composable(Screen.AdminHome.route) {
                     AdminHomeScreen()
                 }
-                composable(Screen.Services.route){
-                    ServicesScreen()
+                composable(Screen.Categories.route) {
+                    CategoriesScreen(navigateToServiceList = { categoryId ->
+                        navController.navigate(Screen.Services.createRoute(categoryId))
+                    })
+                }
+                composable(
+                    Screen.Services.route,
+                    arguments = listOf(
+                        navArgument("categoryId") {
+                            type = NavType.IntType
+                        })
+                ) { data ->
+                    val categoryId = data.arguments?.getInt("categoryId") ?: -1
+                    ServicesScreen(categoryId = categoryId)
                 }
 
                 composable(Screen.DriverManagement.route) {

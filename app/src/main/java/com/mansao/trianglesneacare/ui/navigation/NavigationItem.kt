@@ -29,8 +29,8 @@ data class BottomNavigationItem(
             BottomNavigationItem(
                 title = "Services",
                 icon = Icons.Filled.LocalLaundryService,
-                screen = Screen.Services.route,
-                contentDescription = "Home"
+                screen = Screen.Categories.route,
+                contentDescription = "Services"
             ),
             BottomNavigationItem(
                 title = "Profile",

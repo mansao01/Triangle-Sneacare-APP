@@ -12,6 +12,7 @@ import com.mansao.trianglesneacare.data.network.response.GetCategoriesResponse
 import com.mansao.trianglesneacare.data.network.response.GetCustomerAddressesResponse
 import com.mansao.trianglesneacare.data.network.response.GetDriversResponse
 import com.mansao.trianglesneacare.data.network.response.GetProfileDetailResponse
+import com.mansao.trianglesneacare.data.network.response.GetServicesByCategoryIdResponse
 import com.mansao.trianglesneacare.data.network.response.LoginResponse
 import com.mansao.trianglesneacare.data.network.response.OnlyAccessTokenResponse
 import com.mansao.trianglesneacare.data.network.response.OnlyMsgResponse
@@ -83,6 +84,7 @@ interface AppRepository {
     suspend fun geocodeWithAddress(address: String): GeocodingResponse
     suspend fun geocodeWithPlaceId(placeId: String): GeocodingResponse
     suspend fun getCategories(): GetCategoriesResponse
+    suspend fun getServicesByCategory(categoryId: Int): GetServicesByCategoryIdResponse
 
     //    preferences
     suspend fun saveAccessToken(token: String)
@@ -204,6 +206,9 @@ class AppRepositoryImpl @Inject constructor(
         apiService.geocodeWithPlaceId(placeId)
 
     override suspend fun getCategories(): GetCategoriesResponse = apiService.getCategories()
+    override suspend fun getServicesByCategory(categoryId: Int): GetServicesByCategoryIdResponse {
+        return apiService.getServicesByCategoryId(categoryId)
+    }
 
     //    preferences
     override suspend fun saveAccessToken(token: String) = appPreferences.saveAccessToken(token)
