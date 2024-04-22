@@ -15,7 +15,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.mansao.trianglesneacare.data.network.response.CategoriesItem
 import com.mansao.trianglesneacare.ui.common.UiState
-import com.mansao.trianglesneacare.ui.components.CategoryItem
+import com.mansao.trianglesneacare.ui.components.CategoryMenuItem
 import com.mansao.trianglesneacare.ui.components.HeaderText
 import com.mansao.trianglesneacare.ui.components.LoadingDialog
 
@@ -35,7 +35,7 @@ fun CategoriesScreen(
             }
 
             is UiState.Success -> {
-                ServicesContent(categories = uiState.data.categories, navigateToServiceList)
+                CategoriesContent(categories = uiState.data.categories, navigateToServiceList)
             }
         }
 
@@ -43,7 +43,7 @@ fun CategoriesScreen(
 }
 
 @Composable
-fun ServicesContent(
+fun CategoriesContent(
     categories: List<CategoriesItem>,
     navigateToServiceList: (Int) -> Unit
 ) {
@@ -55,7 +55,7 @@ fun ServicesContent(
         ) {
             LazyColumn {
                 items(categories) {
-                    CategoryItem(
+                    CategoryMenuItem(
                         categoryName = it.itemType,
                         onClick = {
                             navigateToServiceList(it.id)

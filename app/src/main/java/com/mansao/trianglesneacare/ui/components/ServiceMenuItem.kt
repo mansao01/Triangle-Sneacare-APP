@@ -1,6 +1,5 @@
 package com.mansao.trianglesneacare.ui.components
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,21 +14,22 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
+
 @Composable
-fun CategoryMenuItem(
-    categoryName: String,
+fun ServiceMenuItem(
+    serviceName: String,
 //    icon: ImageVector,
     modifier: Modifier = Modifier,
-    onClick: () -> Unit
+//    onClick: () -> Unit
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
             .fillMaxWidth()
             .height(56.dp)
-            .clickable {
-                onClick()
-            }
+//            .clickable {
+//                onClick()
+//            }
             .padding(horizontal = 16.dp)
     ) {
 //        Icon(
@@ -41,7 +41,7 @@ fun CategoryMenuItem(
 
         Spacer(modifier = Modifier.width(16.dp))
         Text(
-            text = categoryName,
+            text = serviceName,
             style = TextStyle(
                 fontSize = 16.sp,
             )
