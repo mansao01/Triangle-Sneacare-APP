@@ -34,11 +34,13 @@ import com.mansao.trianglesneacare.ui.screen.profile.ProfileScreen
 import com.mansao.trianglesneacare.ui.screen.profile.ProfileViewModel
 import com.mansao.trianglesneacare.ui.screen.profileEdit.ProfileEditScreen
 import com.mansao.trianglesneacare.ui.screen.section.admin.categories.CategoriesScreen
+import com.mansao.trianglesneacare.ui.screen.section.admin.categories.add.AddCategoryScreen
 import com.mansao.trianglesneacare.ui.screen.section.admin.driverManagement.DriverManagementScreen
 import com.mansao.trianglesneacare.ui.screen.section.admin.driverManagement.DriverManagementViewModel
 import com.mansao.trianglesneacare.ui.screen.section.admin.driverRegistrarion.DriverRegistrationScreen
 import com.mansao.trianglesneacare.ui.screen.section.admin.home.AdminHomeScreen
 import com.mansao.trianglesneacare.ui.screen.section.admin.services.ServicesScreen
+import com.mansao.trianglesneacare.ui.screen.section.admin.services.add.AddServiceScreen
 import com.mansao.trianglesneacare.ui.screen.section.customer.addAddress.AddAddressScreen
 import com.mansao.trianglesneacare.ui.screen.section.customer.addressList.AddressListScreen
 import com.mansao.trianglesneacare.ui.screen.section.customer.cart.CartScreen
@@ -223,9 +225,15 @@ fun MainScreenContent(
                     AdminHomeScreen()
                 }
                 composable(Screen.Categories.route) {
-                    CategoriesScreen(navigateToServiceList = { categoryId ->
-                        navController.navigate(Screen.Services.createRoute(categoryId))
-                    })
+                    CategoriesScreen(
+                        navigateToServiceList = { categoryId ->
+                            navController.navigate(Screen.Services.createRoute(categoryId))
+                        },
+                        navigateToAddCategory = { navController.navigate(Screen.AddCategory.route) }
+                    )
+                }
+                composable(Screen.AddCategory.route) {
+                    AddCategoryScreen(navigateBack = { if (navController.canGoBack) navController.popBackStack() })
                 }
                 composable(
                     Screen.Services.route,
@@ -235,8 +243,25 @@ fun MainScreenContent(
                         })
                 ) { data ->
                     val categoryId = data.arguments?.getInt("categoryId") ?: -1
-                    ServicesScreen(categoryId = categoryId)
+                    ServicesScreen(
+                        categoryId = categoryId,
+                        navigateToAddService = { categoryIds ->
+                            navController.navigate(Screen.AddService.createRoute(categoryIds))
+                        },
+                        navigateBack = { if (navController.canGoBack) navController.popBackStack() }
+                    )
                 }
+
+                composable(Screen.AddService.route, arguments = listOf(navArgument("categoryId") {
+                    type = NavType.IntType
+                })) { data ->
+                    val categoryId = data.arguments?.getInt("categoryId") ?: -1
+                    AddServiceScreen(
+                        navigateBack = { if (navController.canGoBack) navController.popBackStack() },
+                        categoryId = categoryId
+                    )
+                }
+
 
                 composable(Screen.DriverManagement.route) {
                     val driverManagementViewModel: DriverManagementViewModel = hiltViewModel()

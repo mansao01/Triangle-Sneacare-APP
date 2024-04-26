@@ -63,4 +63,10 @@
     <string name="delete_address">Delete Address</string>
     <string name="reset_password_title">Reset Password</string>
     <string name="reset_password_description">Please enter your email address below. We will send you an OTP through email to reset your password.</string>
+    <string name="category_name">Category Name</string>
+    <string name="create">Create</string>
+    <string name="add_service">Add Service</string>
+    <string name="service_name">Service Name</string>
+    <string name="price">Price</string>
+    <string name="service_description">Service Description</string>
 </resources>

@@ -1,10 +1,10 @@
 package com.mansao.trianglesneacare.data.network
 
+import com.mansao.trianglesneacare.data.network.request.AddCategoryRequest
 import com.mansao.trianglesneacare.data.network.request.AddServiceRequest
 import com.mansao.trianglesneacare.data.network.request.CreateCustomerAddressRequest
 import com.mansao.trianglesneacare.data.network.request.LoginRequest
 import com.mansao.trianglesneacare.data.network.request.RegisterRequest
-import com.mansao.trianglesneacare.data.network.response.AddServiceResponse
 import com.mansao.trianglesneacare.data.network.response.AutoCompleteAddressResponse
 import com.mansao.trianglesneacare.data.network.response.CreateCustomerAddressResponse
 import com.mansao.trianglesneacare.data.network.response.CustomerDetailAddressResponse
@@ -159,10 +159,15 @@ interface ApiService {
     @GET(ApiConst.GET_SERVICES_BY_CATEGORY)
     suspend fun getServicesByCategoryId(
         @Query("categoryId") categoryId: Int
-    ) :GetServicesByCategoryIdResponse
+    ): GetServicesByCategoryIdResponse
+
+    @POST(ApiConst.CREATE_NEW_CATEGORY)
+    suspend fun addCategory(
+        @Body addCategoryRequest: AddCategoryRequest
+    ): OnlyMsgResponse
 
     @POST(ApiConst.CREATE_NEW_SERVICE)
     suspend fun addService(
         @Body addServiceRequest: AddServiceRequest
-    ): AddServiceResponse
+    ): OnlyMsgResponse
 }

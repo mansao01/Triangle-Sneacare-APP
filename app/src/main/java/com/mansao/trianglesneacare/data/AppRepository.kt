@@ -1,6 +1,8 @@
 package com.mansao.trianglesneacare.data
 
 import com.mansao.trianglesneacare.data.network.ApiService
+import com.mansao.trianglesneacare.data.network.request.AddCategoryRequest
+import com.mansao.trianglesneacare.data.network.request.AddServiceRequest
 import com.mansao.trianglesneacare.data.network.request.CreateCustomerAddressRequest
 import com.mansao.trianglesneacare.data.network.request.LoginRequest
 import com.mansao.trianglesneacare.data.network.request.RegisterRequest
@@ -85,6 +87,8 @@ interface AppRepository {
     suspend fun geocodeWithPlaceId(placeId: String): GeocodingResponse
     suspend fun getCategories(): GetCategoriesResponse
     suspend fun getServicesByCategory(categoryId: Int): GetServicesByCategoryIdResponse
+    suspend fun addCategory(addCategoryRequest: AddCategoryRequest): OnlyMsgResponse
+    suspend fun addService(addServiceRequest: AddServiceRequest): OnlyMsgResponse
 
     //    preferences
     suspend fun saveAccessToken(token: String)
@@ -208,6 +212,14 @@ class AppRepositoryImpl @Inject constructor(
     override suspend fun getCategories(): GetCategoriesResponse = apiService.getCategories()
     override suspend fun getServicesByCategory(categoryId: Int): GetServicesByCategoryIdResponse {
         return apiService.getServicesByCategoryId(categoryId)
+    }
+
+    override suspend fun addCategory(addCategoryRequest: AddCategoryRequest): OnlyMsgResponse {
+        return apiService.addCategory(addCategoryRequest)
+    }
+
+    override suspend fun addService(addServiceRequest: AddServiceRequest): OnlyMsgResponse {
+        return apiService.addService(addServiceRequest)
     }
 
     //    preferences
