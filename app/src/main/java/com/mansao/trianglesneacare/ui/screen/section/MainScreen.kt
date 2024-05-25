@@ -33,14 +33,6 @@ import com.mansao.trianglesneacare.ui.screen.SharedViewModel
 import com.mansao.trianglesneacare.ui.screen.profile.ProfileScreen
 import com.mansao.trianglesneacare.ui.screen.profile.ProfileViewModel
 import com.mansao.trianglesneacare.ui.screen.profileEdit.ProfileEditScreen
-import com.mansao.trianglesneacare.ui.screen.section.admin.categories.CategoriesScreen
-import com.mansao.trianglesneacare.ui.screen.section.admin.categories.add.AddCategoryScreen
-import com.mansao.trianglesneacare.ui.screen.section.admin.driverManagement.DriverManagementScreen
-import com.mansao.trianglesneacare.ui.screen.section.admin.driverManagement.DriverManagementViewModel
-import com.mansao.trianglesneacare.ui.screen.section.admin.driverRegistrarion.DriverRegistrationScreen
-import com.mansao.trianglesneacare.ui.screen.section.admin.home.AdminHomeScreen
-import com.mansao.trianglesneacare.ui.screen.section.admin.services.ServicesScreen
-import com.mansao.trianglesneacare.ui.screen.section.admin.services.add.AddServiceScreen
 import com.mansao.trianglesneacare.ui.screen.section.customer.addAddress.AddAddressScreen
 import com.mansao.trianglesneacare.ui.screen.section.customer.addressList.AddressListScreen
 import com.mansao.trianglesneacare.ui.screen.section.customer.cart.CartScreen
@@ -51,6 +43,12 @@ import com.mansao.trianglesneacare.ui.screen.section.customer.transactionList.Tr
 import com.mansao.trianglesneacare.ui.screen.section.customer.updateAddress.UpdateAddressScreen
 import com.mansao.trianglesneacare.ui.screen.section.driver.home.DriverHomeScreen
 import com.mansao.trianglesneacare.ui.screen.section.driver.map.MapScreen
+import com.mansao.trianglesneacare.ui.screen.section.service.categories.CategoriesScreen
+import com.mansao.trianglesneacare.ui.screen.section.service.categories.add.AddCategoryScreen
+import com.mansao.trianglesneacare.ui.screen.section.service.driverRegistrarion.DriverRegistrationScreen
+import com.mansao.trianglesneacare.ui.screen.section.service.home.AdminHomeScreen
+import com.mansao.trianglesneacare.ui.screen.section.service.services.ServicesScreen
+import com.mansao.trianglesneacare.ui.screen.section.service.services.add.AddServiceScreen
 import com.mansao.trianglesneacare.utils.canGoBack
 
 @Composable
@@ -99,7 +97,7 @@ fun MainScreenContent(
 
     val startDestination = when (role) {
         stringResource(id = R.string.customer) -> Screen.CustomerHome.route
-        stringResource(id = R.string.admin) -> Screen.AdminHome.route
+        stringResource(id = R.string.service) -> Screen.AdminHome.route
         else -> Screen.DriverHome.route
     }
     Scaffold(
@@ -263,17 +261,6 @@ fun MainScreenContent(
                 }
 
 
-                composable(Screen.DriverManagement.route) {
-                    val driverManagementViewModel: DriverManagementViewModel = hiltViewModel()
-                    DriverManagementScreen(
-                        driverManagementViewModel.uiState,
-                        navigateToDriverRegistration = {
-                            navController.navigate(Screen.DriverRegistration.route)
-                        }
-                    )
-                }
-
-
                 composable(Screen.DriverRegistration.route) {
                     DriverRegistrationScreen(
                         navigateToDriverManagement = {
@@ -331,7 +318,7 @@ fun MainBottomBar(
                     }
             }
 
-            stringResource(id = R.string.admin) -> {
+            stringResource(id = R.string.service) -> {
                 BottomNavigationItem().adminBottomNavigationItem()
                     .forEach { navigationItem ->
                         val isSelected = currentRoute == navigationItem.screen
@@ -383,6 +370,8 @@ fun MainBottomBar(
                             })
                     }
             }
+
+            stringResource(id = R.string.owner) ->{}
         }
 
     }

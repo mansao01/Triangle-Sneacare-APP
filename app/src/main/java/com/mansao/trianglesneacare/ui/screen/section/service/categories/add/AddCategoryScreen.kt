@@ -1,4 +1,4 @@
-package com.mansao.trianglesneacare.ui.screen.section.admin.services.add
+package com.mansao.trianglesneacare.ui.screen.section.service.categories.add
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.Column
@@ -45,22 +45,20 @@ import com.mansao.trianglesneacare.R
 import com.mansao.trianglesneacare.ui.common.UiState
 
 @Composable
-fun AddServiceScreen(
-    addServiceViewModel: AddServiceViewModel = hiltViewModel(),
-    navigateBack: () -> Unit,
-    categoryId: Int
+fun AddCategoryScreen(
+    addCategoryViewModel: AddCategoryViewModel = hiltViewModel(),
+    navigateBack: () -> Unit
 ) {
     val context = LocalContext.current
     var isLoading by rememberSaveable {
         mutableStateOf(false)
     }
-    AddServiceComponent(
-        addServiceViewModel = addServiceViewModel,
+    AddCategoryComponent(
+        addCategoryViewModel = addCategoryViewModel,
         navigateBack = navigateBack,
-        isLoading = isLoading,
-        categoryId = categoryId
+        isLoading = isLoading
     )
-    addServiceViewModel.uiState.collectAsState(initial = UiState.Standby).value.let { uiState ->
+    addCategoryViewModel.uiState.collectAsState(initial = UiState.Standby).value.let { uiState ->
         when (uiState) {
             UiState.Standby -> {}
             is UiState.Success -> {
@@ -80,18 +78,14 @@ fun AddServiceScreen(
 }
 
 @Composable
-fun AddServiceComponent(
-    addServiceViewModel: AddServiceViewModel,
-    categoryId: Int,
+fun AddCategoryComponent(
+    addCategoryViewModel: AddCategoryViewModel,
     navigateBack: () -> Unit,
     isLoading: Boolean
 ) {
-    var serviceName by remember { mutableStateOf("") }
-    var price by remember { mutableStateOf("") }
-    var serviceDescription by remember { mutableStateOf("") }
+    var categoryName by remember { mutableStateOf("") }
 
-    val isButtonEnable =
-        (serviceName.isNotEmpty() && price.isNotEmpty() && serviceDescription.isNotEmpty())
+    val isButtonEnable = categoryName.isNotEmpty()
     var buttonSize by remember { mutableStateOf(DpSize.Zero) }
     val density = LocalDensity.current
 
@@ -108,7 +102,7 @@ fun AddServiceComponent(
                     .padding(horizontal = 16.dp)
 
                 Text(
-                    text = stringResource(R.string.add_service),
+                    text = stringResource(R.string.category_name),
                     style = MaterialTheme.typography.displaySmall,
                     fontWeight = FontWeight.Bold,
                     fontSize = 26.sp,
@@ -117,54 +111,24 @@ fun AddServiceComponent(
 
                 Spacer(modifier = Modifier.height(12.dp))
                 OutlinedTextField(
-                    value = serviceName,
-                    onValueChange = { serviceName = it },
+                    value = categoryName,
+                    onValueChange = { categoryName = it.trim() },
                     label = {
                         Text(
                             text = stringResource(
-                                id = R.string.service_name
+                                id = R.string.category_name
                             )
                         )
                     },
                     maxLines = 1,
-                    modifier = modifier
-                )
-                Spacer(modifier = Modifier.height(4.dp))
-                OutlinedTextField(
-                    value = price,
-                    onValueChange = { price = it},
-                    label = {
-                        Text(
-                            text = stringResource(
-                                id = R.string.price
-                            )
-                        )
-                    },
-                    maxLines = 1,
-                    modifier = modifier
-                )
-                Spacer(modifier = Modifier.height(4.dp))
-                OutlinedTextField(
-                    value = serviceDescription,
-                    onValueChange = { serviceDescription = it },
-                    label = {
-                        Text(
-                            text = stringResource(
-                                id = R.string.service_description
-                            )
-                        )
-                    },
                     modifier = modifier
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 OutlinedButton(
                     onClick = {
-                        addServiceViewModel.addService(
-                            serviceName,
-                            price,
-                            categoryId,
-                            serviceDescription
-                        )
+                        if (categoryName.isNotEmpty()) {
+                            addCategoryViewModel.addCategory(categoryName)
+                        }
                     },
                     modifier = modifier
                         .padding(top = 18.dp)

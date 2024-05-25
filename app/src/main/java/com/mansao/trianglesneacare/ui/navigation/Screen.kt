@@ -12,7 +12,7 @@ sealed class Screen(val route: String) {
     object PasswordChange : Screen("passwordChange")
 
 
-    //    admin
+    //    service section
     object AdminHome : Screen("adminHome")
     object Categories : Screen("categories")
     object AddCategory : Screen("addCategory")
@@ -41,5 +41,7 @@ sealed class Screen(val route: String) {
     //driver
     object DriverHome : Screen("driverHome")
     object DriverMap : Screen("driverMap")
+
+//    owner
 
 }

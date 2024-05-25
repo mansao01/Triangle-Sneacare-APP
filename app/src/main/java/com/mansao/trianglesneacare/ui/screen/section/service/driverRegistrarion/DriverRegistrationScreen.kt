@@ -1,4 +1,4 @@
-package com.mansao.trianglesneacare.ui.screen.section.admin.driverRegistrarion
+package com.mansao.trianglesneacare.ui.screen.section.service.driverRegistrarion
 
 import android.Manifest
 import android.content.Context

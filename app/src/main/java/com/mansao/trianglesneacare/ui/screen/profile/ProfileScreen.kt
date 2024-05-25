@@ -74,7 +74,7 @@ fun ProfileComponent(
     navigateToProfileEdit: () -> Unit,
     navigateToAddressList: () -> Unit
 ) {
-    val role = profile.profile.role.name
+    val role = profile.profile.role.role
     Column(modifier = Modifier.fillMaxSize()) {
         UserDetail(
             image = profile.profile.image,

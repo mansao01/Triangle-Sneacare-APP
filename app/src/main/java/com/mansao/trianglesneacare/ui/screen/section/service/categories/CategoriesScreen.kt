@@ -1,4 +1,4 @@
-package com.mansao.trianglesneacare.ui.screen.section.admin.categories
+package com.mansao.trianglesneacare.ui.screen.section.service.categories
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.padding

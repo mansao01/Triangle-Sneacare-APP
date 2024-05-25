@@ -1,4 +1,4 @@
-package com.mansao.trianglesneacare.ui.screen.section.admin.services
+package com.mansao.trianglesneacare.ui.screen.section.service.services
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

@@ -1,6 +1,7 @@
 package com.mansao.trianglesneacare.data.network.response
 
 import com.google.gson.annotations.SerializedName
+import com.mansao.trianglesneacare.data.network.response.dto.Role
 
 data class ProfileResponse(
 
@@ -9,15 +10,6 @@ data class ProfileResponse(
 
     @field:SerializedName("profile")
     val profile: Profile
-)
-
-data class Role(
-
-    @field:SerializedName("name")
-    val name: String,
-
-    @field:SerializedName("id")
-    val id: Int
 )
 
 data class Profile(

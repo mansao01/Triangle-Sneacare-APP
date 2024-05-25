@@ -1,4 +1,4 @@
-package com.mansao.trianglesneacare.ui.screen.section.admin.home
+package com.mansao.trianglesneacare.ui.screen.section.service.home
 
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable

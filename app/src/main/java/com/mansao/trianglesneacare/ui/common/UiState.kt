@@ -1,6 +1,5 @@
 package com.mansao.trianglesneacare.ui.common
 
-import com.mansao.trianglesneacare.data.network.response.GetDriversResponse
 import com.mansao.trianglesneacare.data.network.response.ProfileResponse
 import com.mansao.trianglesneacare.data.network.response.RegisterDriverResponse
 
@@ -26,13 +25,6 @@ sealed interface AdminHomeUiState {
     data class Error(val msg: String) : AdminHomeUiState
 
 }
-
-sealed interface DriverManagementUiState {
-    object Loading : DriverManagementUiState
-    data class Success(val getDriversResponse: GetDriversResponse) : DriverManagementUiState
-    data class Error(val msg: String) : DriverManagementUiState
-}
-
 sealed interface DriverRegistrationUiState {
     object Standby : DriverRegistrationUiState
     object Loading : DriverRegistrationUiState

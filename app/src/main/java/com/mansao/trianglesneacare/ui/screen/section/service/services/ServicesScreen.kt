@@ -1,4 +1,4 @@
-package com.mansao.trianglesneacare.ui.screen.section.admin.services
+package com.mansao.trianglesneacare.ui.screen.section.service.services
 
 import android.annotation.SuppressLint
 import android.widget.Toast

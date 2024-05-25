@@ -1,4 +1,4 @@
-package com.mansao.trianglesneacare.ui.screen.section.admin.driverRegistrarion
+package com.mansao.trianglesneacare.ui.screen.section.service.driverRegistrarion
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf

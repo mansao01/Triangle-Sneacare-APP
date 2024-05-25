@@ -69,4 +69,6 @@
     <string name="service_name">Service Name</string>
     <string name="price">Price</string>
     <string name="service_description">Service Description</string>
+    <string name="service">service</string>
+    <string name="owner">owner</string>
 </resources>
