@@ -100,7 +100,7 @@ interface ApiService {
     @GET(ApiConst.GET_DETAIL_CUSTOMER_ADDRESS)
     suspend fun getDetailCustomerAddresses(
         @Header(ApiConst.AUTHORIZATION_KEY) token: String,
-        @Query("addressId") addressId: Int
+        @Query("addressId") addressId: String
     ): CustomerDetailAddressResponse
 
 
@@ -113,13 +113,13 @@ interface ApiService {
     @DELETE(ApiConst.DELETE_CUSTOMER_ADDRESS)
     suspend fun deleteCustomerAddress(
         @Header(ApiConst.AUTHORIZATION_KEY) token: String,
-        @Query("id") id: Int
+        @Query("id") id: String
     ): OnlyMsgResponse
 
     @PUT(ApiConst.UPDATE_CUSTOMER_ADDRESS)
     suspend fun updateCustomerAddress(
         @Header(ApiConst.AUTHORIZATION_KEY) token: String,
-        @Query("id") id: Int,
+        @Query("id") id: String,
         @Query("receiverName") receiverName: String,
         @Query("fullAddress") fullAddress: String,
         @Query("note") note: String,
@@ -154,7 +154,7 @@ interface ApiService {
 
     @GET(ApiConst.GET_SERVICES_BY_CATEGORY)
     suspend fun getServicesByCategoryId(
-        @Query("categoryId") categoryId: Int
+        @Query("categoryId") categoryId: String
     ): GetServicesByCategoryIdResponse
 
     @POST(ApiConst.CREATE_NEW_CATEGORY)

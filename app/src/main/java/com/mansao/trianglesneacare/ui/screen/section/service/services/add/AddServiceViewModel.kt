@@ -26,7 +26,7 @@ class AddServiceViewModel @Inject constructor(private val appRepositoryImpl: App
     fun addService(
         serviceName: String,
         price: String,
-        categoryId: Int,
+        categoryId: String,
         serviceDescription: String
     ) = viewModelScope.launch {
         setLoadingState()

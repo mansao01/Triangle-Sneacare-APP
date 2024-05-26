@@ -98,7 +98,7 @@ fun UpdateAddressScreen(
 fun UpdateAddressComponent(
     address: Address,
     updateAddressViewModel: UpdateAddressViewModel,
-    addressId: Int
+    addressId: String
 ) {
     var fullAddress by remember { mutableStateOf(address.fullAddress ?: "") }
     var phone by remember { mutableStateOf(address.phone ?: "") }
@@ -192,7 +192,7 @@ fun UpdateAddressComponent(
 }
 
 private fun updateAddress(
-    addressId: Int,
+    addressId: String,
     receiverName: String,
     fullAddress: String,
     notes: String,
@@ -215,7 +215,7 @@ private fun updateAddress(
 fun UpdateAddressTopBar(
     navigateBack: () -> Unit,
     updateAddressViewModel: UpdateAddressViewModel,
-    addressId: Int
+    addressId: String
 ) {
     TopAppBar(
         title = { Text(text = stringResource(R.string.address_details)) },

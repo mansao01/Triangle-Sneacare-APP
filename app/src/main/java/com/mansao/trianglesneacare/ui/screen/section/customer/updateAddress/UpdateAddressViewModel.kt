@@ -25,7 +25,7 @@ class UpdateAddressViewModel @Inject constructor(private val appRepositoryImpl: 
         _uiState.value = UiState.Loading
     }
 
-    fun getDetailAddress(addressId: Int) = viewModelScope.launch {
+    fun getDetailAddress(addressId: String) = viewModelScope.launch {
         setLoadingState()
         try {
             val token = appRepositoryImpl.getAccessToken()
@@ -38,7 +38,7 @@ class UpdateAddressViewModel @Inject constructor(private val appRepositoryImpl: 
 
 
     fun updateAddress(
-        id: Int,
+        id: String,
         receiverName: String,
         fullAddress: String,
         note: String,
@@ -66,7 +66,7 @@ class UpdateAddressViewModel @Inject constructor(private val appRepositoryImpl: 
     }
 
 
-    fun deleteAddress(id: Int) {
+    fun deleteAddress(id: String) {
         setLoadingState()
         viewModelScope.launch {
             try {

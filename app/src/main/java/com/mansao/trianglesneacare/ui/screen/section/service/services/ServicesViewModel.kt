@@ -21,7 +21,7 @@ class ServicesViewModel @Inject constructor(private val appRepositoryImpl: AppRe
         _uiState.value = UiState.Loading
 
     }
-    fun getServicesByCategoryId(categoryId:Int) = viewModelScope.launch {
+    fun getServicesByCategoryId(categoryId:String) = viewModelScope.launch {
         setLoadingState()
         try {
             val result = appRepositoryImpl.getServicesByCategory(categoryId)

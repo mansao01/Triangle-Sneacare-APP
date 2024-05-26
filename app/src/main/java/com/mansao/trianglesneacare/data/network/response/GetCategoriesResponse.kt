@@ -15,7 +15,7 @@ data class CategoriesItem(
 	val itemType: String,
 
 	@field:SerializedName("id")
-	val id: Int,
+	val id: String,
 
 
 )

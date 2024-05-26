@@ -43,13 +43,15 @@ import androidx.compose.ui.unit.toSize
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.mansao.trianglesneacare.R
 import com.mansao.trianglesneacare.ui.common.UiState
+import com.mansao.trianglesneacare.ui.screen.SharedViewModel
 
 @Composable
 fun AddServiceScreen(
     addServiceViewModel: AddServiceViewModel = hiltViewModel(),
     navigateBack: () -> Unit,
-    categoryId: Int
+    sharedViewModel: SharedViewModel
 ) {
+    val categoryId = sharedViewModel.categoryId
     val context = LocalContext.current
     var isLoading by rememberSaveable {
         mutableStateOf(false)
@@ -82,7 +84,7 @@ fun AddServiceScreen(
 @Composable
 fun AddServiceComponent(
     addServiceViewModel: AddServiceViewModel,
-    categoryId: Int,
+    categoryId: String,
     navigateBack: () -> Unit,
     isLoading: Boolean
 ) {

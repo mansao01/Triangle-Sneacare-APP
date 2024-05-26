@@ -25,16 +25,18 @@ import com.mansao.trianglesneacare.ui.common.UiState
 import com.mansao.trianglesneacare.ui.components.HeaderText
 import com.mansao.trianglesneacare.ui.components.LoadingDialog
 import com.mansao.trianglesneacare.ui.components.ServiceMenuItem
+import com.mansao.trianglesneacare.ui.screen.SharedViewModel
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun ServicesScreen(
     viewModel: ServicesViewModel = hiltViewModel(),
-    categoryId: Int,
-    navigateToAddService: (Int) -> Unit,
-    navigateBack: () -> Unit
+    navigateToAddService: () -> Unit,
+    navigateBack: () -> Unit,
+    sharedViewModel: SharedViewModel
 
 ) {
+    val categoryId = sharedViewModel.categoryId
     val context = LocalContext.current
     LaunchedEffect(Unit) {
         viewModel.getServicesByCategoryId(categoryId)
@@ -52,7 +54,6 @@ fun ServicesScreen(
                 ServicesContent(
                     services = uiState.data.service,
                     navigateToAddService = navigateToAddService,
-                    categoryId = categoryId,
                     navigateBack = navigateBack
                 )
             }
@@ -65,8 +66,7 @@ fun ServicesScreen(
 @Composable
 fun ServicesContent(
     services: List<ServiceItem>,
-    navigateToAddService: (Int) -> Unit,
-    categoryId: Int,
+    navigateToAddService: () -> Unit,
     navigateBack: () -> Unit
 
 ) {
@@ -74,7 +74,6 @@ fun ServicesContent(
         topBar = {
             ServicesTopBar(
                 navigateToAddService = navigateToAddService,
-                categoryId = categoryId,
                 navigateBack = navigateBack
             )
         }
@@ -95,8 +94,7 @@ fun ServicesContent(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ServicesTopBar(
-    navigateToAddService: (Int) -> Unit,
-    categoryId: Int,
+    navigateToAddService: () -> Unit,
     navigateBack: () -> Unit
 ) {
     LargeTopAppBar(
@@ -113,7 +111,10 @@ fun ServicesTopBar(
             }
         },
         actions = {
-            IconButton(onClick = { navigateToAddService(categoryId) }) {
+            IconButton(onClick = {
+
+                navigateToAddService()
+            }) {
                 Icon(imageVector = Icons.Outlined.Add, contentDescription = null)
 
             }

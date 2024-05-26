@@ -63,15 +63,15 @@ interface AppRepository {
         createCustomerAddressRequest: CreateCustomerAddressRequest
     ): CreateCustomerAddressResponse
 
-    suspend fun deleteCustomerAddress(token: String, id: Int): OnlyMsgResponse
+    suspend fun deleteCustomerAddress(token: String, id: String): OnlyMsgResponse
     suspend fun getDetailCustomerAddresses(
         token: String,
-        addressId: Int
+        addressId: String
     ): CustomerDetailAddressResponse
 
     suspend fun updateCustomerAddress(
         token: String,
-        id: Int,
+        id: String,
         receiverName: String,
         fullAddress: String,
         note: String,
@@ -84,7 +84,7 @@ interface AppRepository {
     suspend fun geocodeWithAddress(address: String): GeocodingResponse
     suspend fun geocodeWithPlaceId(placeId: String): GeocodingResponse
     suspend fun getCategories(): GetCategoriesResponse
-    suspend fun getServicesByCategory(categoryId: Int): GetServicesByCategoryIdResponse
+    suspend fun getServicesByCategory(categoryId: String): GetServicesByCategoryIdResponse
     suspend fun addCategory(addCategoryRequest: AddCategoryRequest): OnlyMsgResponse
     suspend fun addService(addServiceRequest: AddServiceRequest): OnlyMsgResponse
 
@@ -174,7 +174,7 @@ class AppRepositoryImpl @Inject constructor(
 
     override suspend fun getDetailCustomerAddresses(
         token: String,
-        addressId: Int
+        addressId: String
     ): CustomerDetailAddressResponse = apiService.getDetailCustomerAddresses(token, addressId)
 
     override suspend fun createCustomerAddress(
@@ -183,12 +183,12 @@ class AppRepositoryImpl @Inject constructor(
     ): CreateCustomerAddressResponse =
         apiService.createCustomerAddress(token, createCustomerAddressRequest)
 
-    override suspend fun deleteCustomerAddress(token: String, id: Int): OnlyMsgResponse =
+    override suspend fun deleteCustomerAddress(token: String, id: String): OnlyMsgResponse =
         apiService.deleteCustomerAddress(token, id)
 
     override suspend fun updateCustomerAddress(
         token: String,
-        id: Int,
+        id: String,
         receiverName: String,
         fullAddress: String,
         note: String,
@@ -207,7 +207,7 @@ class AppRepositoryImpl @Inject constructor(
         apiService.geocodeWithPlaceId(placeId)
 
     override suspend fun getCategories(): GetCategoriesResponse = apiService.getCategories()
-    override suspend fun getServicesByCategory(categoryId: Int): GetServicesByCategoryIdResponse {
+    override suspend fun getServicesByCategory(categoryId: String): GetServicesByCategoryIdResponse {
         return apiService.getServicesByCategoryId(categoryId)
     }
 

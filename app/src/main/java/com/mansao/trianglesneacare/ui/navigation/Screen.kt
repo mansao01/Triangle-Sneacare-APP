@@ -16,14 +16,8 @@ sealed class Screen(val route: String) {
     object AdminHome : Screen("adminHome")
     object Categories : Screen("categories")
     object AddCategory : Screen("addCategory")
-    object AddService : Screen("categories/services/add/{categoryId}"){
-        fun createRoute(categoryId: Int) = "categories/services/add/$categoryId"
-
-    }
-
-    object Services : Screen("categories/services/{categoryId}") {
-        fun createRoute(categoryId: Int) = "categories/services/$categoryId"
-    }
+    object Services : Screen("categories/services")
+    object AddService : Screen("categories/services/add")
 
     object DriverManagement : Screen("driverManagement")
     object DriverRegistration : Screen("driverRegistration")

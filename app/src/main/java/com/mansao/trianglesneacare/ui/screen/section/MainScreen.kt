@@ -16,12 +16,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
 import com.mansao.trianglesneacare.R
 import com.mansao.trianglesneacare.ui.AuthViewModel
 import com.mansao.trianglesneacare.ui.common.UiState
@@ -217,15 +215,15 @@ fun MainScreenContent(
                     )
                 }
 
-
-//                admin
+//                service section
                 composable(Screen.AdminHome.route) {
                     AdminHomeScreen()
                 }
                 composable(Screen.Categories.route) {
                     CategoriesScreen(
-                        navigateToServiceList = { categoryId ->
-                            navController.navigate(Screen.Services.createRoute(categoryId))
+                        sharedViewModel = sharedViewModel,
+                        navigateToServiceList = {
+                            navController.navigate(Screen.Services.route)
                         },
                         navigateToAddCategory = { navController.navigate(Screen.AddCategory.route) }
                     )
@@ -233,30 +231,20 @@ fun MainScreenContent(
                 composable(Screen.AddCategory.route) {
                     AddCategoryScreen(navigateBack = { if (navController.canGoBack) navController.popBackStack() })
                 }
-                composable(
-                    Screen.Services.route,
-                    arguments = listOf(
-                        navArgument("categoryId") {
-                            type = NavType.IntType
-                        })
-                ) { data ->
-                    val categoryId = data.arguments?.getInt("categoryId") ?: -1
+                composable(Screen.Services.route ) {
                     ServicesScreen(
-                        categoryId = categoryId,
-                        navigateToAddService = { categoryIds ->
-                            navController.navigate(Screen.AddService.createRoute(categoryIds))
+                        sharedViewModel = sharedViewModel,
+                        navigateToAddService = {
+                            navController.navigate(Screen.AddService.route)
                         },
                         navigateBack = { if (navController.canGoBack) navController.popBackStack() }
                     )
                 }
 
-                composable(Screen.AddService.route, arguments = listOf(navArgument("categoryId") {
-                    type = NavType.IntType
-                })) { data ->
-                    val categoryId = data.arguments?.getInt("categoryId") ?: -1
+                composable(Screen.AddService.route) {
                     AddServiceScreen(
                         navigateBack = { if (navController.canGoBack) navController.popBackStack() },
-                        categoryId = categoryId
+                        sharedViewModel = sharedViewModel
                     )
                 }
 

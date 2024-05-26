@@ -14,7 +14,7 @@ data class Category(
 	val itemType: String,
 
 	@field:SerializedName("id")
-	val id: Int,
+	val id: String,
 
 )
 
@@ -27,7 +27,7 @@ data class ServiceItem(
 	val serviceDescription: String,
 
 	@field:SerializedName("id")
-	val id: Int,
+	val id: String,
 
 	@field:SerializedName("serviceName")
 	val serviceName: Any,
@@ -36,6 +36,6 @@ data class ServiceItem(
 	val category: Category,
 
 	@field:SerializedName("categoryId")
-	val categoryId: Int,
+	val categoryId: String,
 
 )

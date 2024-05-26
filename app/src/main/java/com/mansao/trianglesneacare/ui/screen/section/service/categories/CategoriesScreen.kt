@@ -23,12 +23,14 @@ import com.mansao.trianglesneacare.ui.common.UiState
 import com.mansao.trianglesneacare.ui.components.CategoryMenuItem
 import com.mansao.trianglesneacare.ui.components.HeaderText
 import com.mansao.trianglesneacare.ui.components.LoadingDialog
+import com.mansao.trianglesneacare.ui.screen.SharedViewModel
 
 @Composable
 fun CategoriesScreen(
     viewModel: CategoriesViewModel = hiltViewModel(),
-    navigateToServiceList: (Int) -> Unit,
-    navigateToAddCategory: () -> Unit
+    navigateToServiceList: () -> Unit,
+    navigateToAddCategory: () -> Unit,
+    sharedViewModel: SharedViewModel
 
 ) {
     LaunchedEffect(key1 = Unit) {
@@ -49,7 +51,8 @@ fun CategoriesScreen(
                 CategoriesContent(
                     categories = uiState.data.categories,
                     navigateToServiceList = navigateToServiceList,
-                    navigateToAddCategory = navigateToAddCategory
+                    navigateToAddCategory = navigateToAddCategory,
+                    sharedViewModel =  sharedViewModel
                 )
             }
         }
@@ -60,8 +63,9 @@ fun CategoriesScreen(
 @Composable
 fun CategoriesContent(
     categories: List<CategoriesItem>,
-    navigateToServiceList: (Int) -> Unit,
-    navigateToAddCategory: () -> Unit
+    navigateToServiceList: () -> Unit,
+    navigateToAddCategory: () -> Unit,
+    sharedViewModel: SharedViewModel
 
 ) {
     Scaffold(
@@ -75,7 +79,8 @@ fun CategoriesContent(
                     CategoryMenuItem(
                         categoryName = it.itemType,
                         onClick = {
-                            navigateToServiceList(it.id)
+                            sharedViewModel.addCategoryId(it.id)
+                            navigateToServiceList()
                         })
                 }
             }
