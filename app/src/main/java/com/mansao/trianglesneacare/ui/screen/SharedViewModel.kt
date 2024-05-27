@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.mansao.trianglesneacare.data.local.model.LatLong
+import com.mansao.trianglesneacare.data.network.request.UpdateServiceRequest
 import com.mansao.trianglesneacare.data.network.response.PredictionsItem
 
 class SharedViewModel : ViewModel() {
@@ -12,16 +13,12 @@ class SharedViewModel : ViewModel() {
         private set
 
     var location by mutableStateOf<LatLong?>(null)
-
     var fullAddress by mutableStateOf<String?>(null)
-
     var showSessionExpiredMessage by mutableStateOf(false)
-
-    var email by mutableStateOf("")
-
-    var categoryId by mutableStateOf("")
-
     var addressId by mutableStateOf("")
+    var email by mutableStateOf("")
+    var categoryId by mutableStateOf("")
+    var updateServiceArgs by mutableStateOf<UpdateServiceRequest?>(null)
 
     fun addPlace(newPredictionItem: PredictionsItem) {
         predictionItem = newPredictionItem
@@ -45,11 +42,17 @@ class SharedViewModel : ViewModel() {
         email = newEmail
     }
 
-    fun addAddressId(newId:String){
+    fun addAddressId(newId: String) {
         addressId = newId
     }
 
-    fun addCategoryId(newId:String){
+    fun addCategoryId(newId: String) {
         categoryId = newId
+    }
+
+
+
+    fun addUpdateServiceArgs(newArgs: UpdateServiceRequest) {
+        updateServiceArgs = newArgs
     }
 }

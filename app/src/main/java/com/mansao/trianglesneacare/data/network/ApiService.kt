@@ -5,6 +5,7 @@ import com.mansao.trianglesneacare.data.network.request.AddServiceRequest
 import com.mansao.trianglesneacare.data.network.request.CreateCustomerAddressRequest
 import com.mansao.trianglesneacare.data.network.request.LoginRequest
 import com.mansao.trianglesneacare.data.network.request.RegisterRequest
+import com.mansao.trianglesneacare.data.network.request.UpdateServiceRequest
 import com.mansao.trianglesneacare.data.network.response.AutoCompleteAddressResponse
 import com.mansao.trianglesneacare.data.network.response.CreateCustomerAddressResponse
 import com.mansao.trianglesneacare.data.network.response.CustomerDetailAddressResponse
@@ -30,6 +31,7 @@ import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Part
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface ApiService {
@@ -166,4 +168,14 @@ interface ApiService {
     suspend fun addService(
         @Body addServiceRequest: AddServiceRequest
     ): OnlyMsgResponse
+
+    @DELETE(ApiConst.DELETE_SERVICE)
+    suspend fun deleteService(
+        @Path("id") id: String
+    ):OnlyMsgResponse
+
+    @PATCH(ApiConst.UPDATE_SERVICE)
+    suspend fun updateService(
+        @Body updateServiceRequest: UpdateServiceRequest
+    ):OnlyMsgResponse
 }

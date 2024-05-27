@@ -18,6 +18,8 @@ sealed class Screen(val route: String) {
     object AddCategory : Screen("addCategory")
     object Services : Screen("categories/services")
     object AddService : Screen("categories/services/add")
+    object UpdateService : Screen("categories/services/update")
+
 
     object DriverManagement : Screen("driverManagement")
     object DriverRegistration : Screen("driverRegistration")

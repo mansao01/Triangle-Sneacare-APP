@@ -26,9 +26,12 @@ object ApiConst {
     const val GEOCODING_ADDRESS = "geoCodeWithAddress"
     const val GEOCODING_PLACE_ID = "geoCodeWithPlaceId"
 
-//    admin
+//    service
     const val CREATE_NEW_CATEGORY = "addCategory"
     const val GET_CATEGORIES = "categories"
+
     const val CREATE_NEW_SERVICE = "addService"
+    const val DELETE_SERVICE = "deleteService/{id}"
     const val GET_SERVICES_BY_CATEGORY = "servicesByCategory"
+    const val UPDATE_SERVICE = "updateService"
 }

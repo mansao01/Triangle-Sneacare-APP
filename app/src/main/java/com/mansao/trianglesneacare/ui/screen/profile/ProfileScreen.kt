@@ -74,7 +74,7 @@ fun ProfileComponent(
     navigateToProfileEdit: () -> Unit,
     navigateToAddressList: () -> Unit
 ) {
-    val role = profile.profile.role.role
+    val role = profile.profile.role.id
     Column(modifier = Modifier.fillMaxSize()) {
         UserDetail(
             image = profile.profile.image,
@@ -102,7 +102,7 @@ fun ProfileComponent(
         )
         Spacer(modifier = Modifier.height(8.dp))
 
-        if (role == "customer") {
+        if (role == stringResource(R.string.customer_role_id)) {
 
             ProfileMenuItem(
                 menuName = stringResource(R.string.address_list),

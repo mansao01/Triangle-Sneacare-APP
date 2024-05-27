@@ -6,6 +6,7 @@ import com.mansao.trianglesneacare.data.network.request.AddServiceRequest
 import com.mansao.trianglesneacare.data.network.request.CreateCustomerAddressRequest
 import com.mansao.trianglesneacare.data.network.request.LoginRequest
 import com.mansao.trianglesneacare.data.network.request.RegisterRequest
+import com.mansao.trianglesneacare.data.network.request.UpdateServiceRequest
 import com.mansao.trianglesneacare.data.network.response.AutoCompleteAddressResponse
 import com.mansao.trianglesneacare.data.network.response.CreateCustomerAddressResponse
 import com.mansao.trianglesneacare.data.network.response.CustomerDetailAddressResponse
@@ -87,6 +88,8 @@ interface AppRepository {
     suspend fun getServicesByCategory(categoryId: String): GetServicesByCategoryIdResponse
     suspend fun addCategory(addCategoryRequest: AddCategoryRequest): OnlyMsgResponse
     suspend fun addService(addServiceRequest: AddServiceRequest): OnlyMsgResponse
+    suspend fun deleteService(serviceId:String):OnlyMsgResponse
+    suspend fun updateService(updateServiceRequest: UpdateServiceRequest):OnlyMsgResponse
 
     //    preferences
     suspend fun saveAccessToken(token: String)
@@ -217,6 +220,14 @@ class AppRepositoryImpl @Inject constructor(
 
     override suspend fun addService(addServiceRequest: AddServiceRequest): OnlyMsgResponse {
         return apiService.addService(addServiceRequest)
+    }
+
+    override suspend fun deleteService(serviceId: String): OnlyMsgResponse {
+        return apiService.deleteService(serviceId)
+    }
+
+    override suspend fun updateService(updateServiceRequest: UpdateServiceRequest): OnlyMsgResponse {
+        return apiService.updateService(updateServiceRequest)
     }
 
     //    preferences

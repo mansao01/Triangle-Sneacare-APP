@@ -14,12 +14,16 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.mansao.trianglesneacare.data.network.request.UpdateServiceRequest
 import com.mansao.trianglesneacare.data.network.response.ServiceItem
 import com.mansao.trianglesneacare.ui.common.UiState
 import com.mansao.trianglesneacare.ui.components.HeaderText
@@ -27,15 +31,19 @@ import com.mansao.trianglesneacare.ui.components.LoadingDialog
 import com.mansao.trianglesneacare.ui.components.ServiceMenuItem
 import com.mansao.trianglesneacare.ui.screen.SharedViewModel
 
+@OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun ServicesScreen(
     viewModel: ServicesViewModel = hiltViewModel(),
     navigateToAddService: () -> Unit,
     navigateBack: () -> Unit,
+    navigateToUpdateService: () -> Unit,
     sharedViewModel: SharedViewModel
 
 ) {
+    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+
     val categoryId = sharedViewModel.categoryId
     val context = LocalContext.current
     LaunchedEffect(Unit) {
@@ -54,50 +62,86 @@ fun ServicesScreen(
                 ServicesContent(
                     services = uiState.data.service,
                     navigateToAddService = navigateToAddService,
-                    navigateBack = navigateBack
+                    navigateBack = navigateBack,
+                    navigateToUpdateService = navigateToUpdateService,
+                    sharedViewModel = sharedViewModel,
+                    scrollBehavior = scrollBehavior
                 )
             }
-
-
         }
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ServicesContent(
     services: List<ServiceItem>,
     navigateToAddService: () -> Unit,
-    navigateBack: () -> Unit
+    navigateToUpdateService: () -> Unit,
+    navigateBack: () -> Unit,
+    sharedViewModel: SharedViewModel,
+    scrollBehavior: TopAppBarScrollBehavior
 
 ) {
     Scaffold(
         topBar = {
             ServicesTopBar(
                 navigateToAddService = navigateToAddService,
-                navigateBack = navigateBack
+                navigateBack = navigateBack,
+                scrollBehavior = scrollBehavior
             )
-        }
-    ) { scaffoldPadding ->
+        },
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
+    ) {scaffoldPadding ->
         Surface(
             modifier = Modifier.padding(scaffoldPadding)
         ) {
-            LazyColumn {
-                items(services) {
-                    ServiceMenuItem(serviceName = it.serviceName.toString())
-                }
-            }
+            ServiceList(
+                services = services,
+                navigateToUpdateService = navigateToUpdateService,
+                sharedViewModel = sharedViewModel
+            )
         }
     }
+}
 
+@Composable
+fun ServiceList(
+    modifier: Modifier = Modifier,
+    services: List<ServiceItem>,
+    navigateToUpdateService: () -> Unit,
+    sharedViewModel: SharedViewModel
+) {
+    LazyColumn(modifier = modifier) {
+        items(services) {
+            ServiceMenuItem(
+                serviceName = it.serviceName,
+                price = it.price.toString(),
+                serviceDescription = it.serviceDescription,
+                onClick = {
+                    navigateToUpdateService()
+                    sharedViewModel.addUpdateServiceArgs(
+                        UpdateServiceRequest(
+                            it.id,
+                            it.serviceName,
+                            it.price,
+                            it.serviceDescription
+                        )
+                    )
+                })
+        }
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ServicesTopBar(
     navigateToAddService: () -> Unit,
-    navigateBack: () -> Unit
+    navigateBack: () -> Unit,
+    scrollBehavior: TopAppBarScrollBehavior
 ) {
     LargeTopAppBar(
+        scrollBehavior = scrollBehavior,
         title = {
             HeaderText(
                 text = "Services",

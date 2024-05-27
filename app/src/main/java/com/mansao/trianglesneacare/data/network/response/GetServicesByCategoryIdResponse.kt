@@ -30,7 +30,7 @@ data class ServiceItem(
 	val id: String,
 
 	@field:SerializedName("serviceName")
-	val serviceName: Any,
+	val serviceName: String,
 
 	@field:SerializedName("category")
 	val category: Category,

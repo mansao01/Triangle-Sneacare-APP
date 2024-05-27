@@ -47,6 +47,7 @@ import com.mansao.trianglesneacare.ui.screen.section.service.driverRegistrarion.
 import com.mansao.trianglesneacare.ui.screen.section.service.home.AdminHomeScreen
 import com.mansao.trianglesneacare.ui.screen.section.service.services.ServicesScreen
 import com.mansao.trianglesneacare.ui.screen.section.service.services.add.AddServiceScreen
+import com.mansao.trianglesneacare.ui.screen.section.service.services.update.UpdateServiceScreen
 import com.mansao.trianglesneacare.utils.canGoBack
 
 @Composable
@@ -106,8 +107,12 @@ fun MainScreenContent(
                 currentRoute != Screen.AddressList.route &&
                 currentRoute != Screen.Maps.route &&
                 currentRoute != Screen.AddAddress.route &&
-                currentRoute != Screen.ProfileEdit.route
-            ) {
+                currentRoute != Screen.ProfileEdit.route &&
+                currentRoute != Screen.UpdateAddress.route &&
+                currentRoute != Screen.AddCategory.route &&
+                currentRoute != Screen.Services.route &&
+                currentRoute != Screen.AddService.route
+                    ) {
                 MainBottomBar(
                     navController = navController,
                     role = role,
@@ -231,12 +236,13 @@ fun MainScreenContent(
                 composable(Screen.AddCategory.route) {
                     AddCategoryScreen(navigateBack = { if (navController.canGoBack) navController.popBackStack() })
                 }
-                composable(Screen.Services.route ) {
+                composable(Screen.Services.route) {
                     ServicesScreen(
                         sharedViewModel = sharedViewModel,
                         navigateToAddService = {
                             navController.navigate(Screen.AddService.route)
                         },
+                        navigateToUpdateService = { navController.navigate(Screen.UpdateService.route) },
                         navigateBack = { if (navController.canGoBack) navController.popBackStack() }
                     )
                 }
@@ -246,6 +252,11 @@ fun MainScreenContent(
                         navigateBack = { if (navController.canGoBack) navController.popBackStack() },
                         sharedViewModel = sharedViewModel
                     )
+                }
+                composable(Screen.UpdateService.route) {
+                    UpdateServiceScreen(
+                        sharedViewModel = sharedViewModel,
+                        navigateBack = { if (navController.canGoBack) navController.popBackStack() })
                 }
 
 
@@ -359,7 +370,7 @@ fun MainBottomBar(
                     }
             }
 
-            stringResource(id = R.string.owner) ->{}
+            stringResource(id = R.string.owner) -> {}
         }
 
     }
