@@ -6,6 +6,7 @@ import com.mansao.trianglesneacare.data.network.request.CreateCustomerAddressReq
 import com.mansao.trianglesneacare.data.network.request.LoginRequest
 import com.mansao.trianglesneacare.data.network.request.RegisterRequest
 import com.mansao.trianglesneacare.data.network.request.UpdateServiceRequest
+import com.mansao.trianglesneacare.data.network.response.AddOrderResponse
 import com.mansao.trianglesneacare.data.network.response.AutoCompleteAddressResponse
 import com.mansao.trianglesneacare.data.network.response.CreateCustomerAddressResponse
 import com.mansao.trianglesneacare.data.network.response.CustomerDetailAddressResponse
@@ -150,7 +151,6 @@ interface ApiService {
         @Header(ApiConst.AUTHORIZATION_KEY) token: String
     ): OnlyMsgResponse
 
-    //    admin
     @GET(ApiConst.GET_CATEGORIES)
     suspend fun getCategories(): GetCategoriesResponse
 
@@ -178,4 +178,13 @@ interface ApiService {
     suspend fun updateService(
         @Body updateServiceRequest: UpdateServiceRequest
     ):OnlyMsgResponse
+
+    @Multipart
+    @POST(ApiConst.CREATE_ORDER)
+    suspend fun createOrder(
+        @Part("washStatus") name: RequestBody,
+        @Part("userId") email: RequestBody,
+        @Part("serviceId") password: RequestBody,
+        @Part image: MultipartBody.Part
+    ): AddOrderResponse
 }

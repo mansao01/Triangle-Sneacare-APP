@@ -1,4 +1,4 @@
-package com.mansao.trianglesneacare.ui.screen.section.customer.addressList
+package com.mansao.trianglesneacare.ui.screen.section.customer.address.addressList
 
 import android.widget.Toast
 import androidx.compose.foundation.clickable

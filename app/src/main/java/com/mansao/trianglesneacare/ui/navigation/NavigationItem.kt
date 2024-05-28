@@ -23,7 +23,7 @@ data class BottomNavigationItem(
             BottomNavigationItem(
                 title = "Home",
                 icon = Icons.Filled.Home,
-                screen = Screen.AdminHome.route,
+                screen = Screen.ServiceHome.route,
                 contentDescription = "Home"
             ),
             BottomNavigationItem(

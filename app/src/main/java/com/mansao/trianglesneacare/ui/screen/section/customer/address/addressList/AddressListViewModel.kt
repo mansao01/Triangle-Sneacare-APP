@@ -1,4 +1,4 @@
-package com.mansao.trianglesneacare.ui.screen.section.customer.addressList
+package com.mansao.trianglesneacare.ui.screen.section.customer.address.addressList
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

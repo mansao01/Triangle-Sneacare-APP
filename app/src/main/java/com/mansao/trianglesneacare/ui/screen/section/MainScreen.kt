@@ -31,20 +31,22 @@ import com.mansao.trianglesneacare.ui.screen.SharedViewModel
 import com.mansao.trianglesneacare.ui.screen.profile.ProfileScreen
 import com.mansao.trianglesneacare.ui.screen.profile.ProfileViewModel
 import com.mansao.trianglesneacare.ui.screen.profileEdit.ProfileEditScreen
-import com.mansao.trianglesneacare.ui.screen.section.customer.addAddress.AddAddressScreen
-import com.mansao.trianglesneacare.ui.screen.section.customer.addressList.AddressListScreen
+import com.mansao.trianglesneacare.ui.screen.section.customer.address.addAddress.AddAddressScreen
+import com.mansao.trianglesneacare.ui.screen.section.customer.address.addressList.AddressListScreen
+import com.mansao.trianglesneacare.ui.screen.section.customer.address.searchAddress.SearchAddressScreen
+import com.mansao.trianglesneacare.ui.screen.section.customer.address.updateAddress.UpdateAddressScreen
 import com.mansao.trianglesneacare.ui.screen.section.customer.cart.CartScreen
 import com.mansao.trianglesneacare.ui.screen.section.customer.home.CustomerHomeScreen
 import com.mansao.trianglesneacare.ui.screen.section.customer.maps.MapsScreen
-import com.mansao.trianglesneacare.ui.screen.section.customer.searchAddress.SearchAddressScreen
+import com.mansao.trianglesneacare.ui.screen.section.customer.serviceSelection.ServiceSelectionScreen
 import com.mansao.trianglesneacare.ui.screen.section.customer.transactionList.TransactionListScreen
-import com.mansao.trianglesneacare.ui.screen.section.customer.updateAddress.UpdateAddressScreen
+import com.mansao.trianglesneacare.ui.screen.section.customer.uploadImage.UploadImageScreen
 import com.mansao.trianglesneacare.ui.screen.section.driver.home.DriverHomeScreen
 import com.mansao.trianglesneacare.ui.screen.section.driver.map.MapScreen
 import com.mansao.trianglesneacare.ui.screen.section.service.categories.CategoriesScreen
 import com.mansao.trianglesneacare.ui.screen.section.service.categories.add.AddCategoryScreen
 import com.mansao.trianglesneacare.ui.screen.section.service.driverRegistrarion.DriverRegistrationScreen
-import com.mansao.trianglesneacare.ui.screen.section.service.home.AdminHomeScreen
+import com.mansao.trianglesneacare.ui.screen.section.service.home.ServiceHomeScreen
 import com.mansao.trianglesneacare.ui.screen.section.service.services.ServicesScreen
 import com.mansao.trianglesneacare.ui.screen.section.service.services.add.AddServiceScreen
 import com.mansao.trianglesneacare.ui.screen.section.service.services.update.UpdateServiceScreen
@@ -96,7 +98,7 @@ fun MainScreenContent(
 
     val startDestination = when (role) {
         stringResource(id = R.string.customer) -> Screen.CustomerHome.route
-        stringResource(id = R.string.service) -> Screen.AdminHome.route
+        stringResource(id = R.string.service) -> Screen.ServiceHome.route
         else -> Screen.DriverHome.route
     }
     Scaffold(
@@ -111,8 +113,10 @@ fun MainScreenContent(
                 currentRoute != Screen.UpdateAddress.route &&
                 currentRoute != Screen.AddCategory.route &&
                 currentRoute != Screen.Services.route &&
-                currentRoute != Screen.AddService.route
-                    ) {
+                currentRoute != Screen.AddService.route &&
+                currentRoute != Screen.ServiceSelection.route &&
+                currentRoute != Screen.UploadImage.route
+            ) {
                 MainBottomBar(
                     navController = navController,
                     role = role,
@@ -147,7 +151,20 @@ fun MainScreenContent(
 
 //                customer
                 composable(Screen.CustomerHome.route) {
-                    CustomerHomeScreen()
+                    CustomerHomeScreen(
+                        navigateToServiceSelection = { navController.navigate(Screen.ServiceSelection.route) },
+                        sharedViewModel = sharedViewModel
+                    )
+                }
+                composable(Screen.ServiceSelection.route) {
+                    ServiceSelectionScreen(
+                        sharedViewModel = sharedViewModel,
+                        navigateBack = { if (navController.canGoBack) navController.popBackStack() },
+                        navigateToUploadImage = { navController.navigate(Screen.UploadImage.route) }
+                    )
+                }
+                composable(Screen.UploadImage.route){
+                    UploadImageScreen()
                 }
                 composable(Screen.CustomerCart.route) {
                     CartScreen()
@@ -221,8 +238,8 @@ fun MainScreenContent(
                 }
 
 //                service section
-                composable(Screen.AdminHome.route) {
-                    AdminHomeScreen()
+                composable(Screen.ServiceHome.route) {
+                    ServiceHomeScreen()
                 }
                 composable(Screen.Categories.route) {
                     CategoriesScreen(

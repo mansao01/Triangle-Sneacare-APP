@@ -3,6 +3,9 @@ package com.mansao.trianglesneacare.ui.screen.section.customer.home
 import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -11,16 +14,21 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.mansao.trianglesneacare.data.network.response.CategoriesItem
 import com.mansao.trianglesneacare.ui.common.UiState
+import com.mansao.trianglesneacare.ui.components.CategoryGridItem
 import com.mansao.trianglesneacare.ui.components.LoadingDialog
+import com.mansao.trianglesneacare.ui.screen.SharedViewModel
 
 @Composable
 fun CustomerHomeScreen(
-    customerHomeViewModel: CustomerHomeViewModel = hiltViewModel()
+    customerHomeViewModel: CustomerHomeViewModel = hiltViewModel(),
+    navigateToServiceSelection: () -> Unit,
+    sharedViewModel: SharedViewModel
 ) {
     LaunchedEffect(Unit) {
         customerHomeViewModel.getCategories()
@@ -36,7 +44,9 @@ fun CustomerHomeScreen(
 
             is UiState.Success -> CustomerHomeContent(
                 username = username,
-                categoryList = uiState.data.categories
+                categoryList = uiState.data.categories,
+                navigateToServiceSelection = navigateToServiceSelection,
+                sharedViewModel = sharedViewModel
             )
         }
 
@@ -46,31 +56,43 @@ fun CustomerHomeScreen(
 @Composable
 fun CustomerHomeContent(
     username: String,
-    categoryList: List<CategoriesItem>
+    categoryList: List<CategoriesItem>,
+    navigateToServiceSelection: () -> Unit,
+    sharedViewModel: SharedViewModel
 ) {
-    Column {
-        CustomerHomeHeader(username = username)
-        CategoriesList(categoryList = categoryList)
+    Column(
+        modifier = Modifier
+            .statusBarsPadding()
+            .navigationBarsPadding()
+    ) {
+        CustomerHomeHeader(username = username, modifier = Modifier.padding(start = 16.dp))
+        CategoriesGrid(
+            categoryList = categoryList,
+            navigateToServiceSelection = navigateToServiceSelection,
+            sharedViewModel = sharedViewModel
+        )
     }
 }
 
 @Composable
-fun CategoriesList(
-    categoryList: List<CategoriesItem>
+fun CategoriesGrid(
+    categoryList: List<CategoriesItem>,
+    navigateToServiceSelection: () -> Unit,
+    sharedViewModel: SharedViewModel
 ) {
     LazyVerticalGrid(
         columns = GridCells.Adaptive(128.dp),
-
-        // content padding
-        contentPadding = PaddingValues(
-            start = 12.dp,
-            top = 16.dp,
-            end = 12.dp,
-            bottom = 16.dp
-        )
+        contentPadding = PaddingValues(12.dp)
     ) {
         items(categoryList.size) { index ->
-            Text(text = categoryList[index].itemType)
+            CategoryGridItem(
+                categoryItem = categoryList[index],
+                onClick = {
+                    navigateToServiceSelection()
+                    sharedViewModel.addCategoryName(categoryList[index].itemType)
+                    sharedViewModel.addCategoryId(categoryList[index].id)
+                }
+            )
         }
     }
 
@@ -78,9 +100,10 @@ fun CategoriesList(
 
 @Composable
 fun CustomerHomeHeader(
-    username: String
+    username: String,
+    modifier: Modifier = Modifier
 ) {
-    Text(text = "Welcome, $username!")
+    Text(text = "Welcome, $username!", modifier = modifier)
 
 
 }

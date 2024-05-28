@@ -12,20 +12,20 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun HeaderText(
     text: String,
-    description:String,
-    showDescription:Boolean,
+    description: String,
+    showDescription: Boolean,
     modifier: Modifier = Modifier
 ) {
 
-        Text(
-            text = text,
-            style = MaterialTheme.typography.displayMedium,
-            fontWeight = FontWeight.Bold,
-            modifier = modifier
-        )
+    Text(
+        text = text,
+        style = MaterialTheme.typography.displayMedium,
+        fontWeight = FontWeight.Bold,
+        modifier = modifier
+    )
 
     Spacer(modifier = Modifier.height(4.dp))
-    if (showDescription){
+    if (showDescription) {
         Text(
             text = description,
             fontWeight = FontWeight.Bold,

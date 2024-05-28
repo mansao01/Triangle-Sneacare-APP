@@ -36,7 +36,10 @@ fun ServiceMenuItem(
         modifier = modifier
             .fillMaxWidth()
             .clickable { onClick() }
-            .padding(horizontal = 16.dp, vertical = 8.dp), // Increased vertical padding for better spacing
+            .padding(
+                horizontal = 16.dp,
+                vertical = 8.dp
+            ), // Increased vertical padding for better spacing
         colors = CardDefaults.cardColors()
     ) {
         Column(
@@ -59,14 +62,69 @@ fun ServiceMenuItem(
                 ),
                 modifier = Modifier.padding(bottom = 8.dp) // Added padding below description for separation
             )
-                Text(
-                    text = stringResource(R.string.rp, formattedPrice),
-                    style = TextStyle(
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.SemiBold, // Slightly bolder text for price
-                        color = MaterialTheme.colorScheme.primary // Using primary color for price to make it stand out
-                    )
+            Text(
+                text = stringResource(R.string.rp, formattedPrice),
+                style = TextStyle(
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.SemiBold, // Slightly bolder text for price
+                    color = MaterialTheme.colorScheme.primary // Using primary color for price to make it stand out
                 )
+            )
         }
     }
 }
+
+
+@Composable
+fun ServiceMenuSelectionItem(
+    serviceName: String,
+    serviceDescription: String,
+    price: String,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit
+) {
+    val formattedPrice = NumberFormat.getNumberInstance(Locale.GERMAN).format(price.toInt())
+    Card(
+        shape = RoundedCornerShape(8.dp),
+        colors = CardDefaults.cardColors(),
+        modifier = modifier
+            .fillMaxWidth()
+            .clickable {
+                onClick()
+            }
+            .padding(horizontal = 16.dp, vertical = 8.dp)
+    ) {
+        Column(
+            modifier = Modifier.padding(8.dp)
+        ) {
+            Text(
+                text = serviceName,
+                style = TextStyle(
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurface
+                ),
+                modifier = Modifier.padding(bottom = 4.dp)
+            )
+            Text(
+                text = serviceDescription,
+                style = TextStyle(
+                    fontSize = 14.sp,
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+                ),
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
+            Text(
+                text = stringResource(R.string.rp, formattedPrice),
+                style = TextStyle(
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.primary
+                )
+            )
+
+        }
+    }
+}
+
+

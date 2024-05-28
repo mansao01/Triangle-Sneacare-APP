@@ -1,4 +1,4 @@
-package com.mansao.trianglesneacare.ui.screen.section.customer.searchAddress
+package com.mansao.trianglesneacare.ui.screen.section.customer.address.searchAddress
 
 import android.Manifest
 import android.annotation.SuppressLint

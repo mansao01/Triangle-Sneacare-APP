@@ -18,6 +18,8 @@ class SharedViewModel : ViewModel() {
     var addressId by mutableStateOf("")
     var email by mutableStateOf("")
     var categoryId by mutableStateOf("")
+    var categoryName by mutableStateOf("")
+    var serviceId by mutableStateOf("")
     var updateServiceArgs by mutableStateOf<UpdateServiceRequest?>(null)
 
     fun addPlace(newPredictionItem: PredictionsItem) {
@@ -50,6 +52,13 @@ class SharedViewModel : ViewModel() {
         categoryId = newId
     }
 
+    fun addCategoryName(newName: String) {
+        categoryName = newName
+    }
+
+    fun addServiceId(newId: String) {
+        serviceId = newId
+    }
 
 
     fun addUpdateServiceArgs(newArgs: UpdateServiceRequest) {

@@ -1,4 +1,4 @@
-package com.mansao.trianglesneacare.ui.screen.section.customer.updateAddress
+package com.mansao.trianglesneacare.ui.screen.section.customer.address.updateAddress
 
 import android.widget.Toast
 import androidx.compose.foundation.clickable

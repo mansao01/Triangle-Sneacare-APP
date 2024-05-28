@@ -1,4 +1,4 @@
-package com.mansao.trianglesneacare.ui.screen.section.customer.addAddress
+package com.mansao.trianglesneacare.ui.screen.section.customer.address.addAddress
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.Column

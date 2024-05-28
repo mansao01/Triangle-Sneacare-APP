@@ -13,7 +13,7 @@ sealed class Screen(val route: String) {
 
 
     //    service section
-    object AdminHome : Screen("adminHome")
+    object ServiceHome : Screen("adminHome")
     object Categories : Screen("categories")
     object AddCategory : Screen("addCategory")
     object Services : Screen("categories/services")
@@ -26,6 +26,8 @@ sealed class Screen(val route: String) {
 
     //    customer
     object CustomerHome : Screen("customerHome")
+    object ServiceSelection : Screen("serviceSelection")
+    object UploadImage : Screen("uploadImage")
     object CustomerCart : Screen("customerCart")
     object TransactionList : Screen("transactionList")
     object AddressList : Screen("addressList")
