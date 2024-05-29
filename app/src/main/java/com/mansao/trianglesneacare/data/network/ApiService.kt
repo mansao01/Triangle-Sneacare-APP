@@ -2,6 +2,7 @@ package com.mansao.trianglesneacare.data.network
 
 import com.mansao.trianglesneacare.data.network.request.AddCategoryRequest
 import com.mansao.trianglesneacare.data.network.request.AddServiceRequest
+import com.mansao.trianglesneacare.data.network.request.AddToCartRequest
 import com.mansao.trianglesneacare.data.network.request.CreateCustomerAddressRequest
 import com.mansao.trianglesneacare.data.network.request.LoginRequest
 import com.mansao.trianglesneacare.data.network.request.RegisterRequest
@@ -11,6 +12,7 @@ import com.mansao.trianglesneacare.data.network.response.AutoCompleteAddressResp
 import com.mansao.trianglesneacare.data.network.response.CreateCustomerAddressResponse
 import com.mansao.trianglesneacare.data.network.response.CustomerDetailAddressResponse
 import com.mansao.trianglesneacare.data.network.response.GeocodingResponse
+import com.mansao.trianglesneacare.data.network.response.GetCartResponse
 import com.mansao.trianglesneacare.data.network.response.GetCategoriesResponse
 import com.mansao.trianglesneacare.data.network.response.GetCustomerAddressesResponse
 import com.mansao.trianglesneacare.data.network.response.GetProfileDetailResponse
@@ -187,4 +189,14 @@ interface ApiService {
         @Part("serviceId") password: RequestBody,
         @Part image: MultipartBody.Part
     ): AddOrderResponse
+
+    @POST(ApiConst.ADD_TO_CART)
+    suspend fun addToCart(
+        @Body addToCartRequest: AddToCartRequest
+    ):OnlyMsgResponse
+
+    @GET(ApiConst.GET_CART)
+    suspend fun getCart(
+        @Path("userId") userId: String
+    ): GetCartResponse
 }

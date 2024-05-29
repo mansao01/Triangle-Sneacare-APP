@@ -163,9 +163,16 @@ fun MainScreenContent(
                         navigateToUploadImage = { navController.navigate(Screen.UploadImage.route) }
                     )
                 }
-                composable(Screen.UploadImage.route){
-                    UploadImageScreen()
+                composable(Screen.UploadImage.route) {
+                    UploadImageScreen(
+                        sharedViewModel = sharedViewModel,
+                        navigateBack = { if (navController.canGoBack) navController.popBackStack() },
+                        navigateToHome = {
+                            navController.popBackStack(Screen.CustomerHome.route, true)
+
+                        })
                 }
+
                 composable(Screen.CustomerCart.route) {
                     CartScreen()
                 }
@@ -195,10 +202,8 @@ fun MainScreenContent(
                         sharedViewModel = sharedViewModel,
                         navigateToListAddress = {
                             if (navController.canGoBack) {
+                                navController.popBackStack(Screen.AddressList.route, false)
 //                                back to list address trough several screen
-                                navController.popBackStack()
-                                navController.popBackStack()
-                                navController.popBackStack()
                             }
 
                         }

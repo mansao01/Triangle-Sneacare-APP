@@ -17,7 +17,6 @@ object ApiConst {
     const val SEND_RESET_PASSWORD = "sendResetPassword"
     const val VERIFY_OTP = "verifyOtp"
     const val RESET_PASSWORD = "resetPassword"
-    const val DRIVERS = "drivers"
     const val LOGOUT = "logout"
     const val GET_CUSTOMER_ADDRESS = "getCustomerAddress"
     const val GET_DETAIL_CUSTOMER_ADDRESS = "customerAddress/details"
@@ -39,5 +38,7 @@ object ApiConst {
 
     //    customer
     const val CREATE_ORDER = "addOrder"
+    const val ADD_TO_CART = "addToCart"
+    const val GET_CART = "getCart/{userId}"
 
 }

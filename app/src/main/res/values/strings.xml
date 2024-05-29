@@ -74,4 +74,5 @@
     <string name="rp">Rp %1$s</string>
     <string name="customer_role_id">3bf06a3e-71e3-4888-b720-e520cb2249b3</string>
     <string name="orders">Orders</string>
+    <string name="add_to_cart">Add to cart</string>
 </resources>

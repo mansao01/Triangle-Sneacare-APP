@@ -3,14 +3,17 @@ package com.mansao.trianglesneacare.data
 import com.mansao.trianglesneacare.data.network.ApiService
 import com.mansao.trianglesneacare.data.network.request.AddCategoryRequest
 import com.mansao.trianglesneacare.data.network.request.AddServiceRequest
+import com.mansao.trianglesneacare.data.network.request.AddToCartRequest
 import com.mansao.trianglesneacare.data.network.request.CreateCustomerAddressRequest
 import com.mansao.trianglesneacare.data.network.request.LoginRequest
 import com.mansao.trianglesneacare.data.network.request.RegisterRequest
 import com.mansao.trianglesneacare.data.network.request.UpdateServiceRequest
+import com.mansao.trianglesneacare.data.network.response.AddOrderResponse
 import com.mansao.trianglesneacare.data.network.response.AutoCompleteAddressResponse
 import com.mansao.trianglesneacare.data.network.response.CreateCustomerAddressResponse
 import com.mansao.trianglesneacare.data.network.response.CustomerDetailAddressResponse
 import com.mansao.trianglesneacare.data.network.response.GeocodingResponse
+import com.mansao.trianglesneacare.data.network.response.GetCartResponse
 import com.mansao.trianglesneacare.data.network.response.GetCategoriesResponse
 import com.mansao.trianglesneacare.data.network.response.GetCustomerAddressesResponse
 import com.mansao.trianglesneacare.data.network.response.GetProfileDetailResponse
@@ -44,6 +47,17 @@ interface AppRepository {
         phone: String,
         file: File
     ): RegisterDriverResponse
+
+    suspend fun createOrder(
+        washStatus: String,
+        userId: String,
+        serviceId: String,
+        file: File
+    ): AddOrderResponse
+
+    suspend fun addToCart(addToCartRequest: AddToCartRequest): OnlyMsgResponse
+    suspend fun getCart(userId:String): GetCartResponse
+
 
     suspend fun login(loginRequest: LoginRequest): LoginResponse
     suspend fun refreshToken(refreshToken: String): OnlyAccessTokenResponse
@@ -80,6 +94,7 @@ interface AppRepository {
         phone: String
     ): OnlyMsgResponse
 
+
     suspend fun autoCompleteAddress(address: String): AutoCompleteAddressResponse
 
     suspend fun geocodeWithAddress(address: String): GeocodingResponse
@@ -88,8 +103,8 @@ interface AppRepository {
     suspend fun getServicesByCategory(categoryId: String): GetServicesByCategoryIdResponse
     suspend fun addCategory(addCategoryRequest: AddCategoryRequest): OnlyMsgResponse
     suspend fun addService(addServiceRequest: AddServiceRequest): OnlyMsgResponse
-    suspend fun deleteService(serviceId:String):OnlyMsgResponse
-    suspend fun updateService(updateServiceRequest: UpdateServiceRequest):OnlyMsgResponse
+    suspend fun deleteService(serviceId: String): OnlyMsgResponse
+    suspend fun updateService(updateServiceRequest: UpdateServiceRequest): OnlyMsgResponse
 
     //    preferences
     suspend fun saveAccessToken(token: String)
@@ -154,6 +169,32 @@ class AppRepositoryImpl @Inject constructor(
 
     }
 
+    override suspend fun createOrder(
+        washStatus: String,
+        userId: String,
+        serviceId: String,
+        file: File
+    ): AddOrderResponse {
+        val compressedFile = CameraUtils.reduceFileImage(file)
+        val washStatusBody = washStatus.toRequestBody("text/plain".toMediaType())
+        val userIdBody = userId.toRequestBody("text/plain".toMediaType())
+        val serviceIdBody = serviceId.toRequestBody("text/plain".toMediaType())
+        val requestImageFile = compressedFile.asRequestBody("image/jpeg".toMediaType())
+        val imageMultipart: MultipartBody.Part = MultipartBody.Part.createFormData(
+            "image",
+            file.name,
+            requestImageFile
+        )
+        return apiService.createOrder(
+            washStatusBody,
+            userIdBody,
+            serviceIdBody,
+            imageMultipart
+        )
+    }
+    override suspend fun addToCart(addToCartRequest: AddToCartRequest): OnlyMsgResponse =
+        apiService.addToCart(addToCartRequest)
+    override suspend fun getCart(userId: String): GetCartResponse  = apiService.getCart(userId)
     override suspend fun login(loginRequest: LoginRequest): LoginResponse =
         apiService.login(loginRequest)
 
