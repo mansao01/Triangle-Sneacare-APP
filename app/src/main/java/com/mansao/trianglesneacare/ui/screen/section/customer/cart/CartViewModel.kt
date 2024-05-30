@@ -23,15 +23,10 @@ class CartViewModel @Inject constructor(private val appRepositoryImpl: AppReposi
         MutableStateFlow(false)
     val isDeleteSuccess: Flow<Boolean> = _isDeleteSuccess
 
-    init {
-        getCart()
-    }
     private fun setLoadingState() {
         _uiState.value = UiState.Loading
     }
-     private fun setStandbyState() {
-        _uiState.value = UiState.Standby
-    }
+
 
     fun getCart() = viewModelScope.launch {
         setLoadingState()
@@ -47,10 +42,13 @@ class CartViewModel @Inject constructor(private val appRepositoryImpl: AppReposi
     fun deleteOrder(orderId: String) = viewModelScope.launch {
         try {
             appRepositoryImpl.deleteOrder(orderId)
-            setStandbyState()
             _isDeleteSuccess.value = true
         } catch (e: Exception) {
             _isDeleteSuccess.value = false
         }
+    }
+
+    fun resetDeleteSuccess() {
+        _isDeleteSuccess.value = false
     }
 }

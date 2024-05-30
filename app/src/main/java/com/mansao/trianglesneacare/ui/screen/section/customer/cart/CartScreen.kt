@@ -12,6 +12,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -33,10 +34,14 @@ import java.util.Locale
 fun CartScreen(
     cartViewModel: CartViewModel = hiltViewModel()
 ) {
+    LaunchedEffect(key1 = Unit) {
+        cartViewModel.getCart()
+    }
     val context = LocalContext.current
     cartViewModel.isDeleteSuccess.collectAsState(initial = false).value.let { isSuccess ->
         if (isSuccess) {
             cartViewModel.getCart()
+            cartViewModel.resetDeleteSuccess()
         }
     }
     cartViewModel.uiState.collectAsState(initial = UiState.Standby).value.let { uiState ->

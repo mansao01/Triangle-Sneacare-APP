@@ -4,7 +4,6 @@ import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.navigationBarsPadding
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -20,7 +19,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.mansao.trianglesneacare.data.network.response.CategoriesItem
 import com.mansao.trianglesneacare.ui.common.UiState
 import com.mansao.trianglesneacare.ui.components.CategoryGridItem
-import com.mansao.trianglesneacare.ui.components.LoadingDialog
+import com.mansao.trianglesneacare.ui.components.LoadingScreen
 import com.mansao.trianglesneacare.ui.screen.SharedViewModel
 
 @Composable
@@ -29,20 +28,37 @@ fun CustomerHomeScreen(
     navigateToServiceSelection: () -> Unit,
     sharedViewModel: SharedViewModel
 ) {
-
     val username = customerHomeViewModel.username.collectAsState(initial = "").value
+    Column {
+        Text(text = "Welcome $username")
+        CustomerHomeContent(
+            customerHomeViewModel = customerHomeViewModel,
+            navigateToServiceSelection = { navigateToServiceSelection() },
+            sharedViewModel = sharedViewModel
+        )
+    }
+
+
+}
+
+@Composable
+fun CustomerHomeContent(
+    customerHomeViewModel: CustomerHomeViewModel,
+    navigateToServiceSelection: () -> Unit,
+    sharedViewModel: SharedViewModel
+) {
+
     customerHomeViewModel.uiState.collectAsState(initial = UiState.Standby).value.let { uiState ->
         val context = LocalContext.current
         when (uiState) {
             UiState.Standby -> {}
-            UiState.Loading -> LoadingDialog()
+            UiState.Loading -> LoadingScreen()
             is UiState.Error -> Toast.makeText(context, uiState.errorMessage, Toast.LENGTH_SHORT)
                 .show()
 
-            is UiState.Success -> CustomerHomeContent(
-                username = username,
+            is UiState.Success -> CustomerHome(
                 categoryList = uiState.data.categories,
-                navigateToServiceSelection = navigateToServiceSelection,
+                navigateToServiceSelection = { navigateToServiceSelection() },
                 sharedViewModel = sharedViewModel
             )
         }
@@ -51,8 +67,7 @@ fun CustomerHomeScreen(
 }
 
 @Composable
-fun CustomerHomeContent(
-    username: String,
+fun CustomerHome(
     categoryList: List<CategoriesItem>,
     navigateToServiceSelection: () -> Unit,
     sharedViewModel: SharedViewModel
@@ -62,7 +77,6 @@ fun CustomerHomeContent(
             .statusBarsPadding()
             .navigationBarsPadding()
     ) {
-        CustomerHomeHeader(username = username, modifier = Modifier.padding(start = 16.dp))
         CategoriesGrid(
             categoryList = categoryList,
             navigateToServiceSelection = navigateToServiceSelection,

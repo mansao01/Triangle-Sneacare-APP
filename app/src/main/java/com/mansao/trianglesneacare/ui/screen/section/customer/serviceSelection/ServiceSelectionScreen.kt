@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.mansao.trianglesneacare.data.network.response.ServiceItem
 import com.mansao.trianglesneacare.ui.common.UiState
-import com.mansao.trianglesneacare.ui.components.LoadingDialog
+import com.mansao.trianglesneacare.ui.components.LoadingScreen
 import com.mansao.trianglesneacare.ui.components.ServiceMenuSelectionItem
 import com.mansao.trianglesneacare.ui.screen.SharedViewModel
 
@@ -40,54 +40,54 @@ fun ServiceSelectionScreen(
 ) {
     val categoryId = sharedViewModel.categoryId
     val categoryName = sharedViewModel.categoryName
-    val context = LocalContext.current
 
     LaunchedEffect(Unit) {
         serviceSelectionViewModel.getServicesByCategoryId(categoryId)
     }
-
-    serviceSelectionViewModel.uiState.collectAsState(initial = UiState.Standby).value.let { uiState ->
-        when (uiState) {
-            UiState.Standby -> {}
-            UiState.Loading -> LoadingDialog()
-            is UiState.Success -> ServiceSelectionContent(
-                services = uiState.data.service,
-                navigateBack = navigateBack,
-                categoryName = categoryName,
-                navigateToUploadImage = navigateToUploadImage,
-                sharedViewModel = sharedViewModel
-            )
-
-            is UiState.Error -> Toast.makeText(context, uiState.errorMessage, Toast.LENGTH_SHORT)
-                .show()
-
-        }
-    }
-}
-
-@Composable
-fun ServiceSelectionContent(
-    services: List<ServiceItem>,
-    navigateBack: () -> Unit,
-    categoryName: String,
-    navigateToUploadImage: () -> Unit,
-    sharedViewModel: SharedViewModel
-) {
     Scaffold(
         topBar = {
             ServiceSelectionTopBar(navigateBack = { navigateBack() }, categoryName = categoryName)
         }
     ) { scaffoldPadding ->
         Surface(modifier = Modifier.padding(scaffoldPadding)) {
-            ServiceSelectionList(
-                services = services,
+            ServiceSelectionContent(
+                navigateToUploadImage = { navigateToUploadImage() },
+                sharedViewModel = sharedViewModel,
+                serviceSelectionViewModel = serviceSelectionViewModel
+            )
+        }
+    }
+}
+
+@Composable
+fun ServiceSelectionContent(
+    navigateToUploadImage: () -> Unit,
+    sharedViewModel: SharedViewModel,
+    serviceSelectionViewModel: ServiceSelectionViewModel
+) {
+    val context = LocalContext.current
+    serviceSelectionViewModel.uiState.collectAsState(initial = UiState.Standby).value.let { uiState ->
+        when (uiState) {
+            UiState.Standby -> {}
+            UiState.Loading -> LoadingScreen()
+            is UiState.Success -> ServiceSelectionList(
+                services = uiState.data.service,
                 navigateToUploadImage = navigateToUploadImage,
                 sharedViewModel = sharedViewModel
             )
+
+            is UiState.Error -> Toast.makeText(
+                context,
+                uiState.errorMessage,
+                Toast.LENGTH_SHORT
+            )
+                .show()
+
         }
     }
 
 }
+
 
 @Composable
 fun ServiceSelectionList(
@@ -100,7 +100,7 @@ fun ServiceSelectionList(
             ServiceMenuSelectionItem(
                 serviceName = it.serviceName,
                 serviceDescription = it.serviceDescription,
-                price =it.price.toString(),
+                price = it.price.toString(),
                 onClick = {
                     sharedViewModel.addServiceId(it.id)
                     navigateToUploadImage()
@@ -143,7 +143,7 @@ fun ServiceSelectionTopBar(
                 )
             }
         },
-        colors = TopAppBarDefaults.smallTopAppBarColors(
+        colors = TopAppBarDefaults.topAppBarColors(
             containerColor = MaterialTheme.colorScheme.primary
         )
     )
