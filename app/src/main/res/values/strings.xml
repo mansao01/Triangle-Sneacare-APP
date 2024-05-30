@@ -75,4 +75,6 @@
     <string name="customer_role_id">3bf06a3e-71e3-4888-b720-e520cb2249b3</string>
     <string name="orders">Orders</string>
     <string name="add_to_cart">Add to cart</string>
+    <string name="item_added_to_cart">Item added to cart</string>
+    <string name="checkout">Checkout</string>
 </resources>

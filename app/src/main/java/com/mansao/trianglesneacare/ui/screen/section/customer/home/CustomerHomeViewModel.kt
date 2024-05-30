@@ -21,6 +21,7 @@ class CustomerHomeViewModel @Inject constructor(private val appRepositoryImpl: A
     val username: Flow<String> = _username
 
     init {
+        getCategories()
         getCustomerName()
     }
     private fun setLoadingState() {
@@ -28,7 +29,7 @@ class CustomerHomeViewModel @Inject constructor(private val appRepositoryImpl: A
 
     }
 
-    fun getCategories() = viewModelScope.launch {
+    private fun getCategories() = viewModelScope.launch {
         setLoadingState()
         try {
             val result = appRepositoryImpl.getCategories()

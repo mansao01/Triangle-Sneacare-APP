@@ -12,7 +12,6 @@ import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -30,9 +29,7 @@ fun CustomerHomeScreen(
     navigateToServiceSelection: () -> Unit,
     sharedViewModel: SharedViewModel
 ) {
-    LaunchedEffect(Unit) {
-        customerHomeViewModel.getCategories()
-    }
+
     val username = customerHomeViewModel.username.collectAsState(initial = "").value
     customerHomeViewModel.uiState.collectAsState(initial = UiState.Standby).value.let { uiState ->
         val context = LocalContext.current

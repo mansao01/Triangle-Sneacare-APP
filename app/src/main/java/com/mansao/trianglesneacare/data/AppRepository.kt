@@ -55,8 +55,12 @@ interface AppRepository {
         file: File
     ): AddOrderResponse
 
+    suspend fun deleteOrder(
+        orderId: String
+    ): OnlyMsgResponse
+
     suspend fun addToCart(addToCartRequest: AddToCartRequest): OnlyMsgResponse
-    suspend fun getCart(userId:String): GetCartResponse
+    suspend fun getCart(userId: String): GetCartResponse
 
 
     suspend fun login(loginRequest: LoginRequest): LoginResponse
@@ -192,9 +196,14 @@ class AppRepositoryImpl @Inject constructor(
             imageMultipart
         )
     }
+
+    override suspend fun deleteOrder(orderId: String): OnlyMsgResponse =
+        apiService.deleteOrder(orderId)
+
     override suspend fun addToCart(addToCartRequest: AddToCartRequest): OnlyMsgResponse =
         apiService.addToCart(addToCartRequest)
-    override suspend fun getCart(userId: String): GetCartResponse  = apiService.getCart(userId)
+
+    override suspend fun getCart(userId: String): GetCartResponse = apiService.getCart(userId)
     override suspend fun login(loginRequest: LoginRequest): LoginResponse =
         apiService.login(loginRequest)
 

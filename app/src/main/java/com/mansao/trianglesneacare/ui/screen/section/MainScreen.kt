@@ -168,7 +168,7 @@ fun MainScreenContent(
                         sharedViewModel = sharedViewModel,
                         navigateBack = { if (navController.canGoBack) navController.popBackStack() },
                         navigateToHome = {
-                            navController.popBackStack(Screen.CustomerHome.route, true)
+                            navController.popBackStack(Screen.CustomerHome.route, false)
 
                         })
                 }

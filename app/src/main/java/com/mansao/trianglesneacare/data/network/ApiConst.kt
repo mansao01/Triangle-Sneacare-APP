@@ -38,6 +38,7 @@ object ApiConst {
 
     //    customer
     const val CREATE_ORDER = "addOrder"
+    const val DELETE_ORDER = "deleteOrder/{orderId}"
     const val ADD_TO_CART = "addToCart"
     const val GET_CART = "getCart/{userId}"
 

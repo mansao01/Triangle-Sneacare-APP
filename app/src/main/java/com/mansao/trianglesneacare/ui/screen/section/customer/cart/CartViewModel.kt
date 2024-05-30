@@ -19,15 +19,21 @@ class CartViewModel @Inject constructor(private val appRepositoryImpl: AppReposi
         MutableStateFlow(UiState.Standby)
     val uiState: Flow<UiState<GetCartResponse>> = _uiState
 
+    private var _isDeleteSuccess: MutableStateFlow<Boolean> =
+        MutableStateFlow(false)
+    val isDeleteSuccess: Flow<Boolean> = _isDeleteSuccess
+
     init {
         getCart()
     }
     private fun setLoadingState() {
         _uiState.value = UiState.Loading
-
+    }
+     private fun setStandbyState() {
+        _uiState.value = UiState.Standby
     }
 
-    private fun getCart() = viewModelScope.launch {
+    fun getCart() = viewModelScope.launch {
         setLoadingState()
         try {
             val userId = appRepositoryImpl.getUserId() ?: ""
@@ -35,6 +41,16 @@ class CartViewModel @Inject constructor(private val appRepositoryImpl: AppReposi
             _uiState.value = UiState.Success(result)
         } catch (e: Exception) {
             _uiState.value = UiState.Error(e.message.toString())
+        }
+    }
+
+    fun deleteOrder(orderId: String) = viewModelScope.launch {
+        try {
+            appRepositoryImpl.deleteOrder(orderId)
+            setStandbyState()
+            _isDeleteSuccess.value = true
+        } catch (e: Exception) {
+            _isDeleteSuccess.value = false
         }
     }
 }

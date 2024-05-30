@@ -36,7 +36,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -59,6 +58,7 @@ import androidx.core.content.FileProvider
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.mansao.trianglesneacare.R
 import com.mansao.trianglesneacare.ui.common.UiState
+import com.mansao.trianglesneacare.ui.components.AddedToCartDialog
 import com.mansao.trianglesneacare.ui.screen.SharedViewModel
 import com.mansao.trianglesneacare.utils.CameraUtils
 import java.io.File
@@ -95,12 +95,10 @@ fun UploadImageScreen(
             UiState.Standby -> {}
             UiState.Loading -> isLoading = true
             is UiState.Success -> {
-                LaunchedEffect(Unit) {
-                    navigateToHome()
-                    Toast.makeText(context, uiState.data.msg, Toast.LENGTH_SHORT).show()
+                AddedToCartDialog(onClick = {
                     uploadImageViewModel.setStandbyState()
-
-                }
+                    navigateToHome()
+                })
                 isLoading = false
             }
 

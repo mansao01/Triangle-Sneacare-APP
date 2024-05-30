@@ -174,12 +174,12 @@ interface ApiService {
     @DELETE(ApiConst.DELETE_SERVICE)
     suspend fun deleteService(
         @Path("id") id: String
-    ):OnlyMsgResponse
+    ): OnlyMsgResponse
 
     @PATCH(ApiConst.UPDATE_SERVICE)
     suspend fun updateService(
         @Body updateServiceRequest: UpdateServiceRequest
-    ):OnlyMsgResponse
+    ): OnlyMsgResponse
 
     @Multipart
     @POST(ApiConst.CREATE_ORDER)
@@ -190,10 +190,15 @@ interface ApiService {
         @Part image: MultipartBody.Part
     ): AddOrderResponse
 
+    @DELETE(ApiConst.DELETE_ORDER)
+    suspend fun deleteOrder(
+        @Path("orderId") orderId: String
+    ): OnlyMsgResponse
+
     @POST(ApiConst.ADD_TO_CART)
     suspend fun addToCart(
         @Body addToCartRequest: AddToCartRequest
-    ):OnlyMsgResponse
+    ): OnlyMsgResponse
 
     @GET(ApiConst.GET_CART)
     suspend fun getCart(
