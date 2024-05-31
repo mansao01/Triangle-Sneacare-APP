@@ -4,8 +4,11 @@
     <selectionStates>
       <SelectionState runConfigName="app">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2024-05-27T13:02:49.504296800Z">
+        <DropdownSelection timestamp="2024-05-30T12:15:24.913139700Z">
           <Target type="DEFAULT_BOOT">
+            <handle>
+              <DeviceId pluginId="FirebaseDirectAccess" identifier="reservation=projects/fir-training-37b63/deviceSessions/session-1v0cvh30bmfg0" />
+            </handle>
             <template>
               <DeviceId pluginId="FirebaseDirectAccess" type="TEMPLATE" identifier="model_id=husky/34" />
             </template>

@@ -7,7 +7,7 @@ import kotlinx.parcelize.Parcelize
 data class AutoCompleteAddressResponse(
 
     @field:SerializedName("data")
-    val data: Data,
+    val data: CalculateDistanceData,
 
     @field:SerializedName("message")
     val message: String

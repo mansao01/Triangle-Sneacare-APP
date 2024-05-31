@@ -5,12 +5,15 @@ import com.mansao.trianglesneacare.data.network.request.AddCategoryRequest
 import com.mansao.trianglesneacare.data.network.request.AddServiceRequest
 import com.mansao.trianglesneacare.data.network.request.AddToCartRequest
 import com.mansao.trianglesneacare.data.network.request.CreateCustomerAddressRequest
+import com.mansao.trianglesneacare.data.network.request.CreateTransactionRequest
 import com.mansao.trianglesneacare.data.network.request.LoginRequest
 import com.mansao.trianglesneacare.data.network.request.RegisterRequest
 import com.mansao.trianglesneacare.data.network.request.UpdateServiceRequest
 import com.mansao.trianglesneacare.data.network.response.AddOrderResponse
 import com.mansao.trianglesneacare.data.network.response.AutoCompleteAddressResponse
+import com.mansao.trianglesneacare.data.network.response.CalculateDistanceResponse
 import com.mansao.trianglesneacare.data.network.response.CreateCustomerAddressResponse
+import com.mansao.trianglesneacare.data.network.response.CreateTransactionResponse
 import com.mansao.trianglesneacare.data.network.response.CustomerDetailAddressResponse
 import com.mansao.trianglesneacare.data.network.response.GeocodingResponse
 import com.mansao.trianglesneacare.data.network.response.GetCartResponse
@@ -61,8 +64,7 @@ interface AppRepository {
 
     suspend fun addToCart(addToCartRequest: AddToCartRequest): OnlyMsgResponse
     suspend fun getCart(userId: String): GetCartResponse
-
-
+    suspend fun createTransaction(createTransactionRequest: CreateTransactionRequest): CreateTransactionResponse
     suspend fun login(loginRequest: LoginRequest): LoginResponse
     suspend fun refreshToken(refreshToken: String): OnlyAccessTokenResponse
     suspend fun getProfile(token: String): ProfileResponse
@@ -103,6 +105,7 @@ interface AppRepository {
 
     suspend fun geocodeWithAddress(address: String): GeocodingResponse
     suspend fun geocodeWithPlaceId(placeId: String): GeocodingResponse
+    suspend fun calculateDistance(latLngOrigin: String): CalculateDistanceResponse
     suspend fun getCategories(): GetCategoriesResponse
     suspend fun getServicesByCategory(categoryId: String): GetServicesByCategoryIdResponse
     suspend fun addCategory(addCategoryRequest: AddCategoryRequest): OnlyMsgResponse
@@ -204,6 +207,9 @@ class AppRepositoryImpl @Inject constructor(
         apiService.addToCart(addToCartRequest)
 
     override suspend fun getCart(userId: String): GetCartResponse = apiService.getCart(userId)
+    override suspend fun createTransaction(createTransactionRequest: CreateTransactionRequest): CreateTransactionResponse =
+        apiService.createTransaction(createTransactionRequest)
+
     override suspend fun login(loginRequest: LoginRequest): LoginResponse =
         apiService.login(loginRequest)
 
@@ -261,6 +267,9 @@ class AppRepositoryImpl @Inject constructor(
 
     override suspend fun geocodeWithPlaceId(placeId: String): GeocodingResponse =
         apiService.geocodeWithPlaceId(placeId)
+
+    override suspend fun calculateDistance(latLngOrigin: String): CalculateDistanceResponse =
+        apiService.calculatedDistance(latLngOrigin)
 
     override suspend fun getCategories(): GetCategoriesResponse = apiService.getCategories()
     override suspend fun getServicesByCategory(categoryId: String): GetServicesByCategoryIdResponse {

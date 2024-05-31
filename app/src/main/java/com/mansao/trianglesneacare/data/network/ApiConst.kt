@@ -26,6 +26,7 @@ object ApiConst {
     const val UPDATE_CUSTOMER_ADDRESS = "customerAddress/update"
     const val GEOCODING_ADDRESS = "geoCodeWithAddress"
     const val GEOCODING_PLACE_ID = "geoCodeWithPlaceId"
+    const val CALCULATE_DISTANCE = "calculateDistance"
 
     //    service
     const val CREATE_NEW_CATEGORY = "addCategory"
@@ -40,6 +41,7 @@ object ApiConst {
     const val CREATE_ORDER = "addOrder"
     const val DELETE_ORDER = "deleteOrder/{orderId}"
     const val ADD_TO_CART = "addToCart"
+    const val CREATE_TRANSACTION = "createTransaction"
     const val GET_CART = "getCart/{userId}"
 
 }

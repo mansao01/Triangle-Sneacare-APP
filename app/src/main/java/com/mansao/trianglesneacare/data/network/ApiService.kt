@@ -4,12 +4,15 @@ import com.mansao.trianglesneacare.data.network.request.AddCategoryRequest
 import com.mansao.trianglesneacare.data.network.request.AddServiceRequest
 import com.mansao.trianglesneacare.data.network.request.AddToCartRequest
 import com.mansao.trianglesneacare.data.network.request.CreateCustomerAddressRequest
+import com.mansao.trianglesneacare.data.network.request.CreateTransactionRequest
 import com.mansao.trianglesneacare.data.network.request.LoginRequest
 import com.mansao.trianglesneacare.data.network.request.RegisterRequest
 import com.mansao.trianglesneacare.data.network.request.UpdateServiceRequest
 import com.mansao.trianglesneacare.data.network.response.AddOrderResponse
 import com.mansao.trianglesneacare.data.network.response.AutoCompleteAddressResponse
+import com.mansao.trianglesneacare.data.network.response.CalculateDistanceResponse
 import com.mansao.trianglesneacare.data.network.response.CreateCustomerAddressResponse
+import com.mansao.trianglesneacare.data.network.response.CreateTransactionResponse
 import com.mansao.trianglesneacare.data.network.response.CustomerDetailAddressResponse
 import com.mansao.trianglesneacare.data.network.response.GeocodingResponse
 import com.mansao.trianglesneacare.data.network.response.GetCartResponse
@@ -148,6 +151,11 @@ interface ApiService {
         @Query("placeId") placeId: String
     ): GeocodingResponse
 
+    @GET(ApiConst.CALCULATE_DISTANCE)
+    suspend fun calculatedDistance(
+        @Query("origin") latLngOrigin: String,
+    ):CalculateDistanceResponse
+
     @POST(ApiConst.LOGOUT)
     suspend fun logout(
         @Header(ApiConst.AUTHORIZATION_KEY) token: String
@@ -204,4 +212,9 @@ interface ApiService {
     suspend fun getCart(
         @Path("userId") userId: String
     ): GetCartResponse
+
+    @POST(ApiConst.CREATE_TRANSACTION)
+    suspend fun createTransaction(
+        @Body createTransactionRequest: CreateTransactionRequest
+    ): CreateTransactionResponse
 }
