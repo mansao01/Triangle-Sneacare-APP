@@ -32,9 +32,10 @@ import java.util.Locale
 
 @Composable
 fun CartScreen(
-    cartViewModel: CartViewModel = hiltViewModel()
+    cartViewModel: CartViewModel = hiltViewModel(),
+    navigateToCreateTransaction: () -> Unit
 ) {
-    LaunchedEffect(key1 = Unit) {
+    LaunchedEffect(Unit) {
         cartViewModel.getCart()
     }
     val context = LocalContext.current
@@ -57,7 +58,8 @@ fun CartScreen(
                 CartContent(
                     cart = uiState.data.items,
                     totalPrice = uiState.data.totalPrice.toString(),
-                    cartViewModel = cartViewModel
+                    cartViewModel = cartViewModel,
+                    navigateToCreateTransaction = navigateToCreateTransaction
                 )
 
             }
@@ -70,7 +72,9 @@ fun CartContent(
     modifier: Modifier = Modifier,
     cart: List<CartItems>,
     totalPrice: String,
-    cartViewModel: CartViewModel
+    cartViewModel: CartViewModel,
+    navigateToCreateTransaction: () -> Unit
+
 ) {
     Column(
         modifier = modifier.fillMaxWidth()
@@ -105,7 +109,7 @@ fun CartContent(
             }
             Box(modifier = Modifier.weight(0.1f)) {
                 Button(
-                    onClick = { /*TODO*/ },
+                    onClick = { navigateToCreateTransaction() },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp)

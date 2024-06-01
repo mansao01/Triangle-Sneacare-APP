@@ -55,8 +55,9 @@ class CreateTransactionViewModel @Inject constructor(private val appRepositoryIm
         try {
             val token = appRepositoryImpl.getAccessToken()
             val result = appRepositoryImpl.getCustomerAddresses("Bearer $token")
-
+            _addressUiState.value = UiState.Success(result)
         } catch (e: Exception) {
+            _addressUiState.value = UiState.Error(e.message.toString())
         }
     }
 

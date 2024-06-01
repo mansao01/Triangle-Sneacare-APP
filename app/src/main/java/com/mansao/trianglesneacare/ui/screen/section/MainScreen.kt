@@ -36,6 +36,7 @@ import com.mansao.trianglesneacare.ui.screen.section.customer.address.addressLis
 import com.mansao.trianglesneacare.ui.screen.section.customer.address.searchAddress.SearchAddressScreen
 import com.mansao.trianglesneacare.ui.screen.section.customer.address.updateAddress.UpdateAddressScreen
 import com.mansao.trianglesneacare.ui.screen.section.customer.cart.CartScreen
+import com.mansao.trianglesneacare.ui.screen.section.customer.createTransaction.CreateTransactionScreen
 import com.mansao.trianglesneacare.ui.screen.section.customer.home.CustomerHomeScreen
 import com.mansao.trianglesneacare.ui.screen.section.customer.maps.MapsScreen
 import com.mansao.trianglesneacare.ui.screen.section.customer.serviceSelection.ServiceSelectionScreen
@@ -174,7 +175,15 @@ fun MainScreenContent(
                 }
 
                 composable(Screen.CustomerCart.route) {
-                    CartScreen()
+                    CartScreen(navigateToCreateTransaction = {
+                        navController.navigate(Screen.CreateTransaction.route)
+                    })
+                }
+
+                composable(Screen.CreateTransaction.route) {
+                    CreateTransactionScreen(
+                        navigateToAddAddress = { navController.navigate(Screen.AddAddress.route) },
+                        navigateBack = { if (navController.canGoBack) navController.popBackStack() })
                 }
                 composable(Screen.TransactionList.route) {
                     TransactionListScreen()
@@ -203,7 +212,6 @@ fun MainScreenContent(
                         navigateToListAddress = {
                             if (navController.canGoBack) {
                                 navController.popBackStack(Screen.AddressList.route, false)
-//                                back to list address trough several screen
                             }
 
                         }

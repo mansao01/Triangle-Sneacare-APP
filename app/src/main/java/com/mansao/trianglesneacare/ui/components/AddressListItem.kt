@@ -5,12 +5,15 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mansao.trianglesneacare.R
@@ -37,7 +40,7 @@ fun AddressListItem(
                 .padding(16.dp)
         ) {
             Text(
-                text = address.title ?: "",
+                text = address.title,
                 style = TextStyle(
                     fontFamily = Roboto,
                     fontWeight = FontWeight.ExtraBold,
@@ -47,7 +50,7 @@ fun AddressListItem(
                 modifier = Modifier.padding(bottom = 4.dp)
             )
             Text(
-                text = address.receiverName ?: "",
+                text = address.receiverName,
                 style = TextStyle(
                     fontFamily = Rubik,
                     fontWeight = FontWeight.Bold,
@@ -57,7 +60,7 @@ fun AddressListItem(
                 modifier = Modifier.padding(bottom = 4.dp)
             )
             Text(
-                text = address.fullAddress ?: "",
+                text = address.fullAddress,
                 style = TextStyle(
                     fontFamily = Inter,
                     fontWeight = FontWeight.Medium,
@@ -90,3 +93,43 @@ fun AddressListItem(
         }
     }
 }
+
+@Composable
+fun AddressListItemSimple(
+    modifier: Modifier = Modifier, address: AddressItem,
+) {
+    Card(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        ) {
+            Text(
+                text = address.title,
+                style = TextStyle(
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 18.sp,
+                    color = MaterialTheme.colorScheme.onSurface
+                ),
+                modifier = Modifier.padding(bottom = 4.dp)
+            )
+            Text(
+                text = address.fullAddress,
+                style = TextStyle(
+                    fontWeight = FontWeight.Normal,
+                    fontSize = 14.sp,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                ),
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.padding(bottom = 4.dp)
+            )
+        }
+    }
+}
+

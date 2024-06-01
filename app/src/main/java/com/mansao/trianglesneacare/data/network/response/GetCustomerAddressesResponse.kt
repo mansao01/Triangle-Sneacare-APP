@@ -13,36 +13,31 @@ data class GetCustomerAddressesResponse(
 
 data class AddressItem(
 
-	@field:SerializedName("createdAt")
-	val createdAt: String? = null,
-
 	@field:SerializedName("notes")
 	val notes: String? = null,
 
 	@field:SerializedName("latitude")
-	val latitude: Any? = null,
+	val latitude: Double,
 
 	@field:SerializedName("fullAddress")
-	val fullAddress: String? = null,
+	val fullAddress: String,
 
 	@field:SerializedName("id")
 	val id: String,
 
 	@field:SerializedName("title")
-	val title: String? = null,
+	val title: String,
 
 	@field:SerializedName("receiverName")
-	val receiverName: String? = null,
+	val receiverName: String,
 
 	@field:SerializedName("phone")
-	val phone: String? = null,
+	val phone: String,
 
 	@field:SerializedName("userId")
 	val userId: String? = null,
 
 	@field:SerializedName("longitude")
-	val longitude: Any? = null,
+	val longitude: Double,
 
-	@field:SerializedName("updatedAt")
-	val updatedAt: String? = null
 )
