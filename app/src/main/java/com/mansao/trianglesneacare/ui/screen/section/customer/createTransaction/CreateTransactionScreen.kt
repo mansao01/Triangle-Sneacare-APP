@@ -6,11 +6,15 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.outlined.ArrowBack
+import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -39,15 +43,19 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.mansao.trianglesneacare.data.network.response.AddressItem
+import com.mansao.trianglesneacare.data.network.response.CartItems
 import com.mansao.trianglesneacare.ui.common.UiState
 import com.mansao.trianglesneacare.ui.components.AddressListItemSimple
+import com.mansao.trianglesneacare.ui.components.CartListItemSimple
 import com.mansao.trianglesneacare.ui.components.LoadingScreen
+import com.mansao.trianglesneacare.ui.screen.SharedViewModel
 
 @Composable
 fun CreateTransactionScreen(
     createTransactionViewModel: CreateTransactionViewModel = hiltViewModel(),
     navigateToAddAddress: () -> Unit,
-    navigateBack: () -> Unit
+    navigateBack: () -> Unit,
+    sharedViewModel: SharedViewModel
 
 ) {
     val context = LocalContext.current
@@ -56,8 +64,10 @@ fun CreateTransactionScreen(
         createTransactionViewModel.getAddresses()
 
     }
+    val totalItems = createTransactionViewModel.totalItems.collectAsState(initial = 0).value
+    val totalPrice = sharedViewModel.totalPrice
     Scaffold(topBar = {
-        CreateTransactionTopBar(navigateBack = {navigateBack()})
+        CreateTransactionTopBar(navigateBack = { navigateBack() })
     }) { scaffoldPadding ->
         Surface(
             modifier = Modifier.padding(scaffoldPadding)
@@ -68,6 +78,23 @@ fun CreateTransactionScreen(
                     context = context,
                     navigateToAddAddress = navigateToAddAddress
                 )
+
+                createTransactionViewModel.addressId.collectAsState(initial = "").value.let {
+
+                    Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+                    Button(onClick = { /*TODO*/ }) {
+                        Text(text = it)
+
+                    }
+                    CartItemsSection(
+                        createTransactionViewModel = createTransactionViewModel,
+                        context = context
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    DetailTransactionSection(itemsCount = totalItems, totalPrice = totalPrice)
+
+                }
+
             }
 
         }
@@ -166,7 +193,7 @@ fun AddressSectionContent(
                     },
                     modifier = Modifier.fillMaxWidth()
                 )
-            }else{
+            } else {
                 addresses.forEach { addressItem ->
                     DropdownMenuItem(
                         text = {
@@ -177,6 +204,7 @@ fun AddressSectionContent(
                             selectedAddressId = addressItem.id
                             isExpanded = false
                             createTransactionViewModel.calculateDistance("${addressItem.latitude},${addressItem.longitude}")
+                            createTransactionViewModel.setAddressId(addressItem.id)
                         },
                         modifier = Modifier.fillMaxWidth()
                     )
@@ -216,9 +244,51 @@ fun AddressSectionContent(
 @Composable
 fun CartItemsSection(
     modifier: Modifier = Modifier,
-    createTransactionViewModel: CreateTransactionViewModel
+    createTransactionViewModel: CreateTransactionViewModel,
+    context: Context
 ) {
+    createTransactionViewModel.cartUiState.collectAsState(initial = UiState.Standby).value.let { uiState ->
+        when (uiState) {
+            is UiState.Error -> Toast.makeText(context, uiState.errorMessage, Toast.LENGTH_SHORT)
+                .show()
 
+            UiState.Loading -> LoadingScreen()
+            UiState.Standby -> {}
+            is UiState.Success -> {
+                CartItemSectionContent(cart = uiState.data.items)
+                createTransactionViewModel.setTotalItem(uiState.data.items.size)
+            }
+        }
+    }
+
+
+}
+
+@Composable
+fun CartItemSectionContent(
+    modifier: Modifier = Modifier, cart: List<CartItems>,
+) {
+    LazyColumn {
+        items(cart) {
+            CartListItemSimple(
+                image = it.imageUrl,
+                serviceName = it.service.serviceName,
+                price = it.service.price
+            )
+        }
+    }
+
+}
+
+
+@Composable
+fun DetailTransactionSection(modifier: Modifier = Modifier, itemsCount: Int, totalPrice: Int) {
+    Column {
+        Row {
+            Text(text = "Total Price ($itemsCount items) ")
+            Text(text = totalPrice.toString())
+        }
+    }
 
 }
 

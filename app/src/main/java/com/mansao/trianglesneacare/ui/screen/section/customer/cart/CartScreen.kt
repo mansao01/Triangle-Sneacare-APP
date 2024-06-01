@@ -27,13 +27,16 @@ import com.mansao.trianglesneacare.data.network.response.CartItems
 import com.mansao.trianglesneacare.ui.common.UiState
 import com.mansao.trianglesneacare.ui.components.CartListItem
 import com.mansao.trianglesneacare.ui.components.LoadingScreen
+import com.mansao.trianglesneacare.ui.screen.SharedViewModel
 import java.text.NumberFormat
 import java.util.Locale
 
 @Composable
 fun CartScreen(
     cartViewModel: CartViewModel = hiltViewModel(),
-    navigateToCreateTransaction: () -> Unit
+    navigateToCreateTransaction: () -> Unit,
+    sharedViewModel: SharedViewModel
+
 ) {
     LaunchedEffect(Unit) {
         cartViewModel.getCart()
@@ -53,13 +56,15 @@ fun CartScreen(
             UiState.Loading -> {
                 LoadingScreen()
             }
+
             UiState.Standby -> {}
             is UiState.Success -> {
                 CartContent(
                     cart = uiState.data.items,
                     totalPrice = uiState.data.totalPrice.toString(),
                     cartViewModel = cartViewModel,
-                    navigateToCreateTransaction = navigateToCreateTransaction
+                    navigateToCreateTransaction = navigateToCreateTransaction,
+                    sharedViewModel = sharedViewModel
                 )
 
             }
@@ -73,8 +78,8 @@ fun CartContent(
     cart: List<CartItems>,
     totalPrice: String,
     cartViewModel: CartViewModel,
-    navigateToCreateTransaction: () -> Unit
-
+    navigateToCreateTransaction: () -> Unit,
+    sharedViewModel: SharedViewModel
 ) {
     Column(
         modifier = modifier.fillMaxWidth()
@@ -109,7 +114,10 @@ fun CartContent(
             }
             Box(modifier = Modifier.weight(0.1f)) {
                 Button(
-                    onClick = { navigateToCreateTransaction() },
+                    onClick = {
+                        navigateToCreateTransaction()
+                        sharedViewModel.addTotalPrice(totalPrice.toInt())
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp)

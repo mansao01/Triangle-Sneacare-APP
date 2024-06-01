@@ -20,6 +20,7 @@ class SharedViewModel : ViewModel() {
     var categoryId by mutableStateOf("")
     var categoryName by mutableStateOf("")
     var serviceId by mutableStateOf("")
+    var totalPrice by mutableStateOf(0)
     var updateServiceArgs by mutableStateOf<UpdateServiceRequest?>(null)
 
     fun addPlace(newPredictionItem: PredictionsItem) {
@@ -58,6 +59,10 @@ class SharedViewModel : ViewModel() {
 
     fun addServiceId(newId: String) {
         serviceId = newId
+    }
+
+    fun addTotalPrice(newPrice: Int) {
+        totalPrice = newPrice
     }
 
 

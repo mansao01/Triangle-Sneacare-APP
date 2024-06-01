@@ -82,3 +82,52 @@ fun CartListItem(
         }
     }
 }
+
+@Composable
+fun CartListItemSimple(
+    image: String,
+    serviceName: String,
+    price: Int,
+) {
+    val context = LocalContext.current
+    val formattedPrice =
+        NumberFormat.getNumberInstance(Locale.GERMAN).format(price)
+    Column {
+        Spacer(modifier = Modifier.height(8.dp))
+        Row(
+            modifier = Modifier
+                .padding(horizontal = 16.dp)
+                .padding(bottom = 4.dp)
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(60.dp)
+                    .clip(CircleShape)
+            ) {
+                SubcomposeAsyncImage(
+                    model = ImageRequest.Builder(context)
+                        .crossfade(true)
+                        .data(image)
+                        .build(),
+                    contentDescription = null,
+                    loading = {
+                        CircularProgressIndicator(
+                            modifier = Modifier
+                                .size(30.dp)
+                                .padding(4.dp)
+                        )
+                    },
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier.fillMaxSize()
+                )
+            }
+            Spacer(modifier = Modifier.width(16.dp))
+            Column(
+                modifier = Modifier.weight(1f)
+            ) {
+                Text(text = serviceName)
+                Text(text = formattedPrice)
+            }
+        }
+    }
+}

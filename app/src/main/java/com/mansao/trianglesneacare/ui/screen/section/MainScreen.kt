@@ -175,15 +175,20 @@ fun MainScreenContent(
                 }
 
                 composable(Screen.CustomerCart.route) {
-                    CartScreen(navigateToCreateTransaction = {
-                        navController.navigate(Screen.CreateTransaction.route)
-                    })
+                    CartScreen(
+                        navigateToCreateTransaction = {
+                            navController.navigate(Screen.CreateTransaction.route)
+                        },
+                        sharedViewModel = sharedViewModel
+                    )
                 }
 
                 composable(Screen.CreateTransaction.route) {
                     CreateTransactionScreen(
                         navigateToAddAddress = { navController.navigate(Screen.AddAddress.route) },
-                        navigateBack = { if (navController.canGoBack) navController.popBackStack() })
+                        navigateBack = { if (navController.canGoBack) navController.popBackStack() },
+                        sharedViewModel = sharedViewModel
+                    )
                 }
                 composable(Screen.TransactionList.route) {
                     TransactionListScreen()

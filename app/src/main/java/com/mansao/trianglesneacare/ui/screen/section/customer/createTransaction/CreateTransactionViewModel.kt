@@ -36,6 +36,14 @@ class CreateTransactionViewModel @Inject constructor(private val appRepositoryIm
     val createTransactionUiState: Flow<UiState<CreateTransactionResponse>> =
         _createTransactionUiState
 
+    private var _addressId = MutableStateFlow("")
+    val addressId: Flow<String> = _addressId
+
+    private var _totalItems = MutableStateFlow(0)
+    val totalItems: Flow<Int> = _totalItems
+
+    private var _distance = MutableStateFlow(0)
+    val distance: Flow<Int> = _distance
 
 
     fun getCart() = viewModelScope.launch {
@@ -61,18 +69,34 @@ class CreateTransactionViewModel @Inject constructor(private val appRepositoryIm
         }
     }
 
+    fun setAddressId(addressId: String) {
+        _addressId.value = addressId
+    }
+
+
     fun calculateDistance(latLngOrigin: String) = viewModelScope.launch {
         try {
             val result = appRepositoryImpl.calculateDistance(latLngOrigin)
+            _calculateDistanceUiState.value = UiState.Success(result)
         } catch (e: Exception) {
+            _calculateDistanceUiState.value = UiState.Error(e.message.toString())
         }
     }
 
+    fun setDistance(distance: Int) {
+        _distance.value = distance
+    }
+
+    fun setTotalItem(totalItem: Int) {
+        _totalItems.value = totalItem
+    }
+
+
     fun createTransaction(
         cartId: String,
+        customerAddressId: String,
         deliveryMethod: String,
-        paymentMethod: String,
-        customerAddressId: String
+        paymentMethod: String
     ) = viewModelScope.launch {
         try {
             val userId = appRepositoryImpl.getUserId() ?: ""
