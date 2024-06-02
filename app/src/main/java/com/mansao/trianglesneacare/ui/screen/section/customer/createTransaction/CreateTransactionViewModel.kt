@@ -1,5 +1,6 @@
 package com.mansao.trianglesneacare.ui.screen.section.customer.createTransaction
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mansao.trianglesneacare.data.AppRepositoryImpl
@@ -42,9 +43,14 @@ class CreateTransactionViewModel @Inject constructor(private val appRepositoryIm
     private var _totalItems = MutableStateFlow(0)
     val totalItems: Flow<Int> = _totalItems
 
-    private var _distance = MutableStateFlow(0)
-    val distance: Flow<Int> = _distance
+    private var _totalPrice = MutableStateFlow(0.0)
+    val totalPrice: Flow<Double> = _totalPrice
 
+    private var _distance = MutableStateFlow(0.0)
+    val distance: Flow<Double> = _distance
+
+    private var _totalShouldPay = MutableStateFlow(0.0)
+    val totalShouldPay: Flow<Double> = _totalShouldPay
 
     fun getCart() = viewModelScope.launch {
         _cartUiState.value = UiState.Loading
@@ -83,7 +89,7 @@ class CreateTransactionViewModel @Inject constructor(private val appRepositoryIm
         }
     }
 
-    fun setDistance(distance: Int) {
+    fun setDistance(distance: Double) {
         _distance.value = distance
     }
 
@@ -91,6 +97,9 @@ class CreateTransactionViewModel @Inject constructor(private val appRepositoryIm
         _totalItems.value = totalItem
     }
 
+    fun setTotalPrice(totalPrice: Double){
+        _totalPrice.value = totalPrice
+    }
 
     fun createTransaction(
         cartId: String,
@@ -117,4 +126,14 @@ class CreateTransactionViewModel @Inject constructor(private val appRepositoryIm
         }
     }
 
+    fun calculateTotalTransaction(){
+        val totalItem = _totalPrice.value
+        val distance = _distance.value
+        val perKm = 2000
+        val result = totalItem + (distance * perKm.toDouble())
+        Log.d("calculation", "$totalItem + ($distance + $perKm)")
+
+        _totalShouldPay.value = result
+
+    }
 }

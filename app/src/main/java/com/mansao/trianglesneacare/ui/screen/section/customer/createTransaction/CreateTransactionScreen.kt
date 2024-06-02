@@ -1,6 +1,7 @@
 package com.mansao.trianglesneacare.ui.screen.section.customer.createTransaction
 
 import android.content.Context
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -62,7 +63,7 @@ fun CreateTransactionScreen(
     LaunchedEffect(Unit) {
         createTransactionViewModel.getCart()
         createTransactionViewModel.getAddresses()
-
+        createTransactionViewModel.setTotalPrice(sharedViewModel.totalPrice.toDouble())
     }
     val totalItems = createTransactionViewModel.totalItems.collectAsState(initial = 0).value
     val totalPrice = sharedViewModel.totalPrice
@@ -91,7 +92,15 @@ fun CreateTransactionScreen(
                         context = context
                     )
                     Spacer(modifier = Modifier.height(8.dp))
-                    DetailTransactionSection(itemsCount = totalItems, totalPrice = totalPrice)
+                    DetailTransactionSection(
+                        itemsCount = totalItems,
+                        totalPrice = totalPrice,
+                        createTransactionViewModel = createTransactionViewModel
+                    )
+                    CalculateDistance(
+                        createTransactionViewModel = createTransactionViewModel,
+                        context = context
+                    )
 
                 }
 
@@ -205,6 +214,7 @@ fun AddressSectionContent(
                             isExpanded = false
                             createTransactionViewModel.calculateDistance("${addressItem.latitude},${addressItem.longitude}")
                             createTransactionViewModel.setAddressId(addressItem.id)
+                            Log.d("latLng", "${addressItem.latitude},${addressItem.longitude}")
                         },
                         modifier = Modifier.fillMaxWidth()
                     )
@@ -282,11 +292,46 @@ fun CartItemSectionContent(
 
 
 @Composable
-fun DetailTransactionSection(modifier: Modifier = Modifier, itemsCount: Int, totalPrice: Int) {
+fun DetailTransactionSection(
+    modifier: Modifier = Modifier,
+    itemsCount: Int,
+    totalPrice: Int,
+    createTransactionViewModel: CreateTransactionViewModel
+) {
+    val totalShoppingPrice =
+        createTransactionViewModel.totalShouldPay.collectAsState(initial = 0.0).value
     Column {
         Row {
             Text(text = "Total Price ($itemsCount items) ")
             Text(text = totalPrice.toString())
+        }
+        Row {
+            Text(text = "Total shopping ")
+            Text(text = totalShoppingPrice.toString())
+        }
+
+    }
+}
+
+@Composable
+fun CalculateDistance(
+    modifier: Modifier = Modifier,
+    createTransactionViewModel: CreateTransactionViewModel,
+    context: Context
+) {
+    createTransactionViewModel.calculateDistanceUiState.collectAsState(initial = UiState.Standby).value.let { uiState ->
+        when (uiState) {
+            UiState.Standby -> {}
+            is UiState.Success -> {
+                val distanceText = uiState.data.data.rows[0].elements[0].distance.text
+                createTransactionViewModel.setDistance(parseDistance(distanceText))
+                createTransactionViewModel.calculateTotalTransaction()
+                Log.d("distance", createTransactionViewModel.distance.collectAsState(initial = 0).value.toString())
+            }
+
+            UiState.Loading -> LoadingScreen()
+            is UiState.Error -> Toast.makeText(context, uiState.errorMessage, Toast.LENGTH_SHORT)
+                .show()
         }
     }
 
@@ -305,4 +350,11 @@ fun CreateTransactionTopBar(navigateBack: () -> Unit) {
             }
         })
 
+}
+
+fun parseDistance(distance: String): Double {
+    // Remove the "km" part and trim any extra whitespace
+    val numericPart = distance.replace(" km", "").trim()
+    // Convert the resulting string to a Double
+    return numericPart.toDouble()
 }
