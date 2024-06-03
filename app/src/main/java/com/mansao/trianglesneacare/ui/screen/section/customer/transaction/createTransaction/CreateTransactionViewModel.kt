@@ -1,4 +1,4 @@
-package com.mansao.trianglesneacare.ui.screen.section.customer.createTransaction
+package com.mansao.trianglesneacare.ui.screen.section.customer.transaction.createTransaction
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
@@ -62,6 +62,9 @@ class CreateTransactionViewModel @Inject constructor(private val appRepositoryIm
     private var _totalShouldPay = MutableStateFlow(0.0)
     val totalShouldPay: Flow<Double> = _totalShouldPay
 
+    private var _cartId = MutableStateFlow("")
+    val cartId: Flow<String> = _cartId
+
     fun getCart() = viewModelScope.launch {
         _cartUiState.value = UiState.Loading
         try {
@@ -97,7 +100,9 @@ class CreateTransactionViewModel @Inject constructor(private val appRepositoryIm
         _paymentMethod.value = paymentMethod
     }
 
-
+    fun setCartId(cartId: String) {
+        _cartId.value = cartId
+    }
 
     fun calculateDistance(latLngOrigin: String) = viewModelScope.launch {
         try {

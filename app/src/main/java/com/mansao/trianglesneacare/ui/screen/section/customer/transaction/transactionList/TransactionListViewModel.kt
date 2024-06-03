@@ -1,4 +1,4 @@
-package com.mansao.trianglesneacare.ui.screen.section.customer.transactionList
+package com.mansao.trianglesneacare.ui.screen.section.customer.transaction.transactionList
 
 import androidx.lifecycle.ViewModel
 import com.mansao.trianglesneacare.data.AppRepositoryImpl

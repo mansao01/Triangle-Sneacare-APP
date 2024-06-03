@@ -36,11 +36,13 @@ import com.mansao.trianglesneacare.ui.screen.section.customer.address.addressLis
 import com.mansao.trianglesneacare.ui.screen.section.customer.address.searchAddress.SearchAddressScreen
 import com.mansao.trianglesneacare.ui.screen.section.customer.address.updateAddress.UpdateAddressScreen
 import com.mansao.trianglesneacare.ui.screen.section.customer.cart.CartScreen
-import com.mansao.trianglesneacare.ui.screen.section.customer.createTransaction.CreateTransactionScreen
 import com.mansao.trianglesneacare.ui.screen.section.customer.home.CustomerHomeScreen
 import com.mansao.trianglesneacare.ui.screen.section.customer.maps.MapsScreen
+import com.mansao.trianglesneacare.ui.screen.section.customer.payment.PaymentScreen
 import com.mansao.trianglesneacare.ui.screen.section.customer.serviceSelection.ServiceSelectionScreen
-import com.mansao.trianglesneacare.ui.screen.section.customer.transactionList.TransactionListScreen
+import com.mansao.trianglesneacare.ui.screen.section.customer.transaction.createTransaction.CreateTransactionScreen
+import com.mansao.trianglesneacare.ui.screen.section.customer.transaction.success.TransactionSuccessScreen
+import com.mansao.trianglesneacare.ui.screen.section.customer.transaction.transactionList.TransactionListScreen
 import com.mansao.trianglesneacare.ui.screen.section.customer.uploadImage.UploadImageScreen
 import com.mansao.trianglesneacare.ui.screen.section.driver.home.DriverHomeScreen
 import com.mansao.trianglesneacare.ui.screen.section.driver.map.MapScreen
@@ -116,6 +118,7 @@ fun MainScreenContent(
                 currentRoute != Screen.Services.route &&
                 currentRoute != Screen.AddService.route &&
                 currentRoute != Screen.ServiceSelection.route &&
+                currentRoute != Screen.TransactionSuccess.route &&
                 currentRoute != Screen.UploadImage.route
             ) {
                 MainBottomBar(
@@ -186,8 +189,27 @@ fun MainScreenContent(
                 composable(Screen.CreateTransaction.route) {
                     CreateTransactionScreen(
                         navigateToAddAddress = { navController.navigate(Screen.AddAddress.route) },
+                        sharedViewModel = sharedViewModel,
                         navigateBack = { if (navController.canGoBack) navController.popBackStack() },
-                        sharedViewModel = sharedViewModel
+                        navigateToPayment = { navController.navigate(Screen.Payment.route) },
+                        navigateToTransactionSuccess = { navController.navigate(Screen.TransactionSuccess.route) }
+                    )
+                }
+
+                composable(Screen.Payment.route) {
+                    PaymentScreen()
+                }
+                composable(Screen.TransactionSuccess.route) {
+                    TransactionSuccessScreen(
+                        navigateToTransactionList = {
+                            navController.navigate(Screen.TransactionList.route) {
+                                popUpTo(navController.graph.startDestinationId) {
+                                    saveState = true
+                                }
+                                launchSingleTop = true
+                                restoreState = true
+                            }
+                        }
                     )
                 }
                 composable(Screen.TransactionList.route) {

@@ -1,20 +1,28 @@
-package com.mansao.trianglesneacare.ui.screen.section.customer.createTransaction
+package com.mansao.trianglesneacare.ui.screen.section.customer.transaction.createTransaction
 
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.outlined.ArrowBack
+import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -40,6 +48,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -49,6 +58,7 @@ import com.mansao.trianglesneacare.data.network.response.CartItems
 import com.mansao.trianglesneacare.ui.common.UiState
 import com.mansao.trianglesneacare.ui.components.AddressListItemSimple
 import com.mansao.trianglesneacare.ui.components.CartListItemSimple
+import com.mansao.trianglesneacare.ui.components.LoadingDialog
 import com.mansao.trianglesneacare.ui.components.LoadingScreen
 import com.mansao.trianglesneacare.ui.screen.SharedViewModel
 import java.text.NumberFormat
@@ -59,8 +69,9 @@ fun CreateTransactionScreen(
     createTransactionViewModel: CreateTransactionViewModel = hiltViewModel(),
     navigateToAddAddress: () -> Unit,
     navigateBack: () -> Unit,
-    sharedViewModel: SharedViewModel
-
+    sharedViewModel: SharedViewModel,
+    navigateToPayment: () -> Unit,
+    navigateToTransactionSuccess: () -> Unit
 ) {
     val context = LocalContext.current
     LaunchedEffect(Unit) {
@@ -81,7 +92,9 @@ fun CreateTransactionScreen(
         Surface(
             modifier = Modifier.padding(scaffoldPadding)
         ) {
-            Column {
+            Column(
+                modifier = Modifier.verticalScroll(rememberScrollState())
+            ) {
                 AddressSection(
                     createTransactionViewModel = createTransactionViewModel,
                     context = context,
@@ -106,6 +119,14 @@ fun CreateTransactionScreen(
                     itemsCount = totalItems,
                     totalPrice = totalPrice,
                     createTransactionViewModel = createTransactionViewModel
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+
+                CreateTransactionButton(
+                    createTransactionViewModel = createTransactionViewModel,
+                    context = context,
+                    navigateToPayment = navigateToPayment,
+                    navigateToTransactionSuccess = navigateToTransactionSuccess
                 )
 
 
@@ -270,6 +291,7 @@ fun CartItemsSection(
             is UiState.Success -> {
                 CartItemSectionContent(cart = uiState.data.items)
                 createTransactionViewModel.setTotalItem(uiState.data.items.size)
+                createTransactionViewModel.setCartId(uiState.data.cartId)
             }
         }
     }
@@ -279,16 +301,20 @@ fun CartItemsSection(
 fun CartItemSectionContent(
     cart: List<CartItems>,
 ) {
-    LazyColumn {
-        items(cart) {
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxWidth()
+            .heightIn(max = 300.dp) // Set your desired max height here
+            .padding(16.dp)
+    ) {
+        items(cart) { cartItem ->
             CartListItemSimple(
-                image = it.imageUrl,
-                serviceName = it.service.serviceName,
-                price = it.service.price
+                image = cartItem.imageUrl,
+                serviceName = cartItem.service.serviceName,
+                price = cartItem.service.price
             )
         }
     }
-
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -419,21 +445,103 @@ fun DetailTransactionSection(
     val totalShoppingPrice =
         createTransactionViewModel.totalShouldPay.collectAsState(initial = 0.0).value
     val deliveryFee = createTransactionViewModel.deliveryFee.collectAsState(initial = 0.0).value
-    Column {
-        Row {
-            Text(text = "Total Price ($itemsCount items) ")
-            Text(text = formattedPrice(totalPrice.toDouble()))
-        }
 
-        Row {
-            Text(text = "Delivery fee ")
-            Text(text = formattedPrice(deliveryFee))
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        elevation = CardDefaults.elevatedCardElevation(4.dp),
+        shape = RoundedCornerShape(8.dp)
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            TransactionDetailRow(
+                label = "Total Price ($itemsCount items)",
+                amount = totalPrice.toDouble()
+            )
+            TransactionDetailRow(label = "Delivery fee", amount = deliveryFee)
+            TransactionDetailRow(label = "Total shopping", amount = totalShoppingPrice)
         }
-        Row {
-            Text(text = "Total shopping ")
-            Text(text = formattedPrice(totalShoppingPrice))
-        }
+    }
+}
 
+@Composable
+fun CreateTransactionButton(
+    createTransactionViewModel: CreateTransactionViewModel,
+    context: Context,
+    navigateToPayment: () -> Unit,
+    navigateToTransactionSuccess: () -> Unit
+) {
+    CreateTransactionButtonContent(createTransactionViewModel = createTransactionViewModel)
+    createTransactionViewModel.createTransactionUiState.collectAsState(initial = UiState.Standby).value.let { uiState ->
+        when (uiState) {
+            is UiState.Error -> Toast.makeText(context, uiState.errorMessage, Toast.LENGTH_SHORT)
+                .show()
+
+            UiState.Loading -> LoadingDialog()
+            UiState.Standby -> {
+
+            }
+
+            is UiState.Success -> {
+                val paymentMethod =
+                    createTransactionViewModel.paymentMethod.collectAsState(initial = "").value
+                if (paymentMethod == "Online Payment") {
+                    navigateToPayment()
+                } else {
+                    navigateToTransactionSuccess()
+                }
+            }
+        }
+    }
+
+
+}
+
+@Composable
+fun CreateTransactionButtonContent(
+    createTransactionViewModel: CreateTransactionViewModel,
+) {
+    val totalPurchasedPrice = 34
+    createTransactionViewModel.totalShouldPay.collectAsState(initial = 0.0).value
+    val paymentMethod = createTransactionViewModel.paymentMethod.collectAsState(initial = "").value
+    val deliveryMethod =
+        createTransactionViewModel.deliveryMethod.collectAsState(initial = "").value
+    val addressId = createTransactionViewModel.addressId.collectAsState(initial = "").value
+    val cartId = createTransactionViewModel.cartId.collectAsState(initial = "").value
+
+    Button(onClick = {
+        createTransactionViewModel.createTransaction(
+            cartId = cartId,
+            customerAddressId = addressId,
+            deliveryMethod = deliveryMethod,
+            paymentMethod = paymentMethod,
+            totalPurchasePrice = totalPurchasedPrice
+        )
+
+    }) {
+        Text(text = stringResource(R.string.pay))
+    }
+}
+
+@Composable
+fun TransactionDetailRow(label: String, amount: Double) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 8.dp),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Text(
+            text = label,
+            modifier = Modifier.weight(1f),
+            fontWeight = FontWeight.Normal,
+        )
+        Text(
+            text = formattedPrice(amount),
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.End,
+            modifier = Modifier.weight(1f)
+        )
     }
 }
 
