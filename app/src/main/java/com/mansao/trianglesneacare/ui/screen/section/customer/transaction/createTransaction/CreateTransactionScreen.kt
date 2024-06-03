@@ -497,7 +497,7 @@ fun CreateTransactionButton(
                     createTransactionViewModel.paymentMethod.collectAsState(initial = "").value
                 if (paymentMethod == "Cash on delivery(COD)") {
                     navigateToTransactionSuccess()
-                } else  {
+                } else if (paymentMethod == "Online Payment") {
                     createTransactionViewModel.chargeTransaction(uiState.data.transaction.id)
                 }
             }
@@ -527,7 +527,7 @@ fun ChargePaymentUiEvent(
             is UiState.Success -> {
                 navigateToTransactionList()
 
-                LaunchedEffect( Unit) {
+                LaunchedEffect(Unit) {
                     val snapToken = uiState.data.token
                     val intent = Intent(context, PaymentActivity::class.java)
                     intent.putExtra("snapToken", snapToken)
