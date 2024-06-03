@@ -40,6 +40,13 @@ class CreateTransactionViewModel @Inject constructor(private val appRepositoryIm
     private var _addressId = MutableStateFlow("")
     val addressId: Flow<String> = _addressId
 
+    private var _deliveryMethod = MutableStateFlow("")
+    val deliveryMethod: Flow<String> = _deliveryMethod
+
+    private var _paymentMethod = MutableStateFlow("")
+    val paymentMethod: Flow<String> = _paymentMethod
+
+
     private var _totalItems = MutableStateFlow(0)
     val totalItems: Flow<Int> = _totalItems
 
@@ -48,6 +55,9 @@ class CreateTransactionViewModel @Inject constructor(private val appRepositoryIm
 
     private var _distance = MutableStateFlow(0.0)
     val distance: Flow<Double> = _distance
+
+    private var _deliveryFee = MutableStateFlow(0.0)
+    val deliveryFee: Flow<Double> = _deliveryFee
 
     private var _totalShouldPay = MutableStateFlow(0.0)
     val totalShouldPay: Flow<Double> = _totalShouldPay
@@ -79,6 +89,15 @@ class CreateTransactionViewModel @Inject constructor(private val appRepositoryIm
         _addressId.value = addressId
     }
 
+    fun setDeliveryMethod(deliveryMethod: String) {
+        _deliveryMethod.value = deliveryMethod
+    }
+
+    fun setPaymentMethod(paymentMethod: String) {
+        _paymentMethod.value = paymentMethod
+    }
+
+
 
     fun calculateDistance(latLngOrigin: String) = viewModelScope.launch {
         try {
@@ -97,7 +116,7 @@ class CreateTransactionViewModel @Inject constructor(private val appRepositoryIm
         _totalItems.value = totalItem
     }
 
-    fun setTotalPrice(totalPrice: Double){
+    fun setTotalPrice(totalPrice: Double) {
         _totalPrice.value = totalPrice
     }
 
@@ -105,18 +124,20 @@ class CreateTransactionViewModel @Inject constructor(private val appRepositoryIm
         cartId: String,
         customerAddressId: String,
         deliveryMethod: String,
-        paymentMethod: String
+        paymentMethod: String,
+        totalPurchasePrice: Int
     ) = viewModelScope.launch {
         try {
             val userId = appRepositoryImpl.getUserId() ?: ""
 
             val result = appRepositoryImpl.createTransaction(
                 CreateTransactionRequest(
-                    cartId,
-                    deliveryMethod,
-                    paymentMethod,
-                    customerAddressId,
-                    userId
+                    cartId = cartId,
+                    deliveryMethod = deliveryMethod,
+                    paymentMethod = paymentMethod,
+                    customerAddressId = customerAddressId,
+                    userId = userId,
+                    totalPurchasePrice = totalPurchasePrice
                 )
             )
             _createTransactionUiState.value = UiState.Success(result)
@@ -126,13 +147,15 @@ class CreateTransactionViewModel @Inject constructor(private val appRepositoryIm
         }
     }
 
-    fun calculateTotalTransaction(){
+    fun calculateTotalTransaction() {
         val totalItem = _totalPrice.value
-        val distance = _distance.value
+        val distance =
+            if (_deliveryMethod.value == "Deliver to home") _distance.value * 2 else _distance.value
         val perKm = 2000
         val result = totalItem + (distance * perKm.toDouble())
         Log.d("calculation", "$totalItem + ($distance + $perKm)")
 
+        _deliveryFee.value = perKm * distance
         _totalShouldPay.value = result
 
     }

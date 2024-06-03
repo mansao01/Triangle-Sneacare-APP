@@ -15,7 +15,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.outlined.ArrowBack
-import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -38,11 +37,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.mansao.trianglesneacare.R
 import com.mansao.trianglesneacare.data.network.response.AddressItem
 import com.mansao.trianglesneacare.data.network.response.CartItems
 import com.mansao.trianglesneacare.ui.common.UiState
@@ -50,6 +51,8 @@ import com.mansao.trianglesneacare.ui.components.AddressListItemSimple
 import com.mansao.trianglesneacare.ui.components.CartListItemSimple
 import com.mansao.trianglesneacare.ui.components.LoadingScreen
 import com.mansao.trianglesneacare.ui.screen.SharedViewModel
+import java.text.NumberFormat
+import java.util.Locale
 
 @Composable
 fun CreateTransactionScreen(
@@ -67,6 +70,11 @@ fun CreateTransactionScreen(
     }
     val totalItems = createTransactionViewModel.totalItems.collectAsState(initial = 0).value
     val totalPrice = sharedViewModel.totalPrice
+
+    CalculateDistance(
+        createTransactionViewModel = createTransactionViewModel,
+        context = context
+    )
     Scaffold(topBar = {
         CreateTransactionTopBar(navigateBack = { navigateBack() })
     }) { scaffoldPadding ->
@@ -79,30 +87,27 @@ fun CreateTransactionScreen(
                     context = context,
                     navigateToAddAddress = navigateToAddAddress
                 )
+                CartItemsSection(
+                    createTransactionViewModel = createTransactionViewModel,
+                    context = context
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                SelectDeliveryMethodSection(
+                    createTransactionViewModel = createTransactionViewModel,
+                    context = context
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                SelectPaymentSection(
+                    createTransactionViewModel = createTransactionViewModel,
+                    context = context
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                DetailTransactionSection(
+                    itemsCount = totalItems,
+                    totalPrice = totalPrice,
+                    createTransactionViewModel = createTransactionViewModel
+                )
 
-                createTransactionViewModel.addressId.collectAsState(initial = "").value.let {
-
-                    Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
-                    Button(onClick = { /*TODO*/ }) {
-                        Text(text = it)
-
-                    }
-                    CartItemsSection(
-                        createTransactionViewModel = createTransactionViewModel,
-                        context = context
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    DetailTransactionSection(
-                        itemsCount = totalItems,
-                        totalPrice = totalPrice,
-                        createTransactionViewModel = createTransactionViewModel
-                    )
-                    CalculateDistance(
-                        createTransactionViewModel = createTransactionViewModel,
-                        context = context
-                    )
-
-                }
 
             }
 
@@ -117,7 +122,6 @@ fun AddressSection(
     createTransactionViewModel: CreateTransactionViewModel,
     context: Context,
     navigateToAddAddress: () -> Unit
-
 ) {
     createTransactionViewModel.addressUiState.collectAsState(initial = UiState.Standby).value.let { uiState ->
         when (uiState) {
@@ -253,7 +257,6 @@ fun AddressSectionContent(
 
 @Composable
 fun CartItemsSection(
-    modifier: Modifier = Modifier,
     createTransactionViewModel: CreateTransactionViewModel,
     context: Context
 ) {
@@ -270,13 +273,11 @@ fun CartItemsSection(
             }
         }
     }
-
-
 }
 
 @Composable
 fun CartItemSectionContent(
-    modifier: Modifier = Modifier, cart: List<CartItems>,
+    cart: List<CartItems>,
 ) {
     LazyColumn {
         items(cart) {
@@ -290,32 +291,155 @@ fun CartItemSectionContent(
 
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SelectDeliveryMethodSection(
+    createTransactionViewModel: CreateTransactionViewModel,
+    context: Context
+) {
+    var isExpanded by remember { mutableStateOf(false) }
+    var selectedDeliveryMethod by remember { mutableStateOf("") }
+
+    ExposedDropdownMenuBox(
+        expanded = isExpanded,
+        onExpandedChange = { isExpanded = it },
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+    ) {
+        TextField(
+            value = selectedDeliveryMethod,
+            onValueChange = {},
+            readOnly = true,
+            trailingIcon = {
+                ExposedDropdownMenuDefaults.TrailingIcon(expanded = isExpanded)
+            },
+            colors = ExposedDropdownMenuDefaults.textFieldColors(),
+            modifier = Modifier
+                .menuAnchor()
+                .fillMaxWidth()
+        )
+        ExposedDropdownMenu(
+            expanded = isExpanded,
+            onDismissRequest = { isExpanded = false },
+        ) {
+            DropdownMenuItem(
+                text = {
+                    Text(text = stringResource(R.string.deliver_to_home))
+                },
+                onClick = {
+                    isExpanded = false
+                    selectedDeliveryMethod = context.getString(R.string.deliver_to_home)
+                    createTransactionViewModel.setDeliveryMethod("Deliver to home")
+                    createTransactionViewModel.calculateTotalTransaction()
+                },
+            )
+
+            DropdownMenuItem(
+                text = {
+                    Text(text = stringResource(R.string.pick_up_at_the_store))
+                },
+                onClick = {
+                    isExpanded = false
+                    selectedDeliveryMethod = context.getString(R.string.pick_up_at_the_store)
+                    createTransactionViewModel.setDeliveryMethod("Pick up at the store")
+                    createTransactionViewModel.calculateTotalTransaction()
+                },
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SelectPaymentSection(
+    createTransactionViewModel: CreateTransactionViewModel,
+    context: Context
+) {
+    var isExpanded by remember { mutableStateOf(false) }
+    var selectedPaymentMethod by remember { mutableStateOf("") }
+
+    ExposedDropdownMenuBox(
+        expanded = isExpanded,
+        onExpandedChange = { isExpanded = it },
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+    ) {
+        TextField(
+            value = selectedPaymentMethod,
+            onValueChange = {},
+            readOnly = true,
+            trailingIcon = {
+                ExposedDropdownMenuDefaults.TrailingIcon(expanded = isExpanded)
+            },
+            colors = ExposedDropdownMenuDefaults.textFieldColors(),
+            modifier = Modifier
+                .menuAnchor()
+                .fillMaxWidth()
+        )
+        ExposedDropdownMenu(
+            expanded = isExpanded,
+            onDismissRequest = { isExpanded = false },
+        ) {
+            DropdownMenuItem(
+                text = {
+                    Text(stringResource(R.string.cod))
+                },
+                onClick = {
+                    isExpanded = false
+                    selectedPaymentMethod = context.getString(R.string.cod)
+                    createTransactionViewModel.setPaymentMethod("Cash on delivery(COD)")
+                    createTransactionViewModel.calculateTotalTransaction()
+                },
+            )
+
+            DropdownMenuItem(
+                text = {
+                    Text(text = stringResource(R.string.online_payment))
+                },
+                onClick = {
+                    isExpanded = false
+                    selectedPaymentMethod = context.getString(R.string.online_payment)
+                    createTransactionViewModel.setPaymentMethod("Online Payment")
+                    createTransactionViewModel.calculateTotalTransaction()
+                },
+            )
+        }
+    }
+}
+
 
 @Composable
 fun DetailTransactionSection(
-    modifier: Modifier = Modifier,
     itemsCount: Int,
     totalPrice: Int,
     createTransactionViewModel: CreateTransactionViewModel
 ) {
     val totalShoppingPrice =
         createTransactionViewModel.totalShouldPay.collectAsState(initial = 0.0).value
+    val deliveryFee = createTransactionViewModel.deliveryFee.collectAsState(initial = 0.0).value
     Column {
         Row {
             Text(text = "Total Price ($itemsCount items) ")
-            Text(text = totalPrice.toString())
+            Text(text = formattedPrice(totalPrice.toDouble()))
+        }
+
+        Row {
+            Text(text = "Delivery fee ")
+            Text(text = formattedPrice(deliveryFee))
         }
         Row {
             Text(text = "Total shopping ")
-            Text(text = totalShoppingPrice.toString())
+            Text(text = formattedPrice(totalShoppingPrice))
         }
 
     }
 }
 
+
 @Composable
 fun CalculateDistance(
-    modifier: Modifier = Modifier,
     createTransactionViewModel: CreateTransactionViewModel,
     context: Context
 ) {
@@ -326,7 +450,10 @@ fun CalculateDistance(
                 val distanceText = uiState.data.data.rows[0].elements[0].distance.text
                 createTransactionViewModel.setDistance(parseDistance(distanceText))
                 createTransactionViewModel.calculateTotalTransaction()
-                Log.d("distance", createTransactionViewModel.distance.collectAsState(initial = 0).value.toString())
+                Log.d(
+                    "distance",
+                    createTransactionViewModel.distance.collectAsState(initial = 0).value.toString()
+                )
             }
 
             UiState.Loading -> LoadingScreen()
@@ -334,8 +461,8 @@ fun CalculateDistance(
                 .show()
         }
     }
-
 }
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -357,4 +484,11 @@ fun parseDistance(distance: String): Double {
     val numericPart = distance.replace(" km", "").trim()
     // Convert the resulting string to a Double
     return numericPart.toDouble()
+}
+
+
+fun formattedPrice(price: Double): String {
+    val formattedPrice =
+        NumberFormat.getNumberInstance(Locale.GERMAN).format(price.toInt()).toString()
+    return "Rp $formattedPrice"
 }

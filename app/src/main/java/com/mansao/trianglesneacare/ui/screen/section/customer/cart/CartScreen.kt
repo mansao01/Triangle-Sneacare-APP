@@ -113,16 +113,18 @@ fun CartContent(
                 )
             }
             Box(modifier = Modifier.weight(0.1f)) {
-                Button(
-                    onClick = {
-                        navigateToCreateTransaction()
-                        sharedViewModel.addTotalPrice(totalPrice.toInt())
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
-                ) {
-                    Text(text = stringResource(R.string.checkout))
+                if (totalPrice != 0.toString()){
+                    Button(
+                        onClick = {
+                            navigateToCreateTransaction()
+                            sharedViewModel.addTotalPrice(totalPrice.toInt())
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp)
+                    ) {
+                        Text(text = stringResource(R.string.checkout))
+                    }
                 }
             }
         }

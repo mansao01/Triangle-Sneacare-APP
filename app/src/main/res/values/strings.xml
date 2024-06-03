@@ -77,4 +77,8 @@
     <string name="add_to_cart">Add to cart</string>
     <string name="item_added_to_cart">Item added to cart</string>
     <string name="checkout">Checkout</string>
+    <string name="deliver_to_home">Deliver to home</string>
+    <string name="pick_up_at_the_store">Pick up at the store</string>
+    <string name="cod">Cash on delivery(COD)</string>
+    <string name="online_payment">Online Payment</string>
 </resources>
