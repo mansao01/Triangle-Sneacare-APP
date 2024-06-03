@@ -38,7 +38,6 @@ sealed class Screen(val route: String) {
     object UpdateAddress : Screen("updateAddress")
     object Maps : Screen("maps")
     object TransactionSuccess : Screen("transactionSuccess")
-    object Payment : Screen("payment")
 
     //driver
     object DriverHome : Screen("driverHome")

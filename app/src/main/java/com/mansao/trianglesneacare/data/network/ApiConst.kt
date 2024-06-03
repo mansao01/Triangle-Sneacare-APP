@@ -44,4 +44,10 @@ object ApiConst {
     const val CREATE_TRANSACTION = "createTransaction"
     const val GET_CART = "getCart/{userId}"
 
+//    payment
+    const val CHARGE = "transaction/charge"
+    const val GET_TRANSACTION_STATUS = "transaction/status"
+    const val TRANSACTION_CANCEL = "transaction/cancel"
+
+
 }

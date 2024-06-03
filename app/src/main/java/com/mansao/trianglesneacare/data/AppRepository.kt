@@ -4,6 +4,7 @@ import com.mansao.trianglesneacare.data.network.ApiService
 import com.mansao.trianglesneacare.data.network.request.AddCategoryRequest
 import com.mansao.trianglesneacare.data.network.request.AddServiceRequest
 import com.mansao.trianglesneacare.data.network.request.AddToCartRequest
+import com.mansao.trianglesneacare.data.network.request.ChargePaymentRequest
 import com.mansao.trianglesneacare.data.network.request.CreateCustomerAddressRequest
 import com.mansao.trianglesneacare.data.network.request.CreateTransactionRequest
 import com.mansao.trianglesneacare.data.network.request.LoginRequest
@@ -12,6 +13,8 @@ import com.mansao.trianglesneacare.data.network.request.UpdateServiceRequest
 import com.mansao.trianglesneacare.data.network.response.AddOrderResponse
 import com.mansao.trianglesneacare.data.network.response.AutoCompleteAddressResponse
 import com.mansao.trianglesneacare.data.network.response.CalculateDistanceResponse
+import com.mansao.trianglesneacare.data.network.response.CancelPaymentResponse
+import com.mansao.trianglesneacare.data.network.response.ChargePaymentResponse
 import com.mansao.trianglesneacare.data.network.response.CreateCustomerAddressResponse
 import com.mansao.trianglesneacare.data.network.response.CreateTransactionResponse
 import com.mansao.trianglesneacare.data.network.response.CustomerDetailAddressResponse
@@ -19,6 +22,7 @@ import com.mansao.trianglesneacare.data.network.response.GeocodingResponse
 import com.mansao.trianglesneacare.data.network.response.GetCartResponse
 import com.mansao.trianglesneacare.data.network.response.GetCategoriesResponse
 import com.mansao.trianglesneacare.data.network.response.GetCustomerAddressesResponse
+import com.mansao.trianglesneacare.data.network.response.GetPaymentStatusResponse
 import com.mansao.trianglesneacare.data.network.response.GetProfileDetailResponse
 import com.mansao.trianglesneacare.data.network.response.GetServicesByCategoryIdResponse
 import com.mansao.trianglesneacare.data.network.response.LoginResponse
@@ -65,6 +69,9 @@ interface AppRepository {
     suspend fun addToCart(addToCartRequest: AddToCartRequest): OnlyMsgResponse
     suspend fun getCart(userId: String): GetCartResponse
     suspend fun createTransaction(createTransactionRequest: CreateTransactionRequest): CreateTransactionResponse
+    suspend fun chargePayment(chargePaymentRequest: ChargePaymentRequest): ChargePaymentResponse
+    suspend fun getPaymentStatus(transactionId: String): GetPaymentStatusResponse
+    suspend fun cancelPayment(transactionId: String): CancelPaymentResponse
     suspend fun login(loginRequest: LoginRequest): LoginResponse
     suspend fun refreshToken(refreshToken: String): OnlyAccessTokenResponse
     suspend fun getProfile(token: String): ProfileResponse
@@ -118,18 +125,21 @@ interface AppRepository {
     suspend fun saveRefreshToken(token: String)
     suspend fun saveIsLoginState(isLogin: Boolean)
     suspend fun saveUsername(name: String)
+    suspend fun saveUserEmail(email: String)
     suspend fun saveUserId(id: String)
     suspend fun saveRole(role: String)
     suspend fun saveShowBalloonState(showBalloonState: Boolean)
     suspend fun getAccessToken(): String?
     suspend fun getRefreshToken(): String?
     suspend fun getUsername(): String?
+    suspend fun getUserEmail(): String?
     suspend fun getUserId(): String?
     suspend fun getRole(): String?
     suspend fun getLoginState(): Flow<Boolean>
     suspend fun getBalloonState(): Flow<Boolean>
     suspend fun clearToken()
     suspend fun clearUsername()
+    suspend fun clearUserEmail()
     suspend fun clearUserId()
     suspend fun clearRoleName()
 }
@@ -209,6 +219,15 @@ class AppRepositoryImpl @Inject constructor(
     override suspend fun getCart(userId: String): GetCartResponse = apiService.getCart(userId)
     override suspend fun createTransaction(createTransactionRequest: CreateTransactionRequest): CreateTransactionResponse =
         apiService.createTransaction(createTransactionRequest)
+
+    override suspend fun chargePayment(chargePaymentRequest: ChargePaymentRequest): ChargePaymentResponse =
+        apiService.chargePayment(chargePaymentRequest)
+
+    override suspend fun getPaymentStatus(transactionId: String): GetPaymentStatusResponse =
+        apiService.getPaymentStatus(transactionId)
+
+    override suspend fun cancelPayment(transactionId: String): CancelPaymentResponse =
+        apiService.cancelPayment(transactionId)
 
     override suspend fun login(loginRequest: LoginRequest): LoginResponse =
         apiService.login(loginRequest)
@@ -300,6 +319,7 @@ class AppRepositoryImpl @Inject constructor(
         appPreferences.saveIsLoginState(isLogin)
 
     override suspend fun saveUsername(name: String) = appPreferences.saveUsername(name)
+    override suspend fun saveUserEmail(email: String) = appPreferences.saveEmail(email)
 
     override suspend fun saveUserId(id: String) = appPreferences.saveUserId(id)
 
@@ -309,21 +329,15 @@ class AppRepositoryImpl @Inject constructor(
     override suspend fun saveRole(role: String) = appPreferences.saveRole(role)
     override suspend fun saveShowBalloonState(showBalloonState: Boolean) =
         appPreferences.saveShowBalloonState(showBalloonState)
-
     override suspend fun getAccessToken(): String? = appPreferences.getAccessToken()
     override suspend fun getRefreshToken(): String? = appPreferences.getRefreshToken()
-
     override suspend fun getUsername(): String? = appPreferences.getUsername()
-
+    override suspend fun getUserEmail(): String? = appPreferences.getUsEmail()
     override suspend fun getRole(): String? = appPreferences.getRole()
     override suspend fun getLoginState(): Flow<Boolean> = appPreferences.getIsLoginState()
-
     override suspend fun getBalloonState(): Flow<Boolean> = appPreferences.getShowBalloonState()
-
-
     override suspend fun clearToken() = appPreferences.clearTokens()
-
     override suspend fun clearUsername() = appPreferences.clearUsername()
-
+    override suspend fun clearUserEmail() = appPreferences.clearEmail()
     override suspend fun clearRoleName() = appPreferences.clearRoleName()
 }

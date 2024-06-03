@@ -3,6 +3,7 @@ package com.mansao.trianglesneacare.data.network
 import com.mansao.trianglesneacare.data.network.request.AddCategoryRequest
 import com.mansao.trianglesneacare.data.network.request.AddServiceRequest
 import com.mansao.trianglesneacare.data.network.request.AddToCartRequest
+import com.mansao.trianglesneacare.data.network.request.ChargePaymentRequest
 import com.mansao.trianglesneacare.data.network.request.CreateCustomerAddressRequest
 import com.mansao.trianglesneacare.data.network.request.CreateTransactionRequest
 import com.mansao.trianglesneacare.data.network.request.LoginRequest
@@ -11,6 +12,8 @@ import com.mansao.trianglesneacare.data.network.request.UpdateServiceRequest
 import com.mansao.trianglesneacare.data.network.response.AddOrderResponse
 import com.mansao.trianglesneacare.data.network.response.AutoCompleteAddressResponse
 import com.mansao.trianglesneacare.data.network.response.CalculateDistanceResponse
+import com.mansao.trianglesneacare.data.network.response.CancelPaymentResponse
+import com.mansao.trianglesneacare.data.network.response.ChargePaymentResponse
 import com.mansao.trianglesneacare.data.network.response.CreateCustomerAddressResponse
 import com.mansao.trianglesneacare.data.network.response.CreateTransactionResponse
 import com.mansao.trianglesneacare.data.network.response.CustomerDetailAddressResponse
@@ -18,6 +21,7 @@ import com.mansao.trianglesneacare.data.network.response.GeocodingResponse
 import com.mansao.trianglesneacare.data.network.response.GetCartResponse
 import com.mansao.trianglesneacare.data.network.response.GetCategoriesResponse
 import com.mansao.trianglesneacare.data.network.response.GetCustomerAddressesResponse
+import com.mansao.trianglesneacare.data.network.response.GetPaymentStatusResponse
 import com.mansao.trianglesneacare.data.network.response.GetProfileDetailResponse
 import com.mansao.trianglesneacare.data.network.response.GetServicesByCategoryIdResponse
 import com.mansao.trianglesneacare.data.network.response.LoginResponse
@@ -154,7 +158,7 @@ interface ApiService {
     @GET(ApiConst.CALCULATE_DISTANCE)
     suspend fun calculatedDistance(
         @Query("origin") latLngOrigin: String,
-    ):CalculateDistanceResponse
+    ): CalculateDistanceResponse
 
     @POST(ApiConst.LOGOUT)
     suspend fun logout(
@@ -217,4 +221,19 @@ interface ApiService {
     suspend fun createTransaction(
         @Body createTransactionRequest: CreateTransactionRequest
     ): CreateTransactionResponse
+
+    @POST(ApiConst.CHARGE)
+    suspend fun chargePayment(
+        @Body chargePaymentRequest: ChargePaymentRequest
+    ): ChargePaymentResponse
+
+    @POST(ApiConst.GET_TRANSACTION_STATUS)
+    suspend fun getPaymentStatus(
+        @Query("orderId") transactionId: String
+    ): GetPaymentStatusResponse
+
+    @POST(ApiConst.TRANSACTION_CANCEL)
+    suspend fun cancelPayment(
+        @Query("orderId") transactionId: String
+    ): CancelPaymentResponse
 }

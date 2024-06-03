@@ -39,6 +39,7 @@ class LoginViewModel @Inject constructor(
                 val result = appRepositoryImpl.login(loginRequest)
                 appRepositoryImpl.saveIsLoginState(true)
                 appRepositoryImpl.saveUsername(result.user.name)
+                appRepositoryImpl.saveUserEmail(result.user.email)
                 appRepositoryImpl.saveUserId(result.user.id)
                 result.user.role.role?.let { appRepositoryImpl.saveRole(it) }
                 appRepositoryImpl.saveAccessToken(result.accessToken)

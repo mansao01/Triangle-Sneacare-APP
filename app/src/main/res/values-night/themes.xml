@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <style name="Theme.TriangleSneacare" parent="android:Theme.Material.Light.NoActionBar" />
-    <style name="Theme.AppCompat.TriangleSneacare" parent="Theme.MaterialComponents.DayNight">
+    <style name="Theme.AppCompat.TriangleSneacare" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/md_theme_light_primary</item>
         <item name="colorPrimaryContainer">@color/md_theme_light_primaryContainer</item>
@@ -32,6 +30,6 @@
         <item name="colorOnSurfaceInverse">@color/md_theme_light_inverseOnSurface</item>
         <item name="colorSurfaceInverse">@color/md_theme_light_inverseSurface</item>
         <item name="colorPrimaryInverse">@color/md_theme_light_inversePrimary</item>
-        <!-- Status bar color. -->
+
     </style>
 </resources>

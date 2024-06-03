@@ -27,6 +27,7 @@ class AppPreferences @Inject constructor(@ApplicationContext val context: Contex
     private val username = stringPreferencesKey("username")
     private val userId = stringPreferencesKey("userId")
     private val roleName = stringPreferencesKey("role")
+    private val userEmail = stringPreferencesKey("email")
     private val showBalloonState = booleanPreferencesKey("show_balloon")
 
     //    save
@@ -51,6 +52,11 @@ class AppPreferences @Inject constructor(@ApplicationContext val context: Contex
     suspend fun saveUsername(name: String) {
         dataStore.edit { preferences ->
             preferences[username] = name
+        }
+    }
+    suspend fun saveEmail(email: String) {
+        dataStore.edit { preferences ->
+            preferences[userEmail] = email
         }
     }
     suspend fun saveUserId(id: String) {
@@ -85,6 +91,11 @@ class AppPreferences @Inject constructor(@ApplicationContext val context: Contex
     suspend fun getUsername(): String? {
         val preferences = dataStore.data.first()
         return preferences[username]
+    }
+
+    suspend fun getUsEmail(): String? {
+        val preferences = dataStore.data.first()
+        return preferences[userEmail]
     }
 
     suspend fun getUserId(): String? {
@@ -140,6 +151,12 @@ class AppPreferences @Inject constructor(@ApplicationContext val context: Contex
     suspend fun clearUsername() {
         dataStore.edit { preferences ->
             preferences.remove(username)
+        }
+    }
+
+    suspend fun clearEmail() {
+        dataStore.edit { preferences ->
+            preferences.remove(userEmail)
         }
     }
 

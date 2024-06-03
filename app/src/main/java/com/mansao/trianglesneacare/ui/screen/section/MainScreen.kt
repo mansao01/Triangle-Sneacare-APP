@@ -38,7 +38,6 @@ import com.mansao.trianglesneacare.ui.screen.section.customer.address.updateAddr
 import com.mansao.trianglesneacare.ui.screen.section.customer.cart.CartScreen
 import com.mansao.trianglesneacare.ui.screen.section.customer.home.CustomerHomeScreen
 import com.mansao.trianglesneacare.ui.screen.section.customer.maps.MapsScreen
-import com.mansao.trianglesneacare.ui.screen.section.customer.payment.PaymentScreen
 import com.mansao.trianglesneacare.ui.screen.section.customer.serviceSelection.ServiceSelectionScreen
 import com.mansao.trianglesneacare.ui.screen.section.customer.transaction.createTransaction.CreateTransactionScreen
 import com.mansao.trianglesneacare.ui.screen.section.customer.transaction.success.TransactionSuccessScreen
@@ -191,14 +190,20 @@ fun MainScreenContent(
                         navigateToAddAddress = { navController.navigate(Screen.AddAddress.route) },
                         sharedViewModel = sharedViewModel,
                         navigateBack = { if (navController.canGoBack) navController.popBackStack() },
-                        navigateToPayment = { navController.navigate(Screen.Payment.route) },
+                        navigateToTransactionList = {
+                            navController.navigate(Screen.TransactionList.route) {
+                                popUpTo(navController.graph.startDestinationId) {
+                                    inclusive = true
+                                    saveState = true
+                                }
+                                launchSingleTop = true
+                                restoreState = true
+                            }
+                        },
                         navigateToTransactionSuccess = { navController.navigate(Screen.TransactionSuccess.route) }
                     )
                 }
 
-                composable(Screen.Payment.route) {
-                    PaymentScreen()
-                }
                 composable(Screen.TransactionSuccess.route) {
                     TransactionSuccessScreen(
                         navigateToTransactionList = {
@@ -366,6 +371,8 @@ fun MainBottomBar(
                                 navController.navigate(navigationItem.screen) {
                                     popUpTo(navController.graph.findStartDestination().id) {
                                         saveState = true
+                                        inclusive = true
+
                                     }
                                     launchSingleTop = true
                                     restoreState = true
