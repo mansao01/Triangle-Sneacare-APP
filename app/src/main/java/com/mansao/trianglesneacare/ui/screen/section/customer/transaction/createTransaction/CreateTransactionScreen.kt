@@ -61,7 +61,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.mansao.PaymentActivity
+import com.mansao.trianglesneacare.PaymentActivity
 import com.mansao.trianglesneacare.R
 import com.mansao.trianglesneacare.data.network.response.AddressItem
 import com.mansao.trianglesneacare.data.network.response.CartItems
