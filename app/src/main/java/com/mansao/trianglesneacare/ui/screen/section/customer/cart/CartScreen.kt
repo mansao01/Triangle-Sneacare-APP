@@ -14,6 +14,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -113,7 +114,7 @@ fun CartContent(
                 )
             }
             Box(modifier = Modifier.weight(0.1f)) {
-                if (totalPrice != 0.toString()){
+                if (totalPrice != 0.toString()) {
                     Button(
                         onClick = {
                             navigateToCreateTransaction()
@@ -135,17 +136,24 @@ fun CartContent(
 
 @Composable
 fun CartList(cart: List<CartItems>, cartViewModel: CartViewModel) {
+    if (cart.isNotEmpty()) {
+        LazyColumn {
 
-    LazyColumn {
-        items(cart) {
-            CartListItem(
-                image = it.imageUrl,
-                serviceName = it.service.serviceName,
-                price = it.service.price,
-                onDeleteClick = {
-                    cartViewModel.deleteOrder(it.id)
-                }
-            )
+            items(cart) {
+                CartListItem(
+                    image = it.imageUrl,
+                    serviceName = it.service.serviceName,
+                    price = it.service.price,
+                    onDeleteClick = {
+                        cartViewModel.deleteOrder(it.id)
+                    }
+                )
+            }
         }
+    } else {
+        Box(contentAlignment = Alignment.Center) {
+            Text(text = "Empty Here")
+        }
+
     }
 }

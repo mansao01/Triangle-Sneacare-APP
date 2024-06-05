@@ -146,7 +146,8 @@ class CreateTransactionViewModel @Inject constructor(private val appRepositoryIm
         customerAddressId: String,
         deliveryMethod: String,
         paymentMethod: String,
-        totalPurchasePrice: Int
+        totalPurchasePrice: Int,
+        paymentStatus:String
     ) = viewModelScope.launch {
         try {
             val userId = appRepositoryImpl.getUserId() ?: ""
@@ -158,7 +159,8 @@ class CreateTransactionViewModel @Inject constructor(private val appRepositoryIm
                     paymentMethod = paymentMethod,
                     customerAddressId = customerAddressId,
                     userId = userId,
-                    totalPurchasePrice = totalPurchasePrice
+                    totalPurchasePrice = totalPurchasePrice,
+                    paymentStatus = paymentStatus
                 )
             )
             _createTransactionUiState.value = UiState.Success(result)
@@ -202,7 +204,4 @@ class CreateTransactionViewModel @Inject constructor(private val appRepositoryIm
 
         }
     }
-
-
-
 }

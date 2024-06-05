@@ -25,6 +25,7 @@ import com.mansao.trianglesneacare.data.network.response.GetCustomerAddressesRes
 import com.mansao.trianglesneacare.data.network.response.GetPaymentStatusResponse
 import com.mansao.trianglesneacare.data.network.response.GetProfileDetailResponse
 import com.mansao.trianglesneacare.data.network.response.GetServicesByCategoryIdResponse
+import com.mansao.trianglesneacare.data.network.response.GetTransactionsByIdResponse
 import com.mansao.trianglesneacare.data.network.response.LoginResponse
 import com.mansao.trianglesneacare.data.network.response.OnlyAccessTokenResponse
 import com.mansao.trianglesneacare.data.network.response.OnlyMsgResponse
@@ -72,6 +73,8 @@ interface AppRepository {
     suspend fun chargePayment(chargePaymentRequest: ChargePaymentRequest): ChargePaymentResponse
     suspend fun getPaymentStatus(transactionId: String): GetPaymentStatusResponse
     suspend fun cancelPayment(transactionId: String): CancelPaymentResponse
+    suspend fun updatePaymentStatus(transactionId: String, status: String): OnlyMsgResponse
+    suspend fun getTransactionById(transactionId: String): GetTransactionsByIdResponse
     suspend fun login(loginRequest: LoginRequest): LoginResponse
     suspend fun refreshToken(refreshToken: String): OnlyAccessTokenResponse
     suspend fun getProfile(token: String): ProfileResponse
@@ -229,6 +232,14 @@ class AppRepositoryImpl @Inject constructor(
     override suspend fun cancelPayment(transactionId: String): CancelPaymentResponse =
         apiService.cancelPayment(transactionId)
 
+    override suspend fun updatePaymentStatus(
+        transactionId: String,
+        status: String
+    ): OnlyMsgResponse = apiService.updatePaymentStatus(transactionId, status)
+
+    override suspend fun getTransactionById(transactionId: String): GetTransactionsByIdResponse =
+        apiService.getTransactionById(transactionId)
+
     override suspend fun login(loginRequest: LoginRequest): LoginResponse =
         apiService.login(loginRequest)
 
@@ -329,6 +340,7 @@ class AppRepositoryImpl @Inject constructor(
     override suspend fun saveRole(role: String) = appPreferences.saveRole(role)
     override suspend fun saveShowBalloonState(showBalloonState: Boolean) =
         appPreferences.saveShowBalloonState(showBalloonState)
+
     override suspend fun getAccessToken(): String? = appPreferences.getAccessToken()
     override suspend fun getRefreshToken(): String? = appPreferences.getRefreshToken()
     override suspend fun getUsername(): String? = appPreferences.getUsername()

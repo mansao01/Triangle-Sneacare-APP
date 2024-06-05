@@ -24,6 +24,7 @@ import com.mansao.trianglesneacare.data.network.response.GetCustomerAddressesRes
 import com.mansao.trianglesneacare.data.network.response.GetPaymentStatusResponse
 import com.mansao.trianglesneacare.data.network.response.GetProfileDetailResponse
 import com.mansao.trianglesneacare.data.network.response.GetServicesByCategoryIdResponse
+import com.mansao.trianglesneacare.data.network.response.GetTransactionsByIdResponse
 import com.mansao.trianglesneacare.data.network.response.LoginResponse
 import com.mansao.trianglesneacare.data.network.response.OnlyAccessTokenResponse
 import com.mansao.trianglesneacare.data.network.response.OnlyMsgResponse
@@ -222,17 +223,28 @@ interface ApiService {
         @Body createTransactionRequest: CreateTransactionRequest
     ): CreateTransactionResponse
 
+    @GET(ApiConst.GET_TRANSACTION_BY_ID)
+    suspend fun getTransactionById(
+        @Path("id") transactionId: String
+    ): GetTransactionsByIdResponse
+
+    @PATCH(ApiConst.UPDATE_PAYMENT_STATUS)
+    suspend fun updatePaymentStatus(
+        @Query("transactionId") transactionId: String,
+        @Query("status") status: String
+    ):OnlyMsgResponse
+
     @POST(ApiConst.CHARGE)
     suspend fun chargePayment(
         @Body chargePaymentRequest: ChargePaymentRequest
     ): ChargePaymentResponse
 
-    @POST(ApiConst.GET_TRANSACTION_STATUS)
+    @GET(ApiConst.GET_PAYMENT_STATUS)
     suspend fun getPaymentStatus(
         @Query("orderId") transactionId: String
     ): GetPaymentStatusResponse
 
-    @POST(ApiConst.TRANSACTION_CANCEL)
+    @POST(ApiConst.PAYMENT_CANCEL)
     suspend fun cancelPayment(
         @Query("orderId") transactionId: String
     ): CancelPaymentResponse

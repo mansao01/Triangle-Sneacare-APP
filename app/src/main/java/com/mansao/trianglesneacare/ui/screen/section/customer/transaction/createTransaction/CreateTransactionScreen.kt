@@ -529,6 +529,7 @@ fun ChargePaymentUiEvent(
 
                 LaunchedEffect(Unit) {
                     val snapToken = uiState.data.token
+                    Log.d("snapToken", snapToken)
                     val intent = Intent(context, PaymentActivity::class.java)
                     intent.putExtra("snapToken", snapToken)
                     context.startActivity(intent)
@@ -566,7 +567,8 @@ fun CreateTransactionButtonContent(
                 customerAddressId = addressId,
                 deliveryMethod = deliveryMethod,
                 paymentMethod = paymentMethod,
-                totalPurchasePrice = totalPurchasedPrice.toInt()
+                totalPurchasePrice = totalPurchasedPrice.toInt(),
+                paymentStatus = if (paymentMethod == "Online Payment") "pending" else if (paymentMethod == "Cash on delivery(COD)") "pay on delivery" else "unknown"
             )
 
         },
