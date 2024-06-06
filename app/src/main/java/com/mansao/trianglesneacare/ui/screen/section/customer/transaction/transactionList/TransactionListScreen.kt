@@ -9,7 +9,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -23,9 +22,7 @@ import com.mansao.trianglesneacare.ui.components.LoadingScreen
 @Composable
 fun TransactionListScreen(transactionListViewModel: TransactionListViewModel = hiltViewModel()) {
     val context = LocalContext.current
-    LaunchedEffect(Unit) {
         transactionListViewModel.getTransactions()
-    }
     TransactionListContent(transactionListViewModel = transactionListViewModel, context = context)
 
 }
@@ -76,8 +73,6 @@ fun TransactionListItem(
     Column(
         modifier = Modifier.padding(bottom = 16.dp)
     ) {
-        Text(text = "payment status$transaction.paymentStatus")
-        Text(text = "payment status${transaction.paymentMethod}")
         Text(text = transaction.totalPurchasePrice.toString())
     }
 }

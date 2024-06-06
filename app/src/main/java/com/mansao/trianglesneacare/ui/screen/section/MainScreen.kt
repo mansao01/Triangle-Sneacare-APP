@@ -245,14 +245,13 @@ fun MainScreenContent(
 
                 composable(Screen.TransactionSuccess.route) {
                     TransactionSuccessScreen(
+
                         navigateToTransactionList = {
                             navController.navigate(Screen.TransactionList.route) {
                                 popUpTo(navController.graph.startDestinationId) {
-                                    saveState = true
                                     inclusive = true
                                 }
                                 launchSingleTop = true
-                                restoreState = true
                             }
                         }
                     )
