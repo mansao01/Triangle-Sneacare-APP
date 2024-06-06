@@ -1,21 +1,14 @@
 package com.mansao.trianglesneacare.ui.screen.section.customer.payment
 
-import android.app.Activity
-import android.os.Build
 import android.util.Log
 import android.widget.Toast
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
-import androidx.compose.material3.Card
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -37,37 +30,31 @@ import com.mansao.trianglesneacare.R
 import com.mansao.trianglesneacare.ui.common.UiState
 import com.mansao.trianglesneacare.ui.components.LoadingScreen
 import com.mansao.trianglesneacare.ui.screen.SharedViewModel
-import com.mansao.trianglesneacare.utils.MidtransSDKConfig
-import com.midtrans.sdk.uikit.api.model.CustomColorTheme
-import com.midtrans.sdk.uikit.api.model.TransactionResult
-import com.midtrans.sdk.uikit.external.UiKitApi
-import com.midtrans.sdk.uikit.internal.util.UiKitConstants
 
 @Composable
 fun PaymentScreen(
     sharedViewModel: SharedViewModel,
     paymentViewModel: PaymentViewModel = hiltViewModel(),
-    navigateBack: () -> Unit
+    navigateBack: () -> Unit,
+    navigateToMidtrans: () -> Unit
 ) {
-    val snapToken = sharedViewModel.snapToken
     val transactionId = sharedViewModel.transactionId
-    Log.d("snap token in paymentScreen", snapToken)
     LaunchedEffect(Unit) {
 
         paymentViewModel.getPaymentStatus(transactionId)
     }
     PaymentUiState(
         paymentViewModel = paymentViewModel,
-        sharedViewModel = sharedViewModel,
-        navigateBack = navigateBack
+        navigateBack = navigateBack,
+        navigateToMidtrans = navigateToMidtrans
     )
 }
 
 @Composable
 fun PaymentUiState(
     paymentViewModel: PaymentViewModel,
-    sharedViewModel: SharedViewModel,
-    navigateBack: () -> Unit
+    navigateBack: () -> Unit,
+    navigateToMidtrans: () -> Unit
 ) {
     val context = LocalContext.current
     Column(modifier = Modifier.fillMaxSize()) {
@@ -82,13 +69,16 @@ fun PaymentUiState(
                 UiState.Loading -> LoadingScreen()
                 UiState.Standby -> {}
                 is UiState.Success -> {
-                    when (uiState.data.transactionStatus?: "masi kosong") {
+                    when (uiState.data.transactionStatus ?: "masi kosong") {
                         "settlement" -> {
                             PaymentSuccess(navigateToTransactionList = navigateBack)
+                            Log.d("payment midtrans", uiState.data.transactionStatus?:"null")
                         }
-
                         else -> {
-                            MidtransInit(sharedViewModel = sharedViewModel)
+                            LaunchedEffect(Unit) {
+
+                                navigateToMidtrans()
+                            }
                         }
                     }
                 }
@@ -98,61 +88,6 @@ fun PaymentUiState(
 
 }
 
-@Composable
-fun MidtransInit(
-    sharedViewModel: SharedViewModel
-) {
-    val snapToken = sharedViewModel.snapToken
-    val launcher =
-        rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            Log.d("result midtrans", result.toString())
-            if (result.resultCode == AppCompatActivity.RESULT_OK) {
-                result.data?.let {
-                    val transactionResult =
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                            it.getParcelableExtra(
-                                UiKitConstants.KEY_TRANSACTION_RESULT,
-                                TransactionResult::class.java
-                            )
-                        } else {
-                            it.getParcelableExtra(UiKitConstants.KEY_TRANSACTION_RESULT)
-                        }
-                    Log.d("midtrans transaction", transactionResult?.transactionId.toString())
-                }
-            }
-        }
-
-    Log.d("midtrans initiate", "check")
-    val context = LocalContext.current
-    UiKitApi.Builder()
-        .withMerchantClientKey(MidtransSDKConfig.MERCHANT_CLIENT_KEY) // client_key is mandatory
-        .withContext(context) // context is mandatory
-        .withMerchantUrl(MidtransSDKConfig.MERCHANT_URL) // set transaction finish callback (sdk callback)
-        .enableLog(true) // enable sdk log (optional)
-        .withColorTheme(CustomColorTheme("#FFE51255", "#B61548", "#FFE51255"))
-        .build()
-    Column(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        Card(modifier = Modifier.fillMaxWidth()) {
-            val totalPrice = sharedViewModel.totalPrice
-            Row {
-                Text(text = "Total you should pay :")
-                Text(text = totalPrice.toString())
-            }
-            Button(onClick = {
-                UiKitApi.getDefaultInstance().startPaymentUiFlow(
-                    context as Activity,
-                    launcher,
-                    snapToken
-                )
-            }) {
-                Text(text = "Pay")
-            }
-        }
-    }
-
-}
 
 @Composable
 fun PaymentSuccess(

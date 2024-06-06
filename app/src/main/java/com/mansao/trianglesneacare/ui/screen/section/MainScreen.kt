@@ -39,6 +39,7 @@ import com.mansao.trianglesneacare.ui.screen.section.customer.cart.CartScreen
 import com.mansao.trianglesneacare.ui.screen.section.customer.home.CustomerHomeScreen
 import com.mansao.trianglesneacare.ui.screen.section.customer.maps.MapsScreen
 import com.mansao.trianglesneacare.ui.screen.section.customer.payment.PaymentScreen
+import com.mansao.trianglesneacare.ui.screen.section.customer.payment.checking.MidtransScreen
 import com.mansao.trianglesneacare.ui.screen.section.customer.payment.checking.PaymentCheckingScreen
 import com.mansao.trianglesneacare.ui.screen.section.customer.serviceSelection.ServiceSelectionScreen
 import com.mansao.trianglesneacare.ui.screen.section.customer.transaction.createTransaction.CreateTransactionScreen
@@ -240,12 +241,17 @@ fun MainScreenContent(
                 composable(Screen.Payment.route) {
                     PaymentScreen(
                         sharedViewModel = sharedViewModel,
-                        navigateBack = { if (navController.canGoBack) navController.popBackStack() })
+                        navigateBack = { if (navController.canGoBack) navController.popBackStack() },
+                        navigateToMidtrans = { navController.navigate(Screen.Midtrans.route) }
+                    )
                 }
 
-//                composable(Screen.Midtrans.route) {
-//                    MidtransInit(sharedViewModel = sharedViewModel)
-//                }
+                composable(Screen.Midtrans.route) {
+                    MidtransScreen(
+                        sharedViewModel = sharedViewModel,
+                        navigateBack = { navController.popBackStack() }
+                    )
+                }
                 composable(Screen.TransactionSuccess.route) {
                     TransactionSuccessScreen(
 
