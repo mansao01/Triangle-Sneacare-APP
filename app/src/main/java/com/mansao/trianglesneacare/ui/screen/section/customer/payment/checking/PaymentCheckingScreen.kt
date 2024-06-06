@@ -21,7 +21,6 @@ fun PaymentCheckingScreen(
     navigateToTransactionList: () -> Unit
 
 ) {
-
     val transactionId = sharedViewModel.transactionId
     LaunchedEffect(Unit) {
         paymentCheckingViewModel.getPaymentStatus(transactionId)

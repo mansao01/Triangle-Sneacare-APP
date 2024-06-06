@@ -243,6 +243,9 @@ fun MainScreenContent(
                         navigateBack = { if (navController.canGoBack) navController.popBackStack() })
                 }
 
+//                composable(Screen.Midtrans.route) {
+//                    MidtransInit(sharedViewModel = sharedViewModel)
+//                }
                 composable(Screen.TransactionSuccess.route) {
                     TransactionSuccessScreen(
 
