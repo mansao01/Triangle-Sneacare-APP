@@ -38,6 +38,8 @@ import com.mansao.trianglesneacare.ui.screen.section.customer.address.updateAddr
 import com.mansao.trianglesneacare.ui.screen.section.customer.cart.CartScreen
 import com.mansao.trianglesneacare.ui.screen.section.customer.home.CustomerHomeScreen
 import com.mansao.trianglesneacare.ui.screen.section.customer.maps.MapsScreen
+import com.mansao.trianglesneacare.ui.screen.section.customer.payment.PaymentScreen
+import com.mansao.trianglesneacare.ui.screen.section.customer.payment.checking.PaymentCheckingScreen
 import com.mansao.trianglesneacare.ui.screen.section.customer.serviceSelection.ServiceSelectionScreen
 import com.mansao.trianglesneacare.ui.screen.section.customer.transaction.createTransaction.CreateTransactionScreen
 import com.mansao.trianglesneacare.ui.screen.section.customer.transaction.success.TransactionSuccessScreen
@@ -190,8 +192,8 @@ fun MainScreenContent(
                         navigateToAddAddress = { navController.navigate(Screen.AddAddress.route) },
                         sharedViewModel = sharedViewModel,
                         navigateBack = { if (navController.canGoBack) navController.popBackStack() },
-                        navigateToTransactionList = {
-                            navController.navigate(Screen.TransactionList.route) {
+                        navigateToPaymentChecking = {
+                            navController.navigate(Screen.PaymentChecking.route) {
                                 popUpTo(navController.graph.startDestinationId) {
                                     inclusive = true
                                     saveState = true
@@ -204,12 +206,50 @@ fun MainScreenContent(
                     )
                 }
 
+                composable(Screen.PaymentChecking.route) {
+                    PaymentCheckingScreen(
+                        sharedViewModel = sharedViewModel,
+                        navigateToPayment = {
+                            navController.navigate(Screen.Payment.route)
+                        },
+                        navigateToPaymentSuccess = {
+                            navController.navigate(Screen.TransactionSuccess.route) {
+                                popUpTo(navController.graph.startDestinationId) {
+                                    saveState = true
+                                    inclusive = true
+
+                                }
+                                launchSingleTop = true
+                                restoreState = true
+                            }
+                        },
+                        navigateToTransactionList = {
+                            navController.navigate(Screen.TransactionList.route) {
+                                popUpTo(navController.graph.startDestinationId) {
+                                    saveState = true
+                                    inclusive = true
+                                }
+                                launchSingleTop = true
+                                restoreState = true
+                            }
+                        }
+                    )
+                }
+
+
+                composable(Screen.Payment.route) {
+                    PaymentScreen(
+                        sharedViewModel = sharedViewModel,
+                        navigateBack = { if (navController.canGoBack) navController.popBackStack() })
+                }
+
                 composable(Screen.TransactionSuccess.route) {
                     TransactionSuccessScreen(
                         navigateToTransactionList = {
                             navController.navigate(Screen.TransactionList.route) {
                                 popUpTo(navController.graph.startDestinationId) {
                                     saveState = true
+                                    inclusive = true
                                 }
                                 launchSingleTop = true
                                 restoreState = true

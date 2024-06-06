@@ -1,7 +1,6 @@
 package com.mansao.trianglesneacare.ui.screen.section.customer.transaction.createTransaction
 
 import android.content.Context
-import android.content.Intent
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
@@ -61,7 +60,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.mansao.trianglesneacare.PaymentActivity
 import com.mansao.trianglesneacare.R
 import com.mansao.trianglesneacare.data.network.response.AddressItem
 import com.mansao.trianglesneacare.data.network.response.CartItems
@@ -80,7 +78,7 @@ fun CreateTransactionScreen(
     navigateToAddAddress: () -> Unit,
     navigateBack: () -> Unit,
     sharedViewModel: SharedViewModel,
-    navigateToTransactionList: () -> Unit,
+    navigateToPaymentChecking: () -> Unit,
     navigateToTransactionSuccess: () -> Unit
 ) {
     val context = LocalContext.current
@@ -98,8 +96,9 @@ fun CreateTransactionScreen(
     )
     ChargePaymentUiEvent(
         createTransactionViewModel = createTransactionViewModel,
-        navigateToTransactionList = navigateToTransactionList,
-        context = context
+        navigateToPaymentChecking = navigateToPaymentChecking,
+        context = context,
+        sharedViewModel = sharedViewModel
     )
     Scaffold(topBar = {
         CreateTransactionTopBar(navigateBack = { navigateBack() })
@@ -140,7 +139,8 @@ fun CreateTransactionScreen(
                 CreateTransactionButton(
                     createTransactionViewModel = createTransactionViewModel,
                     context = context,
-                    navigateToTransactionSuccess = navigateToTransactionSuccess
+                    navigateToTransactionSuccess = navigateToTransactionSuccess,
+                    sharedViewModel = sharedViewModel
                 )
 
             }
@@ -481,6 +481,7 @@ fun DetailTransactionSection(
 fun CreateTransactionButton(
     createTransactionViewModel: CreateTransactionViewModel,
     context: Context,
+    sharedViewModel: SharedViewModel,
     navigateToTransactionSuccess: () -> Unit
 ) {
     CreateTransactionButtonContent(createTransactionViewModel = createTransactionViewModel)
@@ -498,6 +499,7 @@ fun CreateTransactionButton(
                 if (paymentMethod == "Cash on delivery(COD)") {
                     navigateToTransactionSuccess()
                 } else if (paymentMethod == "Online Payment") {
+                    sharedViewModel.addTransactionId(uiState.data.transaction.id)
                     createTransactionViewModel.chargeTransaction(uiState.data.transaction.id)
                 }
             }
@@ -514,7 +516,8 @@ fun CreateTransactionButton(
 @Composable
 fun ChargePaymentUiEvent(
     createTransactionViewModel: CreateTransactionViewModel,
-    navigateToTransactionList: () -> Unit,
+    navigateToPaymentChecking: () -> Unit,
+    sharedViewModel: SharedViewModel,
     context: Context
 ) {
     createTransactionViewModel.chargePaymentUiState.collectAsState(initial = UiState.Standby).value.let { uiState ->
@@ -525,16 +528,17 @@ fun ChargePaymentUiEvent(
             UiState.Loading -> LoadingDialog()
             UiState.Standby -> {}
             is UiState.Success -> {
-                navigateToTransactionList()
+                val snapToken = uiState.data.token
+                navigateToPaymentChecking()
+                sharedViewModel.addSnapToken(snapToken)
 
-                LaunchedEffect(Unit) {
-                    val snapToken = uiState.data.token
-                    Log.d("snapToken", snapToken)
-                    val intent = Intent(context, PaymentActivity::class.java)
-                    intent.putExtra("snapToken", snapToken)
-                    context.startActivity(intent)
-
-                }
+//                LaunchedEffect(Unit) {
+//                    Log.d("snapToken", snapToken)
+//                    val intent = Intent(context, PaymentActivity::class.java)
+//                    intent.putExtra("snapToken", snapToken)
+//                    context.startActivity(intent)
+//
+//                }
 
             }
         }

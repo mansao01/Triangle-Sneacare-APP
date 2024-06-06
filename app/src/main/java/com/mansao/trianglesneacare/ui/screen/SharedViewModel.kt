@@ -1,6 +1,7 @@
 package com.mansao.trianglesneacare.ui.screen
 
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
@@ -20,11 +21,21 @@ class SharedViewModel : ViewModel() {
     var categoryId by mutableStateOf("")
     var categoryName by mutableStateOf("")
     var serviceId by mutableStateOf("")
-    var totalPrice by mutableStateOf(0)
+    var totalPrice by mutableIntStateOf(0)
     var updateServiceArgs by mutableStateOf<UpdateServiceRequest?>(null)
+    var transactionId by mutableStateOf("")
+    var snapToken by mutableStateOf("")
 
     fun addPlace(newPredictionItem: PredictionsItem) {
         predictionItem = newPredictionItem
+    }
+
+    fun addSnapToken(newSnapToken: String) {
+        snapToken = newSnapToken
+    }
+
+    fun addTransactionId(newTransactionId: String) {
+        transactionId = newTransactionId
     }
 
     fun addLocation(latitude: Double, longitude: Double) {
