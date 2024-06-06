@@ -40,7 +40,6 @@ sealed class Screen(val route: String) {
     object TransactionSuccess : Screen("transactionSuccess")
     object PaymentChecking : Screen("paymentChecking")
     object Payment: Screen("payment")
-    object Midtrans: Screen("midtrans")
 
     //driver
     object DriverHome : Screen("driverHome")
