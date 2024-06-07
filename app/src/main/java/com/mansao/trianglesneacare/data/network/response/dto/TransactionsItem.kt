@@ -10,6 +10,9 @@ data class TransactionsItem(
     @field:SerializedName("deliveryStatus")
     val deliveryStatus: String,
 
+    @field:SerializedName("user")
+    val user: String,
+
     @field:SerializedName("totalPurchasePrice")
     val totalPurchasePrice: Int,
 

@@ -389,7 +389,9 @@ fun MainScreenContent(
                 }
 
                 composable(Screen.Deliver.route) {
-                    DeliverScreen()
+                    DeliverScreen(
+                        sharedViewModel = sharedViewModel,
+                        navigateToDetailDeliver = { navController.navigate(Screen.DeliverDetail.route) })
                 }
 
                 composable(Screen.DeliverDetail.route) {

@@ -3,6 +3,7 @@ package com.mansao.trianglesneacare.ui.screen.section.driver.pickUp.detail
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -28,6 +29,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -36,15 +38,22 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.mansao.trianglesneacare.R
 import com.mansao.trianglesneacare.data.network.response.dto.ItemsItem
 import com.mansao.trianglesneacare.data.network.response.dto.TransactionsItem
+import com.mansao.trianglesneacare.ui.common.UiState
 import com.mansao.trianglesneacare.ui.components.CartListItemSimple
+import com.mansao.trianglesneacare.ui.components.LoadingDialog
 import com.mansao.trianglesneacare.ui.screen.SharedViewModel
 
 
 @Composable
-fun PickUpDetailScreen(sharedViewModel: SharedViewModel, navigateBack: () -> Unit) {
+fun PickUpDetailScreen(
+    sharedViewModel: SharedViewModel,
+    navigateBack: () -> Unit,
+    pickUpDetailViewModel: PickUpDetailViewModel = hiltViewModel()
+) {
     val context = LocalContext.current
     val transactionItem = sharedViewModel.transactionItem
 
@@ -60,9 +69,11 @@ fun PickUpDetailScreen(sharedViewModel: SharedViewModel, navigateBack: () -> Uni
                 .padding(scaffoldPadding)
         ) {
 
-            Column(modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
+            ) {
 
                 Text(
                     text = "Order Items",
@@ -90,6 +101,9 @@ fun PickUpDetailScreen(sharedViewModel: SharedViewModel, navigateBack: () -> Uni
                 latitude = latitude,
                 longitude = longitude,
                 context = context,
+                pickUpDetailViewModel = pickUpDetailViewModel,
+                transactionId = transactionItem?.id ?: "",
+
                 modifier = Modifier
                     .fillMaxWidth()
                     .align(Alignment.BottomCenter)
@@ -97,6 +111,10 @@ fun PickUpDetailScreen(sharedViewModel: SharedViewModel, navigateBack: () -> Uni
             )
         }
     }
+    UpdateDeliveryStatusUiEvent(
+        pickUpDetailViewModel = pickUpDetailViewModel,
+        navigateBack = navigateBack
+    )
 }
 
 @Composable
@@ -166,7 +184,9 @@ fun PickUpDetailBottomSection(
     modifier: Modifier = Modifier,
     latitude: Double,
     longitude: Double,
-    context: Context
+    context: Context,
+    pickUpDetailViewModel: PickUpDetailViewModel,
+    transactionId: String
 ) {
     Column(
         modifier = modifier,
@@ -182,11 +202,32 @@ fun PickUpDetailBottomSection(
         }
 
         Button(
-            onClick = { /*TODO*/ },
+            onClick = {
+                pickUpDetailViewModel.updateDeliveryStatusById(transactionId)
+            },
             modifier = modifier
         ) {
             Text(text = "Finish")
         }
+    }
+}
+
+@Composable
+fun UpdateDeliveryStatusUiEvent(
+    pickUpDetailViewModel: PickUpDetailViewModel,
+    navigateBack: () -> Unit
+) {
+    pickUpDetailViewModel.updateDeliveryStatusUiState.collectAsState(initial = UiState.Standby).value.let { uiState ->
+        when (uiState) {
+            is UiState.Error -> Log.e("Error update delivery status", uiState.errorMessage)
+            UiState.Loading -> LoadingDialog()
+            UiState.Standby -> {
+
+            }
+
+            is UiState.Success -> navigateBack()
+        }
+
     }
 
 }
