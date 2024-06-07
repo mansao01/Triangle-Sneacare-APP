@@ -124,6 +124,7 @@ fun MainScreenContent(
                 currentRoute != Screen.AddService.route &&
                 currentRoute != Screen.ServiceSelection.route &&
                 currentRoute != Screen.TransactionSuccess.route &&
+                currentRoute != Screen.PickUpDetail.route &&
                 currentRoute != Screen.UploadImage.route
             ) {
                 MainBottomBar(
@@ -382,7 +383,9 @@ fun MainScreenContent(
                     )
                 }
                 composable(Screen.PickUpDetail.route) {
-                    PickUpDetailScreen()
+                    PickUpDetailScreen(
+                        sharedViewModel = sharedViewModel,
+                        navigateBack = { if (navController.canGoBack) navController.popBackStack() })
                 }
 
                 composable(Screen.Deliver.route) {

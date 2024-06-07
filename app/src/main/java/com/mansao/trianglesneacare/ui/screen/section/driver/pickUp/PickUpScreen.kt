@@ -80,7 +80,8 @@ fun PickUpContent(
             is UiState.Success -> {
                 PickUpList(
                     transactions = uiState.data.transactions,
-                    navigateToDetailPickUp = navigateToDetailPickUp
+                    navigateToDetailPickUp = navigateToDetailPickUp,
+                    sharedViewModel = sharedViewModel
                 )
             }
         }
@@ -91,13 +92,15 @@ fun PickUpContent(
 fun PickUpList(
     modifier: Modifier = Modifier,
     transactions: List<TransactionsItem>,
-    navigateToDetailPickUp: () -> Unit
+    navigateToDetailPickUp: () -> Unit,
+    sharedViewModel: SharedViewModel
 ) {
     LazyColumn {
         items(transactions) {
             PickUpListItem(
                 transaction = it,
                 modifier = modifier.clickable { navigateToDetailPickUp() })
+            sharedViewModel.addTransactionItem(it)
         }
     }
 

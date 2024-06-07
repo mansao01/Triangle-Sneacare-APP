@@ -15,7 +15,7 @@ data class CustomerAddress(
 	val receiverName: String,
 
 	@field:SerializedName("latitude")
-	val latitude: Any,
+	val latitude: Double,
 
 	@field:SerializedName("fullAddress")
 	val fullAddress: String,
@@ -24,5 +24,5 @@ data class CustomerAddress(
 	val title: String,
 
 	@field:SerializedName("longitude")
-	val longitude: Any
+	val longitude: Double
 )

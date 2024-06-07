@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import com.mansao.trianglesneacare.data.local.model.LatLong
 import com.mansao.trianglesneacare.data.network.request.UpdateServiceRequest
 import com.mansao.trianglesneacare.data.network.response.PredictionsItem
+import com.mansao.trianglesneacare.data.network.response.dto.TransactionsItem
 
 class SharedViewModel : ViewModel() {
     var predictionItem by mutableStateOf<PredictionsItem?>(null)
@@ -25,6 +26,11 @@ class SharedViewModel : ViewModel() {
     var updateServiceArgs by mutableStateOf<UpdateServiceRequest?>(null)
     var transactionId by mutableStateOf("")
     var snapToken by mutableStateOf("")
+    var transactionItem by mutableStateOf<TransactionsItem?>(null)
+
+    fun addTransactionItem(newTransactionItem: TransactionsItem) {
+        transactionItem = newTransactionItem
+    }
 
     fun addPlace(newPredictionItem: PredictionsItem) {
         predictionItem = newPredictionItem
