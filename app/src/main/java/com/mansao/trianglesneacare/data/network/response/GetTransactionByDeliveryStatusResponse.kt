@@ -3,7 +3,7 @@ package com.mansao.trianglesneacare.data.network.response
 import com.google.gson.annotations.SerializedName
 import com.mansao.trianglesneacare.data.network.response.dto.TransactionsItem
 
-data class GetTransactionsByIdResponse(
+data class GetTransactionByDeliveryStatusResponse(
 
 	@field:SerializedName("msg")
 	val msg: String,
@@ -17,17 +17,11 @@ data class GetTransactionsByIdResponse(
 //	@field:SerializedName("deliveryMethod")
 //	val deliveryMethod: String,
 //
-//	@field:SerializedName("deliveryStatus")
-//	val deliveryStatus: String,
-//
 //	@field:SerializedName("totalPurchasePrice")
 //	val totalPurchasePrice: Int,
 //
 //	@field:SerializedName("paymentMethod")
-//	var paymentMethod: String,
-//
-//	@field:SerializedName("paymentStatus")
-//	val paymentStatus: String,
+//	val paymentMethod: String,
 //
 //	@field:SerializedName("id")
 //	val id: String,
@@ -36,7 +30,13 @@ data class GetTransactionsByIdResponse(
 //	val items: List<ItemsItem>,
 //
 //	@field:SerializedName("cart")
-//	val cart: String
+//	val cart: String,
+//
+//	@field:SerializedName("deliveryStatus")
+//	val deliveryStatus: String,
+//
+//	@field:SerializedName("paymentStatus")
+//	val paymentStatus: String
 //)
 
 //data class ItemsItem(
@@ -44,14 +44,15 @@ data class GetTransactionsByIdResponse(
 //	@field:SerializedName("washStatus")
 //	val washStatus: String,
 //
-//	@field:SerializedName("imageUrl")
-//	val imageUrl: String,
-//
-//	@field:SerializedName("serviceName")
-//	val serviceName: String,
-//
 //	@field:SerializedName("price")
 //	val price: Int,
 //
-//	)
-
+//	@field:SerializedName("imageUrl")
+//	val imageUrl: String,
+//
+//	@field:SerializedName("id")
+//	val id: String,
+//
+//	@field:SerializedName("serviceName")
+//	val serviceName: String
+//)

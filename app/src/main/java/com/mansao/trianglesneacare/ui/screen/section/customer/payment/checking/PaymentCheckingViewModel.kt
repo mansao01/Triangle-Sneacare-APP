@@ -26,9 +26,14 @@ class PaymentCheckingViewModel @Inject constructor(private val appRepositoryImpl
         MutableStateFlow(UiState.Standby)
     val updatePaymentStatusUiState: Flow<UiState<OnlyMsgResponse>> = _updatePaymentStatusUiState
 
-    fun setToStandby(){
+    private var _updateDeliveryStatusUiState: MutableStateFlow<UiState<OnlyMsgResponse>> =
+        MutableStateFlow(UiState.Standby)
+    val updateDeliveryStatusUiState: Flow<UiState<OnlyMsgResponse>> = _updateDeliveryStatusUiState
+
+    fun setToStandby() {
         _getOnlinePaymentStatusUiState.value = UiState.Standby
     }
+
     fun getPaymentStatus(transactionId: String) = viewModelScope.launch {
         try {
             val result = appRepositoryImpl.getPaymentStatus(transactionId)
@@ -48,4 +53,14 @@ class PaymentCheckingViewModel @Inject constructor(private val appRepositoryImpl
                 _updatePaymentStatusUiState.value = UiState.Error(e.message.toString())
             }
         }
+
+    fun updateDeliveryStatusById(transactionId: String) = viewModelScope.launch {
+        try {
+            val result =
+                appRepositoryImpl.updateDeliveryStatusById(transactionId, "ready to pick up")
+            _updateDeliveryStatusUiState.value = UiState.Success(result)
+        } catch (e: Exception) {
+            _updateDeliveryStatusUiState.value = UiState.Error(e.message.toString())
+        }
+    }
 }

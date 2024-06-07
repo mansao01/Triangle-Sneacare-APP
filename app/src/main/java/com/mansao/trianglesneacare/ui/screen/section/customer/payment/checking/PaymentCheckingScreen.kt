@@ -35,6 +35,10 @@ fun PaymentCheckingScreen(
     )
     UpdatePaymentUiEvent(
         paymentCheckingViewModel = paymentCheckingViewModel,
+        transactionId = transactionId
+    )
+    UpdateDeliveryStatusUiEvent(
+        paymentCheckingViewModel = paymentCheckingViewModel,
         navigateToPaymentSuccess = navigateToPaymentSuccess
     )
 }
@@ -56,6 +60,7 @@ fun OnlinePaymentCheckUiEvent(
             UiState.Loading -> LoadingDialog()
             UiState.Standby -> {}
             is UiState.Success -> {
+//                don't remove the elvis operator
                 Log.d("get payment status", uiState.data.transactionStatus ?: "masi kosong")
                 when (uiState.data.transactionStatus) {
                     "settlement" -> {
@@ -84,7 +89,7 @@ fun OnlinePaymentCheckUiEvent(
 @Composable
 fun UpdatePaymentUiEvent(
     paymentCheckingViewModel: PaymentCheckingViewModel,
-    navigateToPaymentSuccess: () -> Unit,
+    transactionId: String
 ) {
     val context = LocalContext.current
     paymentCheckingViewModel.updatePaymentStatusUiState.collectAsState(initial = UiState.Standby).value.let { uiState ->
@@ -96,10 +101,31 @@ fun UpdatePaymentUiEvent(
             UiState.Standby -> {}
             is UiState.Success -> {
                 LaunchedEffect(Unit) {
+                    paymentCheckingViewModel.updateDeliveryStatusById(transactionId)
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun UpdateDeliveryStatusUiEvent(
+    paymentCheckingViewModel: PaymentCheckingViewModel,
+    navigateToPaymentSuccess: () -> Unit
+) {
+    val context = LocalContext.current
+    paymentCheckingViewModel.updateDeliveryStatusUiState.collectAsState(initial = UiState.Standby).value.let { uiState ->
+        when (uiState) {
+            is UiState.Error -> Toast.makeText(context, uiState.errorMessage, Toast.LENGTH_SHORT)
+                .show()
+
+            UiState.Loading -> LoadingDialog()
+            UiState.Standby -> {}
+            is UiState.Success -> {
+                LaunchedEffect(Unit) {
                     navigateToPaymentSuccess()
                 }
             }
         }
     }
-
 }

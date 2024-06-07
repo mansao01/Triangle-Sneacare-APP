@@ -25,6 +25,7 @@ import com.mansao.trianglesneacare.data.network.response.GetCustomerAddressesRes
 import com.mansao.trianglesneacare.data.network.response.GetPaymentStatusResponse
 import com.mansao.trianglesneacare.data.network.response.GetProfileDetailResponse
 import com.mansao.trianglesneacare.data.network.response.GetServicesByCategoryIdResponse
+import com.mansao.trianglesneacare.data.network.response.GetTransactionByDeliveryStatusResponse
 import com.mansao.trianglesneacare.data.network.response.GetTransactionsByIdResponse
 import com.mansao.trianglesneacare.data.network.response.LoginResponse
 import com.mansao.trianglesneacare.data.network.response.OnlyAccessTokenResponse
@@ -70,6 +71,8 @@ interface AppRepository {
     suspend fun addToCart(addToCartRequest: AddToCartRequest): OnlyMsgResponse
     suspend fun getCart(userId: String): GetCartResponse
     suspend fun createTransaction(createTransactionRequest: CreateTransactionRequest): CreateTransactionResponse
+    suspend fun updateDeliveryStatusById(transactionId: String, status: String): OnlyMsgResponse
+    suspend fun getTransactionByDeliveryStatus(status: String): GetTransactionByDeliveryStatusResponse
     suspend fun chargePayment(chargePaymentRequest: ChargePaymentRequest): ChargePaymentResponse
     suspend fun getPaymentStatus(transactionId: String): GetPaymentStatusResponse
     suspend fun cancelPayment(transactionId: String): CancelPaymentResponse
@@ -222,6 +225,14 @@ class AppRepositoryImpl @Inject constructor(
     override suspend fun getCart(userId: String): GetCartResponse = apiService.getCart(userId)
     override suspend fun createTransaction(createTransactionRequest: CreateTransactionRequest): CreateTransactionResponse =
         apiService.createTransaction(createTransactionRequest)
+
+    override suspend fun updateDeliveryStatusById(
+        transactionId: String,
+        status: String
+    ): OnlyMsgResponse = apiService.updateDeliveryStatusById(transactionId, status)
+
+    override suspend fun getTransactionByDeliveryStatus(status: String): GetTransactionByDeliveryStatusResponse =
+        apiService.getTransactionByDeliveryStatus(status)
 
     override suspend fun chargePayment(chargePaymentRequest: ChargePaymentRequest): ChargePaymentResponse =
         apiService.chargePayment(chargePaymentRequest)

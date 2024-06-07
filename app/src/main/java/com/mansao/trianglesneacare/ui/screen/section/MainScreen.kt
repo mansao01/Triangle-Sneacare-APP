@@ -39,15 +39,15 @@ import com.mansao.trianglesneacare.ui.screen.section.customer.cart.CartScreen
 import com.mansao.trianglesneacare.ui.screen.section.customer.home.CustomerHomeScreen
 import com.mansao.trianglesneacare.ui.screen.section.customer.maps.MapsScreen
 import com.mansao.trianglesneacare.ui.screen.section.customer.payment.PaymentScreen
-import com.mansao.trianglesneacare.ui.screen.section.customer.payment.checking.MidtransScreen
 import com.mansao.trianglesneacare.ui.screen.section.customer.payment.checking.PaymentCheckingScreen
 import com.mansao.trianglesneacare.ui.screen.section.customer.serviceSelection.ServiceSelectionScreen
 import com.mansao.trianglesneacare.ui.screen.section.customer.transaction.createTransaction.CreateTransactionScreen
 import com.mansao.trianglesneacare.ui.screen.section.customer.transaction.success.TransactionSuccessScreen
 import com.mansao.trianglesneacare.ui.screen.section.customer.transaction.transactionList.TransactionListScreen
 import com.mansao.trianglesneacare.ui.screen.section.customer.uploadImage.UploadImageScreen
-import com.mansao.trianglesneacare.ui.screen.section.driver.home.DriverHomeScreen
-import com.mansao.trianglesneacare.ui.screen.section.driver.map.MapScreen
+import com.mansao.trianglesneacare.ui.screen.section.driver.deliver.DeliverScreen
+import com.mansao.trianglesneacare.ui.screen.section.driver.pickUp.PickUpScreen
+import com.mansao.trianglesneacare.ui.screen.section.owner.home.OwnerHomeScreen
 import com.mansao.trianglesneacare.ui.screen.section.service.categories.CategoriesScreen
 import com.mansao.trianglesneacare.ui.screen.section.service.categories.add.AddCategoryScreen
 import com.mansao.trianglesneacare.ui.screen.section.service.driverRegistrarion.DriverRegistrationScreen
@@ -104,7 +104,8 @@ fun MainScreenContent(
     val startDestination = when (role) {
         stringResource(id = R.string.customer) -> Screen.CustomerHome.route
         stringResource(id = R.string.service) -> Screen.ServiceHome.route
-        else -> Screen.DriverHome.route
+        stringResource(id = R.string.owner) -> Screen.OwnerHome.route
+        else -> Screen.PickUp.route
     }
     Scaffold(
         bottomBar = {
@@ -242,16 +243,9 @@ fun MainScreenContent(
                     PaymentScreen(
                         sharedViewModel = sharedViewModel,
                         navigateBack = { if (navController.canGoBack) navController.popBackStack() },
-                        navigateToMidtrans = { navController.navigate(Screen.Midtrans.route) }
                     )
                 }
 
-                composable(Screen.Midtrans.route) {
-                    MidtransScreen(
-                        sharedViewModel = sharedViewModel,
-                        navigateBack = { navController.popBackStack() }
-                    )
-                }
                 composable(Screen.TransactionSuccess.route) {
                     TransactionSuccessScreen(
 
@@ -379,12 +373,17 @@ fun MainScreenContent(
                 }
 
 //                driver
-                composable(Screen.DriverHome.route) {
-                    DriverHomeScreen()
+                composable(Screen.PickUp.route) {
+                    PickUpScreen()
                 }
 
-                composable(Screen.DriverMap.route) {
-                    MapScreen()
+                composable(Screen.Deliver.route) {
+                    DeliverScreen()
+                }
+
+//                owner
+                composable(Screen.OwnerHome.route) {
+                    OwnerHomeScreen()
                 }
 
             }
@@ -482,7 +481,32 @@ fun MainBottomBar(
                     }
             }
 
-            stringResource(id = R.string.owner) -> {}
+            stringResource(id = R.string.owner) -> {
+                BottomNavigationItem().ownerBottomNavigationItem()
+                    .forEach { navigationItem ->
+                        val isSelected = currentRoute == navigationItem.screen
+
+                        NavigationBarItem(
+                            selected = isSelected,
+                            label = {
+                                Text(text = navigationItem.title)
+                            },
+                            icon = {
+                                Icon(
+                                    imageVector = navigationItem.icon,
+                                    contentDescription = navigationItem.contentDescription
+                                )
+                            }, onClick = {
+                                navController.navigate(navigationItem.screen) {
+                                    popUpTo(navController.graph.findStartDestination().id) {
+                                        saveState = true
+                                    }
+                                    launchSingleTop = true
+                                    restoreState = true
+                                }
+                            })
+                    }
+            }
         }
 
     }

@@ -11,6 +11,7 @@ import com.mansao.trianglesneacare.data.network.response.ChargePaymentResponse
 import com.mansao.trianglesneacare.data.network.response.CreateTransactionResponse
 import com.mansao.trianglesneacare.data.network.response.GetCartResponse
 import com.mansao.trianglesneacare.data.network.response.GetCustomerAddressesResponse
+import com.mansao.trianglesneacare.data.network.response.OnlyMsgResponse
 import com.mansao.trianglesneacare.ui.common.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
@@ -72,6 +73,11 @@ class CreateTransactionViewModel @Inject constructor(private val appRepositoryIm
 
     private var _isLoading = MutableStateFlow(false)
     val isLoading: Flow<Boolean> = _isLoading
+
+    private var _updateDeliveryStatusUiState: MutableStateFlow<UiState<OnlyMsgResponse>> =
+        MutableStateFlow(UiState.Standby)
+    val updateDeliveryStatusUiState: Flow<UiState<OnlyMsgResponse>> = _updateDeliveryStatusUiState
+
 
 
 
@@ -202,6 +208,16 @@ class CreateTransactionViewModel @Inject constructor(private val appRepositoryIm
         } catch (e: Exception) {
             _chargePaymentUiState.value = UiState.Error(e.message.toString())
 
+        }
+    }
+
+    fun updateDeliveryStatusById(transactionId: String) = viewModelScope.launch {
+        try {
+            val result =
+                appRepositoryImpl.updateDeliveryStatusById(transactionId, "ready to pick up")
+            _updateDeliveryStatusUiState.value = UiState.Success(result)
+        } catch (e: Exception) {
+            _updateDeliveryStatusUiState.value = UiState.Error(e.message.toString())
         }
     }
 }

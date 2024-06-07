@@ -2,19 +2,33 @@ package com.mansao.trianglesneacare.ui.screen.section.customer.transaction.trans
 
 import android.content.Context
 import android.widget.Toast
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.mansao.trianglesneacare.data.network.response.TransactionsItem
+import coil.compose.SubcomposeAsyncImage
+import coil.request.ImageRequest
+import com.mansao.trianglesneacare.data.network.response.dto.ItemsItem
+import com.mansao.trianglesneacare.data.network.response.dto.TransactionsItem
 import com.mansao.trianglesneacare.ui.common.UiState
 import com.mansao.trianglesneacare.ui.components.LoadingScreen
 
@@ -22,9 +36,8 @@ import com.mansao.trianglesneacare.ui.components.LoadingScreen
 @Composable
 fun TransactionListScreen(transactionListViewModel: TransactionListViewModel = hiltViewModel()) {
     val context = LocalContext.current
-        transactionListViewModel.getTransactions()
+    transactionListViewModel.getTransactions()
     TransactionListContent(transactionListViewModel = transactionListViewModel, context = context)
-
 }
 
 @Composable
@@ -36,12 +49,8 @@ fun TransactionListContent(
         when (uiState) {
             is UiState.Error -> Toast.makeText(context, uiState.errorMessage, Toast.LENGTH_SHORT)
                 .show()
-
             UiState.Loading -> LoadingScreen()
-            UiState.Standby -> {
-
-            }
-
+            UiState.Standby -> { }
             is UiState.Success -> {
                 TransactionListSectionComponent(
                     transaction = uiState.data.transactions,
@@ -55,15 +64,15 @@ fun TransactionListContent(
 fun TransactionListSectionComponent(
     transaction: List<TransactionsItem>,
 ) {
-    LazyColumn(modifier = Modifier.fillMaxSize()) {
+    LazyColumn(modifier = Modifier
+        .fillMaxSize()
+        .padding(16.dp)) {  // Adding padding to the LazyColumn
         items(transaction) {
             TransactionListItem(
                 transaction = it,
             )
         }
     }
-
-
 }
 
 @Composable
@@ -71,9 +80,106 @@ fun TransactionListItem(
     transaction: TransactionsItem,
 ) {
     Column(
-        modifier = Modifier.padding(bottom = 16.dp)
+        modifier = Modifier
+            .padding(bottom = 16.dp)
+            .fillMaxWidth()
+            .background(Color.White)
+            .padding(16.dp)  // Adding padding inside the column
     ) {
-        Text(text = transaction.totalPurchasePrice.toString())
+        Text(
+            text = "Total Purchase Price: ${transaction.totalPurchasePrice}",
+            style = TextStyle(
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color.Black
+            ),
+            modifier = Modifier.padding(bottom = 8.dp)  // Padding below the title
+        )
+        Text(text = transaction.deliveryStatus)
+
+        OrderList(orders = transaction.items)
     }
 }
 
+@Composable
+fun OrderList(orders: List<ItemsItem>) {
+    Column(modifier = Modifier.fillMaxWidth()) {
+        orders.forEach { order ->
+            OrderListItem(order = order)
+            Divider(modifier = Modifier.padding(vertical = 8.dp))  // Divider between orders
+        }
+    }
+}
+
+@Composable
+fun OrderListItem(order: ItemsItem) {
+    val context = LocalContext.current
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp)  // Padding above and below the row
+    ) {
+        SubcomposeAsyncImage(
+            model = ImageRequest.Builder(context)
+                .crossfade(true)
+                .data(order.imageUrl)
+                .build(),
+            contentDescription = null,
+            loading = {
+                CircularProgressIndicator(
+                    modifier = Modifier
+                        .size(40.dp)
+                        .padding(4.dp)
+                )
+            },
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .size(60.dp)  // Fixed size for the image
+                .padding(end = 8.dp)  // Padding to the right of the image
+        )
+
+        Column(
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(
+                text = order.serviceName,
+                style = TextStyle(
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = Color.Black
+                ),
+                modifier = Modifier.padding(bottom = 4.dp)  // Padding below the service name
+            )
+            OrderListItemContentRow(key = "Wash status", value = order.washStatus)
+            OrderListItemContentRow(key = "Price", value = order.price.toString())
+        }
+    }
+}
+
+@Composable
+fun OrderListItemContentRow(key: String, value: String) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 2.dp)  // Padding above and below the row
+    ) {
+        Text(
+            text = key,
+            style = TextStyle(
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Normal,
+                color = Color.Gray
+            ),
+            modifier = Modifier.weight(1f)  // Weight to divide space evenly
+        )
+        Text(
+            text = value,
+            style = TextStyle(
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Normal,
+                color = Color.Gray
+            ),
+            modifier = Modifier.weight(1f)  // Weight to divide space evenly
+        )
+    }
+}

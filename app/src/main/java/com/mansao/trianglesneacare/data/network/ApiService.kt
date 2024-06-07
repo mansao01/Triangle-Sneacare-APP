@@ -24,6 +24,7 @@ import com.mansao.trianglesneacare.data.network.response.GetCustomerAddressesRes
 import com.mansao.trianglesneacare.data.network.response.GetPaymentStatusResponse
 import com.mansao.trianglesneacare.data.network.response.GetProfileDetailResponse
 import com.mansao.trianglesneacare.data.network.response.GetServicesByCategoryIdResponse
+import com.mansao.trianglesneacare.data.network.response.GetTransactionByDeliveryStatusResponse
 import com.mansao.trianglesneacare.data.network.response.GetTransactionsByIdResponse
 import com.mansao.trianglesneacare.data.network.response.LoginResponse
 import com.mansao.trianglesneacare.data.network.response.OnlyAccessTokenResponse
@@ -248,4 +249,15 @@ interface ApiService {
     suspend fun cancelPayment(
         @Query("orderId") transactionId: String
     ): CancelPaymentResponse
+
+    @PATCH(ApiConst.UPDATE_DELIVERY_STATUS_BY_ID)
+    suspend fun updateDeliveryStatusById(
+        @Query("id") transactionId: String,
+        @Query("status") status: String
+    ):OnlyMsgResponse
+
+    @GET(ApiConst.GET_TRANSACTION_BY_DELIVERY_STATUS)
+    suspend fun getTransactionByDeliveryStatus(
+        @Query("status") status: String
+    ):GetTransactionByDeliveryStatusResponse
 }

@@ -42,9 +42,10 @@ sealed class Screen(val route: String) {
     object Payment: Screen("payment")
 
     //driver
-    object DriverHome : Screen("driverHome")
-    object DriverMap : Screen("driverMap")
+    object PickUp : Screen("pickUp")
+    object Deliver : Screen("deliver")
 
 //    owner
+    object OwnerHome : Screen("ownerHomeScreen")
 
 }

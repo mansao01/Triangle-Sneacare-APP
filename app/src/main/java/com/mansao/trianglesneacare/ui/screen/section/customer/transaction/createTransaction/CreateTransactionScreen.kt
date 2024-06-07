@@ -100,6 +100,11 @@ fun CreateTransactionScreen(
         context = context,
         sharedViewModel = sharedViewModel
     )
+
+    UpdateDeliveryStatusUiEvent(
+        createTransactionViewModel = createTransactionViewModel,
+        navigateToTransactionSuccess = navigateToTransactionSuccess
+    )
     Scaffold(topBar = {
         CreateTransactionTopBar(navigateBack = { navigateBack() })
     }) { scaffoldPadding ->
@@ -139,7 +144,6 @@ fun CreateTransactionScreen(
                 CreateTransactionButton(
                     createTransactionViewModel = createTransactionViewModel,
                     context = context,
-                    navigateToTransactionSuccess = navigateToTransactionSuccess,
                     sharedViewModel = sharedViewModel
                 )
 
@@ -482,7 +486,6 @@ fun CreateTransactionButton(
     createTransactionViewModel: CreateTransactionViewModel,
     context: Context,
     sharedViewModel: SharedViewModel,
-    navigateToTransactionSuccess: () -> Unit
 ) {
     CreateTransactionButtonContent(createTransactionViewModel = createTransactionViewModel)
     createTransactionViewModel.createTransactionUiState.collectAsState(initial = UiState.Standby).value.let { uiState ->
@@ -496,11 +499,18 @@ fun CreateTransactionButton(
                 createTransactionViewModel.setLoading(false)
                 val paymentMethod =
                     createTransactionViewModel.paymentMethod.collectAsState(initial = "").value
-                if (paymentMethod == "Cash on delivery(COD)") {
-                    navigateToTransactionSuccess()
-                } else if (paymentMethod == "Online Payment") {
-                    sharedViewModel.addTransactionId(uiState.data.transaction.id)
-                    createTransactionViewModel.chargeTransaction(uiState.data.transaction.id)
+                Log.d("paymentMethod", paymentMethod)
+                when (paymentMethod) {
+                    "Cash on delivery(COD)" -> {
+                        createTransactionViewModel.updateDeliveryStatusById(uiState.data.transaction.id)
+                    }
+                    "Online Payment" -> {
+                        sharedViewModel.addTransactionId(uiState.data.transaction.id)
+                        createTransactionViewModel.chargeTransaction(uiState.data.transaction.id)
+                    }
+                    else -> {
+
+                    }
                 }
             }
 
@@ -532,13 +542,6 @@ fun ChargePaymentUiEvent(
                 navigateToPaymentChecking()
                 sharedViewModel.addSnapToken(snapToken)
 
-//                LaunchedEffect(Unit) {
-//                    Log.d("snapToken", snapToken)
-//                    val intent = Intent(context, PaymentActivity::class.java)
-//                    intent.putExtra("snapToken", snapToken)
-//                    context.startActivity(intent)
-//
-//                }
 
             }
         }
@@ -627,6 +630,27 @@ fun TransactionDetailRow(label: String, amount: Double) {
     }
 }
 
+@Composable
+fun UpdateDeliveryStatusUiEvent(
+    createTransactionViewModel: CreateTransactionViewModel,
+    navigateToTransactionSuccess: () -> Unit
+) {
+    val context = LocalContext.current
+    createTransactionViewModel.updateDeliveryStatusUiState.collectAsState(initial = UiState.Standby).value.let { uiState ->
+        when (uiState) {
+            is UiState.Error -> Toast.makeText(context, uiState.errorMessage, Toast.LENGTH_SHORT)
+                .show()
+
+            UiState.Loading -> LoadingDialog()
+            UiState.Standby -> {}
+            is UiState.Success -> {
+                LaunchedEffect(Unit) {
+                    navigateToTransactionSuccess()
+                }
+            }
+        }
+    }
+}
 
 @Composable
 fun CalculateDistanceUiEvent(
