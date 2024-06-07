@@ -13,6 +13,9 @@ data class TransactionsItem(
     @field:SerializedName("totalPurchasePrice")
     val totalPurchasePrice: Int,
 
+    @field:SerializedName("customerAddressId")
+    val customerAddressId: String,
+
     @field:SerializedName("paymentMethod")
     var paymentMethod: String,
 
@@ -26,7 +29,10 @@ data class TransactionsItem(
     val items: List<ItemsItem>,
 
     @field:SerializedName("cart")
-    val cart: String
+    val cart: String,
+
+    @field:SerializedName("customerAddress")
+    val customerAddress: CustomerAddress,
 )
 
 data class ItemsItem(

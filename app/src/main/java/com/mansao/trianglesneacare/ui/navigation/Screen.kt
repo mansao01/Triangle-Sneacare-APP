@@ -43,7 +43,9 @@ sealed class Screen(val route: String) {
 
     //driver
     object PickUp : Screen("pickUp")
+    object PickUpDetail : Screen("pickUpDetail")
     object Deliver : Screen("deliver")
+    object DeliverDetail : Screen("deliverDetail")
 
 //    owner
     object OwnerHome : Screen("ownerHomeScreen")

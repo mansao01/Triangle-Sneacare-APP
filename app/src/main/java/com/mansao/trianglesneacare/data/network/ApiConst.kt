@@ -27,26 +27,22 @@ object ApiConst {
     const val GEOCODING_ADDRESS = "geoCodeWithAddress"
     const val GEOCODING_PLACE_ID = "geoCodeWithPlaceId"
     const val CALCULATE_DISTANCE = "calculateDistance"
-
     //    service
     const val CREATE_NEW_CATEGORY = "addCategory"
     const val GET_CATEGORIES = "categories"
-
     const val CREATE_NEW_SERVICE = "addService"
     const val DELETE_SERVICE = "deleteService/{id}"
     const val GET_SERVICES_BY_CATEGORY = "servicesByCategory"
     const val UPDATE_SERVICE = "updateService"
-
     //    customer
     const val CREATE_ORDER = "addOrder"
     const val DELETE_ORDER = "deleteOrder/{orderId}"
     const val ADD_TO_CART = "addToCart"
     const val CREATE_TRANSACTION = "createTransaction"
     const val GET_TRANSACTION_BY_ID = "transactions/{id}"
-    const val GET_TRANSACTION_BY_DELIVERY_STATUS = "transactions/status"
+    const val GET_TRANSACTION_BY_DELIVERY_STATUS = "transactionsByDeliveryStatus"
     const val GET_CART = "getCart/{userId}"
     const val UPDATE_DELIVERY_STATUS_BY_ID = "transaction"
-
 //    payment
     const val CHARGE = "transaction/charge"
     const val GET_PAYMENT_STATUS = "transaction/status"

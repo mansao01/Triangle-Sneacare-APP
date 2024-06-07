@@ -46,7 +46,9 @@ import com.mansao.trianglesneacare.ui.screen.section.customer.transaction.succes
 import com.mansao.trianglesneacare.ui.screen.section.customer.transaction.transactionList.TransactionListScreen
 import com.mansao.trianglesneacare.ui.screen.section.customer.uploadImage.UploadImageScreen
 import com.mansao.trianglesneacare.ui.screen.section.driver.deliver.DeliverScreen
+import com.mansao.trianglesneacare.ui.screen.section.driver.deliver.detail.DeliverDetailScreen
 import com.mansao.trianglesneacare.ui.screen.section.driver.pickUp.PickUpScreen
+import com.mansao.trianglesneacare.ui.screen.section.driver.pickUp.detail.PickUpDetailScreen
 import com.mansao.trianglesneacare.ui.screen.section.owner.home.OwnerHomeScreen
 import com.mansao.trianglesneacare.ui.screen.section.service.categories.CategoriesScreen
 import com.mansao.trianglesneacare.ui.screen.section.service.categories.add.AddCategoryScreen
@@ -374,13 +376,22 @@ fun MainScreenContent(
 
 //                driver
                 composable(Screen.PickUp.route) {
-                    PickUpScreen()
+                    PickUpScreen(
+                        sharedViewModel = sharedViewModel,
+                        navigateToDetailPickUp = { navController.navigate(Screen.PickUpDetail.route) }
+                    )
+                }
+                composable(Screen.PickUpDetail.route) {
+                    PickUpDetailScreen()
                 }
 
                 composable(Screen.Deliver.route) {
                     DeliverScreen()
                 }
 
+                composable(Screen.DeliverDetail.route) {
+                    DeliverDetailScreen()
+                }
 //                owner
                 composable(Screen.OwnerHome.route) {
                     OwnerHomeScreen()

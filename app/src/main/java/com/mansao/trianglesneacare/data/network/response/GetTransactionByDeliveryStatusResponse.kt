@@ -9,7 +9,9 @@ data class GetTransactionByDeliveryStatusResponse(
 	val msg: String,
 
 	@field:SerializedName("transactions")
-	val transactions: List<TransactionsItem>
+	val transactions: List<TransactionsItem>,
+
+
 )
 
 //data class TransactionsItem(
