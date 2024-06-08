@@ -55,6 +55,7 @@ class PaymentCheckingViewModel @Inject constructor(private val appRepositoryImpl
         }
 
     fun updateDeliveryStatusById(transactionId: String) = viewModelScope.launch {
+        _updateDeliveryStatusUiState.value = UiState.Loading
         try {
             val result =
                 appRepositoryImpl.updateDeliveryStatusById(transactionId, "ready to pick up")

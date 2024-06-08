@@ -26,6 +26,7 @@ import com.mansao.trianglesneacare.data.network.response.GetPaymentStatusRespons
 import com.mansao.trianglesneacare.data.network.response.GetProfileDetailResponse
 import com.mansao.trianglesneacare.data.network.response.GetServicesByCategoryIdResponse
 import com.mansao.trianglesneacare.data.network.response.GetTransactionByDeliveryStatusResponse
+import com.mansao.trianglesneacare.data.network.response.GetTransactionByMonthResponse
 import com.mansao.trianglesneacare.data.network.response.GetTransactionsByIdResponse
 import com.mansao.trianglesneacare.data.network.response.LoginResponse
 import com.mansao.trianglesneacare.data.network.response.OnlyAccessTokenResponse
@@ -73,6 +74,7 @@ interface AppRepository {
     suspend fun createTransaction(createTransactionRequest: CreateTransactionRequest): CreateTransactionResponse
     suspend fun updateDeliveryStatusById(transactionId: String, status: String): OnlyMsgResponse
     suspend fun getTransactionByDeliveryStatus(status: String): GetTransactionByDeliveryStatusResponse
+    suspend fun getTransactionByMonth(month: Int, year: Int): GetTransactionByMonthResponse
     suspend fun chargePayment(chargePaymentRequest: ChargePaymentRequest): ChargePaymentResponse
     suspend fun getPaymentStatus(transactionId: String): GetPaymentStatusResponse
     suspend fun cancelPayment(transactionId: String): CancelPaymentResponse
@@ -233,6 +235,11 @@ class AppRepositoryImpl @Inject constructor(
 
     override suspend fun getTransactionByDeliveryStatus(status: String): GetTransactionByDeliveryStatusResponse =
         apiService.getTransactionByDeliveryStatus(status)
+
+    override suspend fun getTransactionByMonth(
+        month: Int,
+        year: Int
+    ): GetTransactionByMonthResponse  = apiService.getTransactionByMonth(month, year)
 
     override suspend fun chargePayment(chargePaymentRequest: ChargePaymentRequest): ChargePaymentResponse =
         apiService.chargePayment(chargePaymentRequest)

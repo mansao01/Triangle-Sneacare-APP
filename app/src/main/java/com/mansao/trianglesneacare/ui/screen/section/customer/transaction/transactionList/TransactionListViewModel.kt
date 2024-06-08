@@ -20,11 +20,8 @@ class TransactionListViewModel @Inject constructor(private val appRepositoryImpl
         MutableStateFlow(UiState.Standby)
     val transactionsUiState: Flow<UiState<GetTransactionsByIdResponse>> = _transactionsUiState
 
-
-
-
-
     fun getTransactions() = viewModelScope.launch {
+        _transactionsUiState.value = UiState.Loading
         try {
             val userId = appRepositoryImpl.getUserId() ?: ""
             val result = appRepositoryImpl.getTransactionById(userId)

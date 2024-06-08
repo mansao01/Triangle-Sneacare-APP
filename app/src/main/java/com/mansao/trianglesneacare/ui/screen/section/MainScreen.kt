@@ -124,6 +124,8 @@ fun MainScreenContent(
                 currentRoute != Screen.AddService.route &&
                 currentRoute != Screen.ServiceSelection.route &&
                 currentRoute != Screen.TransactionSuccess.route &&
+                currentRoute != Screen.PaymentChecking.route &&
+                currentRoute != Screen.Payment.route &&
                 currentRoute != Screen.PickUpDetail.route &&
                 currentRoute != Screen.UploadImage.route
             ) {

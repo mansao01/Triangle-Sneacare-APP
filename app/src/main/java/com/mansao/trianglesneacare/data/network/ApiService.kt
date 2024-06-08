@@ -25,6 +25,7 @@ import com.mansao.trianglesneacare.data.network.response.GetPaymentStatusRespons
 import com.mansao.trianglesneacare.data.network.response.GetProfileDetailResponse
 import com.mansao.trianglesneacare.data.network.response.GetServicesByCategoryIdResponse
 import com.mansao.trianglesneacare.data.network.response.GetTransactionByDeliveryStatusResponse
+import com.mansao.trianglesneacare.data.network.response.GetTransactionByMonthResponse
 import com.mansao.trianglesneacare.data.network.response.GetTransactionsByIdResponse
 import com.mansao.trianglesneacare.data.network.response.LoginResponse
 import com.mansao.trianglesneacare.data.network.response.OnlyAccessTokenResponse
@@ -229,11 +230,18 @@ interface ApiService {
         @Path("id") transactionId: String
     ): GetTransactionsByIdResponse
 
+    @GET(ApiConst.GET_TRANSACTION_BY_ID)
+    suspend fun getTransactionByMonth(
+        @Query("month") month: Int,
+        @Query("year") year: Int,
+    ): GetTransactionByMonthResponse
+
+
     @PATCH(ApiConst.UPDATE_PAYMENT_STATUS)
     suspend fun updatePaymentStatus(
         @Query("transactionId") transactionId: String,
         @Query("status") status: String
-    ):OnlyMsgResponse
+    ): OnlyMsgResponse
 
     @POST(ApiConst.CHARGE)
     suspend fun chargePayment(
@@ -254,10 +262,10 @@ interface ApiService {
     suspend fun updateDeliveryStatusById(
         @Query("id") transactionId: String,
         @Query("status") status: String
-    ):OnlyMsgResponse
+    ): OnlyMsgResponse
 
     @GET(ApiConst.GET_TRANSACTION_BY_DELIVERY_STATUS)
     suspend fun getTransactionByDeliveryStatus(
         @Query("status") status: String
-    ):GetTransactionByDeliveryStatusResponse
+    ): GetTransactionByDeliveryStatusResponse
 }
