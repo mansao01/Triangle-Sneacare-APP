@@ -1,5 +1,7 @@
 package com.mansao.trianglesneacare.ui.screen.section
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
@@ -59,6 +61,7 @@ import com.mansao.trianglesneacare.ui.screen.section.service.services.add.AddSer
 import com.mansao.trianglesneacare.ui.screen.section.service.services.update.UpdateServiceScreen
 import com.mansao.trianglesneacare.utils.canGoBack
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun MainScreen(
     navController: NavHostController = rememberNavController(),
@@ -92,6 +95,7 @@ fun MainScreen(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun MainScreenContent(
     authViewModel: AuthViewModel,
@@ -127,6 +131,7 @@ fun MainScreenContent(
                 currentRoute != Screen.PaymentChecking.route &&
                 currentRoute != Screen.Payment.route &&
                 currentRoute != Screen.PickUpDetail.route &&
+                currentRoute != Screen.DeliverDetail.route &&
                 currentRoute != Screen.UploadImage.route
             ) {
                 MainBottomBar(
@@ -397,7 +402,9 @@ fun MainScreenContent(
                 }
 
                 composable(Screen.DeliverDetail.route) {
-                    DeliverDetailScreen()
+                    DeliverDetailScreen(
+                        sharedViewModel = sharedViewModel,
+                        navigateBack = { navController.popBackStack() })
                 }
 //                owner
                 composable(Screen.OwnerHome.route) {

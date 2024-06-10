@@ -19,6 +19,7 @@ class DeliverViewModel @Inject constructor(private val appRepositoryImpl: AppRep
         MutableStateFlow(UiState.Standby)
     val uiState: Flow<UiState<GetTransactionByDeliveryStatusResponse>> = _uiState
     fun getDeliverList() = viewModelScope.launch {
+        _uiState.value = UiState.Loading
         try {
             val result = appRepositoryImpl.getTransactionByDeliveryStatus("ready to deliver")
             _uiState.value = UiState.Success(result)
