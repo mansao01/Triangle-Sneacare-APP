@@ -214,7 +214,8 @@ interface ApiService {
     suspend fun updateWashStatus(
         @Query("orderId") orderId: String,
         @Query("washStatus") status: String
-    ):OnlyMsgResponse
+    ): OnlyMsgResponse
+
     @POST(ApiConst.ADD_TO_CART)
     suspend fun addToCart(
         @Body addToCartRequest: AddToCartRequest
@@ -235,11 +236,15 @@ interface ApiService {
         @Path("id") transactionId: String
     ): GetTransactionsByIdResponse
 
+    @GET(ApiConst.GET_ALL_TRANSACTION)
+    suspend fun getAllTransaction(): GetTransactionByMonthResponse
+
     @GET(ApiConst.GET_TRANSACTION_BY_MONTH)
     suspend fun getTransactionByMonth(
         @Query("month") month: Int,
         @Query("year") year: Int,
     ): GetTransactionByMonthResponse
+
     @GET(ApiConst.GET_TRANSACTION_BY_MONTH_AND_PAYMENT_STATUS)
     suspend fun getTransactionByMonthAndPaymentStatus(
         @Query("month") month: Int,

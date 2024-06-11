@@ -41,6 +41,7 @@ object ApiConst {
     const val ADD_TO_CART = "addToCart"
     const val CREATE_TRANSACTION = "createTransaction"
     const val GET_TRANSACTION_BY_ID = "transactions/{id}"
+    const val GET_ALL_TRANSACTION = "getAllTransactions"
     const val GET_TRANSACTION_BY_MONTH = "getTransactionsByMonth"
     const val GET_TRANSACTION_BY_MONTH_AND_PAYMENT_STATUS = "getTransactionsByMonthAndPaymentStatus"
     const val GET_TRANSACTION_BY_DELIVERY_STATUS = "transactionsByDeliveryStatus"

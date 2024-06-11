@@ -22,8 +22,25 @@ class OwnerHomeViewModel @Inject constructor(private val appRepositoryImpl: AppR
         MutableStateFlow(UiState.Standby)
     val uiState: Flow<UiState<GetTransactionByMonthResponse>> = _uiState
 
+    init {
+        getAllTransaction()
+    }
+    private fun setLoadingState(){
+        _uiState.value = UiState.Loading
+    }
+    fun getAllTransaction() = viewModelScope.launch {
+        setLoadingState()
+        try {
+            val result = appRepositoryImpl.getAllTransaction()
+
+            _uiState.value = UiState.Success(result)
+        } catch (e: Exception) {
+            _uiState.value = UiState.Error(e.message.toString())
+        }
+    }
     @RequiresApi(Build.VERSION_CODES.O)
     fun getTransactionByMonth() = viewModelScope.launch {
+        setLoadingState()
         try {
             val currentDate = LocalDate.now()
 
@@ -39,7 +56,8 @@ class OwnerHomeViewModel @Inject constructor(private val appRepositoryImpl: AppR
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun getTransactionByMonthAndPaymentStatus() = viewModelScope.launch {
+    fun getTransactionByMonthAndPaymentStatus(paymentStatus:String) = viewModelScope.launch {
+        setLoadingState()
         try {
             val currentDate = LocalDate.now()
 
@@ -49,7 +67,7 @@ class OwnerHomeViewModel @Inject constructor(private val appRepositoryImpl: AppR
             val result = appRepositoryImpl.getTransactionByMonthAndPaymentStatus(
                 currentMonth,
                 currentYear,
-                "settlement"
+                paymentStatus
             )
 
             _uiState.value = UiState.Success(result)

@@ -75,6 +75,7 @@ interface AppRepository {
     suspend fun createTransaction(createTransactionRequest: CreateTransactionRequest): CreateTransactionResponse
     suspend fun updateDeliveryStatusById(transactionId: String, status: String): OnlyMsgResponse
     suspend fun getTransactionByDeliveryStatus(status: String): GetTransactionByDeliveryStatusResponse
+    suspend fun getAllTransaction(): GetTransactionByMonthResponse
     suspend fun getTransactionByMonth(month: Int, year: Int): GetTransactionByMonthResponse
     suspend fun getTransactionByMonthAndPaymentStatus(
         month: Int,
@@ -246,6 +247,9 @@ class AppRepositoryImpl @Inject constructor(
 
     override suspend fun getTransactionByDeliveryStatus(status: String): GetTransactionByDeliveryStatusResponse =
         apiService.getTransactionByDeliveryStatus(status)
+
+    override suspend fun getAllTransaction(): GetTransactionByMonthResponse =
+        apiService.getAllTransaction()
 
     override suspend fun getTransactionByMonth(
         month: Int,

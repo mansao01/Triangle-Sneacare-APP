@@ -29,7 +29,8 @@ fun HeaderText(
         Text(
             text = description,
             fontWeight = FontWeight.Bold,
-            style = MaterialTheme.typography.labelMedium
+            style = MaterialTheme.typography.labelMedium,
+            modifier = modifier
         )
     }
 }
