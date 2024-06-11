@@ -25,7 +25,7 @@ class AuthViewModel @Inject constructor(private val appRepositoryImpl: AppReposi
     private val _loginState: MutableStateFlow<Boolean> = MutableStateFlow(false)
     val loginState: StateFlow<Boolean> = _loginState
 
-    private val _role: MutableState<String> = mutableStateOf("admin")
+    private val _role: MutableState<String> = mutableStateOf("")
     val role: State<String> = _role
 
     init {

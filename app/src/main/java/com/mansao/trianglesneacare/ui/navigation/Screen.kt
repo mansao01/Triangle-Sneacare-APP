@@ -11,6 +11,8 @@ sealed class Screen(val route: String) {
     object OTPVerification : Screen("otpVerification")
     object PasswordChange : Screen("passwordChange")
 
+    object BlankScreen : Screen("blankScreen")
+
 
     //    service section
     object ServiceHome : Screen("adminHome")
@@ -19,6 +21,7 @@ sealed class Screen(val route: String) {
     object Services : Screen("categories/services")
     object AddService : Screen("categories/services/add")
     object UpdateService : Screen("categories/services/update")
+    object DetailTransaction:Screen("detailTransaction")
 
 
     object DriverManagement : Screen("driverManagement")

@@ -38,4 +38,25 @@ class OwnerHomeViewModel @Inject constructor(private val appRepositoryImpl: AppR
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun getTransactionByMonthAndPaymentStatus() = viewModelScope.launch {
+        try {
+            val currentDate = LocalDate.now()
+
+            // Extract the month and year
+            val currentMonth = currentDate.monthValue
+            val currentYear = currentDate.year
+            val result = appRepositoryImpl.getTransactionByMonthAndPaymentStatus(
+                currentMonth,
+                currentYear,
+                "settlement"
+            )
+
+            _uiState.value = UiState.Success(result)
+        } catch (e: Exception) {
+            _uiState.value = UiState.Error(e.message.toString())
+        }
+    }
+
+
 }

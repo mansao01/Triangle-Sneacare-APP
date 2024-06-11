@@ -69,12 +69,19 @@ interface AppRepository {
         orderId: String
     ): OnlyMsgResponse
 
+    suspend fun updateWashStatus(orderId: String, washStatus: String): OnlyMsgResponse
     suspend fun addToCart(addToCartRequest: AddToCartRequest): OnlyMsgResponse
     suspend fun getCart(userId: String): GetCartResponse
     suspend fun createTransaction(createTransactionRequest: CreateTransactionRequest): CreateTransactionResponse
     suspend fun updateDeliveryStatusById(transactionId: String, status: String): OnlyMsgResponse
     suspend fun getTransactionByDeliveryStatus(status: String): GetTransactionByDeliveryStatusResponse
     suspend fun getTransactionByMonth(month: Int, year: Int): GetTransactionByMonthResponse
+    suspend fun getTransactionByMonthAndPaymentStatus(
+        month: Int,
+        year: Int,
+        status: String
+    ): GetTransactionByMonthResponse
+
     suspend fun chargePayment(chargePaymentRequest: ChargePaymentRequest): ChargePaymentResponse
     suspend fun getPaymentStatus(transactionId: String): GetPaymentStatusResponse
     suspend fun cancelPayment(transactionId: String): CancelPaymentResponse
@@ -221,6 +228,10 @@ class AppRepositoryImpl @Inject constructor(
     override suspend fun deleteOrder(orderId: String): OnlyMsgResponse =
         apiService.deleteOrder(orderId)
 
+
+    override suspend fun updateWashStatus(orderId: String, washStatus: String): OnlyMsgResponse =
+        apiService.updateWashStatus(orderId, washStatus)
+
     override suspend fun addToCart(addToCartRequest: AddToCartRequest): OnlyMsgResponse =
         apiService.addToCart(addToCartRequest)
 
@@ -239,7 +250,14 @@ class AppRepositoryImpl @Inject constructor(
     override suspend fun getTransactionByMonth(
         month: Int,
         year: Int
-    ): GetTransactionByMonthResponse  = apiService.getTransactionByMonth(month, year)
+    ): GetTransactionByMonthResponse = apiService.getTransactionByMonth(month, year)
+
+    override suspend fun getTransactionByMonthAndPaymentStatus(
+        month: Int,
+        year: Int,
+        status: String
+    ): GetTransactionByMonthResponse =
+        apiService.getTransactionByMonthAndPaymentStatus(month, year, status)
 
     override suspend fun chargePayment(chargePaymentRequest: ChargePaymentRequest): ChargePaymentResponse =
         apiService.chargePayment(chargePaymentRequest)

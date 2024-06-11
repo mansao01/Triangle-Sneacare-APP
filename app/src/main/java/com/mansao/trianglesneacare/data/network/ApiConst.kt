@@ -34,6 +34,7 @@ object ApiConst {
     const val DELETE_SERVICE = "deleteService/{id}"
     const val GET_SERVICES_BY_CATEGORY = "servicesByCategory"
     const val UPDATE_SERVICE = "updateService"
+    const val UPDATE_WASH_STATUS = "updateWashStatus"
     //    customer
     const val CREATE_ORDER = "addOrder"
     const val DELETE_ORDER = "deleteOrder/{orderId}"
@@ -41,6 +42,7 @@ object ApiConst {
     const val CREATE_TRANSACTION = "createTransaction"
     const val GET_TRANSACTION_BY_ID = "transactions/{id}"
     const val GET_TRANSACTION_BY_MONTH = "getTransactionsByMonth"
+    const val GET_TRANSACTION_BY_MONTH_AND_PAYMENT_STATUS = "getTransactionsByMonthAndPaymentStatus"
     const val GET_TRANSACTION_BY_DELIVERY_STATUS = "transactionsByDeliveryStatus"
     const val GET_CART = "getCart/{userId}"
     const val UPDATE_DELIVERY_STATUS_BY_ID = "transaction"

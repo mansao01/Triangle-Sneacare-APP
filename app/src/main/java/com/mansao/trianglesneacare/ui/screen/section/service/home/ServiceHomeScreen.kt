@@ -1,6 +1,7 @@
 package com.mansao.trianglesneacare.ui.screen.section.service.home
 
 import android.widget.Toast
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,11 +11,15 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -39,29 +44,54 @@ import com.mansao.trianglesneacare.data.network.response.dto.TransactionsItem
 import com.mansao.trianglesneacare.ui.common.UiState
 import com.mansao.trianglesneacare.ui.components.HeaderText
 import com.mansao.trianglesneacare.ui.components.LoadingDialog
+import com.mansao.trianglesneacare.ui.screen.SharedViewModel
 
 
 @Composable
-fun ServiceHomeScreen(serviceHomeViewModel: ServiceHomeViewModel = hiltViewModel()) {
+fun ServiceHomeScreen(
+    serviceHomeViewModel: ServiceHomeViewModel = hiltViewModel(),
+    navigateToDetail: () -> Unit,
+    navigateToAddOrder: () -> Unit,
+    sharedViewModel: SharedViewModel
+) {
     LaunchedEffect(Unit) {
         serviceHomeViewModel.getTransactionWhereAlreadyPickedUp()
     }
-    ServiceHome(serviceHomeViewModel = serviceHomeViewModel)
+    ServiceHome(
+        serviceHomeViewModel = serviceHomeViewModel,
+        navigateToDetail = navigateToDetail,
+        sharedViewModel = sharedViewModel,
+        navigateToAddOrder = navigateToAddOrder
+    )
 }
 
 @Composable
-fun ServiceHome(modifier: Modifier = Modifier, serviceHomeViewModel: ServiceHomeViewModel) {
+fun ServiceHome(
+    modifier: Modifier = Modifier,
+    serviceHomeViewModel: ServiceHomeViewModel,
+    navigateToDetail: () -> Unit,
+    navigateToAddOrder: () -> Unit,
+    sharedViewModel: SharedViewModel
+) {
     Scaffold(
-        topBar = { ServiceHomeTopBar() },
+        topBar = { ServiceHomeTopBar(navigateToAddOrder = navigateToAddOrder) },
     ) { scaffoldPadding ->
         Surface(modifier.padding(scaffoldPadding)) {
-            ServiceHomeContent(serviceHomeViewModel = serviceHomeViewModel)
+            ServiceHomeContent(
+                serviceHomeViewModel = serviceHomeViewModel,
+                navigateToDetail = navigateToDetail,
+                sharedViewModel = sharedViewModel
+            )
         }
     }
 }
 
 @Composable
-fun ServiceHomeContent(serviceHomeViewModel: ServiceHomeViewModel) {
+fun ServiceHomeContent(
+    serviceHomeViewModel: ServiceHomeViewModel,
+    navigateToDetail: () -> Unit,
+    sharedViewModel: SharedViewModel
+) {
     val context = LocalContext.current
     serviceHomeViewModel.uiState.collectAsState(initial = UiState.Standby).value.let { uiState ->
         when (uiState) {
@@ -73,7 +103,11 @@ fun ServiceHomeContent(serviceHomeViewModel: ServiceHomeViewModel) {
 
             UiState.Loading -> LoadingDialog()
             UiState.Standby -> {}
-            is UiState.Success -> TransactionListSectionComponent(transaction = uiState.data.transactions)
+            is UiState.Success -> TransactionListSectionComponent(
+                transaction = uiState.data.transactions,
+                navigateToDetail = navigateToDetail,
+                sharedViewModel = sharedViewModel
+            )
         }
     }
 
@@ -82,6 +116,8 @@ fun ServiceHomeContent(serviceHomeViewModel: ServiceHomeViewModel) {
 @Composable
 fun TransactionListSectionComponent(
     transaction: List<TransactionsItem>,
+    navigateToDetail: () -> Unit,
+    sharedViewModel: SharedViewModel
 ) {
     LazyColumn(
         modifier = Modifier
@@ -91,6 +127,10 @@ fun TransactionListSectionComponent(
         items(transaction) {
             TransactionListItem(
                 transaction = it,
+                clickAction = {
+                    navigateToDetail()
+                    sharedViewModel.addTransactionItem(it)
+                }
             )
         }
     }
@@ -99,11 +139,13 @@ fun TransactionListSectionComponent(
 @Composable
 fun TransactionListItem(
     transaction: TransactionsItem,
+    clickAction: () -> Unit,
 ) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp),
+            .padding(8.dp)
+            .clickable { clickAction() },
         shape = RoundedCornerShape(8.dp),
         elevation = CardDefaults.elevatedCardElevation(8.dp)
     ) {
@@ -207,12 +249,19 @@ fun OrderListItemContentRow(key: String, value: String) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ServiceHomeTopBar() {
+fun ServiceHomeTopBar(
+    navigateToAddOrder: () -> Unit
+) {
     LargeTopAppBar(title = {
         HeaderText(
             text = stringResource(R.string.orders),
             description = "",
             showDescription = false
         )
-    })
+    },
+        actions = {
+            IconButton(onClick = { navigateToAddOrder() }) {
+                Icon(imageVector = Icons.Outlined.Add, contentDescription = null)
+            }
+        })
 }

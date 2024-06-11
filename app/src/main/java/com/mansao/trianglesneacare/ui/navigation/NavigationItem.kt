@@ -50,7 +50,8 @@ data class BottomNavigationItem(
                 icon = Icons.Filled.Home,
                 screen = Screen.CustomerHome.route,
                 contentDescription = "Home"
-            ),BottomNavigationItem(
+            ),
+            BottomNavigationItem(
                 title = "Cart",
                 icon = Icons.Filled.ShoppingCart,
                 screen = Screen.CustomerCart.route,
@@ -80,7 +81,7 @@ data class BottomNavigationItem(
                 icon = Icons.Filled.Home,
                 screen = Screen.OwnerHome.route,
                 contentDescription = "Home"
-            ),BottomNavigationItem(
+            ), BottomNavigationItem(
                 title = "Service",
                 icon = Icons.Filled.LocalLaundryService,
                 screen = Screen.Categories.route,

@@ -29,6 +29,7 @@ import com.mansao.trianglesneacare.ui.components.LoadingDialog
 import com.mansao.trianglesneacare.ui.components.ServiceNotAvailable
 import com.mansao.trianglesneacare.ui.navigation.BottomNavigationItem
 import com.mansao.trianglesneacare.ui.navigation.Screen
+import com.mansao.trianglesneacare.ui.screen.BlankScreen
 import com.mansao.trianglesneacare.ui.screen.SharedViewModel
 import com.mansao.trianglesneacare.ui.screen.profile.ProfileScreen
 import com.mansao.trianglesneacare.ui.screen.profile.ProfileViewModel
@@ -59,6 +60,7 @@ import com.mansao.trianglesneacare.ui.screen.section.service.home.ServiceHomeScr
 import com.mansao.trianglesneacare.ui.screen.section.service.services.ServicesScreen
 import com.mansao.trianglesneacare.ui.screen.section.service.services.add.AddServiceScreen
 import com.mansao.trianglesneacare.ui.screen.section.service.services.update.UpdateServiceScreen
+import com.mansao.trianglesneacare.ui.screen.section.service.transaction.DetailTransactionScreen
 import com.mansao.trianglesneacare.utils.canGoBack
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -111,7 +113,8 @@ fun MainScreenContent(
         stringResource(id = R.string.customer) -> Screen.CustomerHome.route
         stringResource(id = R.string.service) -> Screen.ServiceHome.route
         stringResource(id = R.string.owner) -> Screen.OwnerHome.route
-        else -> Screen.PickUp.route
+        stringResource(id = R.string.driver) -> Screen.PickUp.route
+        else -> Screen.BlankScreen.route
     }
     Scaffold(
         bottomBar = {
@@ -131,6 +134,7 @@ fun MainScreenContent(
                 currentRoute != Screen.PaymentChecking.route &&
                 currentRoute != Screen.Payment.route &&
                 currentRoute != Screen.PickUpDetail.route &&
+                currentRoute != Screen.DetailTransaction.route &&
                 currentRoute != Screen.DeliverDetail.route &&
                 currentRoute != Screen.UploadImage.route
             ) {
@@ -151,6 +155,10 @@ fun MainScreenContent(
                 navController = navController,
                 startDestination = startDestination,
             ) {
+
+                composable(Screen.BlankScreen.route) {
+                    BlankScreen()
+                }
                 composable(Screen.Profile.route) {
                     val profileViewModel: ProfileViewModel = hiltViewModel()
                     ProfileScreen(
@@ -336,7 +344,18 @@ fun MainScreenContent(
 
 //                service section
                 composable(Screen.ServiceHome.route) {
-                    ServiceHomeScreen()
+                    ServiceHomeScreen(
+                        sharedViewModel = sharedViewModel,
+                        navigateToDetail = { navController.navigate(Screen.DetailTransaction.route) },
+                        navigateToAddOrder = {navController.navigate(Screen.CustomerHome.route)}
+                    )
+                }
+
+
+                composable(Screen.DetailTransaction.route) {
+                    DetailTransactionScreen(
+                        sharedViewModel = sharedViewModel,
+                        navigateBack = { if (navController.canGoBack) navController.popBackStack() })
                 }
                 composable(Screen.Categories.route) {
                     CategoriesScreen(
@@ -529,11 +548,11 @@ fun MainBottomBar(
                                     launchSingleTop = true
                                     restoreState = true
                                 }
-                            })
+                            }
+                        )
                     }
             }
         }
-
     }
 }
 
