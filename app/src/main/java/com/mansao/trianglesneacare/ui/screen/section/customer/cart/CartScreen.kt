@@ -1,6 +1,5 @@
 package com.mansao.trianglesneacare.ui.screen.section.customer.cart
 
-import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,7 +15,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -28,6 +26,7 @@ import com.mansao.trianglesneacare.data.network.response.CartItems
 import com.mansao.trianglesneacare.ui.common.UiState
 import com.mansao.trianglesneacare.ui.components.CartListItem
 import com.mansao.trianglesneacare.ui.components.EmptyData
+import com.mansao.trianglesneacare.ui.components.ErrorScreen
 import com.mansao.trianglesneacare.ui.components.LoadingScreen
 import com.mansao.trianglesneacare.ui.screen.SharedViewModel
 import java.text.NumberFormat
@@ -43,7 +42,6 @@ fun CartScreen(
     LaunchedEffect(Unit) {
         cartViewModel.getCart()
     }
-    val context = LocalContext.current
     cartViewModel.isDeleteSuccess.collectAsState(initial = false).value.let { isSuccess ->
         if (isSuccess) {
             cartViewModel.getCart()
@@ -53,10 +51,12 @@ fun CartScreen(
     cartViewModel.uiState.collectAsState(initial = UiState.Standby).value.let { uiState ->
         when (uiState) {
             is UiState.Error -> {
-                if (!cartViewModel.cartNotFound.collectAsState(initial = false).value) {
-                    Toast.makeText(context, uiState.errorMessage, Toast.LENGTH_SHORT).show()
-                } else {
+                if (cartViewModel.cartNotFound.collectAsState(initial = false).value) {
                     EmptyData()
+                } else {
+                    ErrorScreen {
+                        cartViewModel.getCart()
+                    }
                 }
             }
 

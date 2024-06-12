@@ -1,6 +1,5 @@
 package com.mansao.trianglesneacare.ui.screen.section.customer.home
 
-import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -14,7 +13,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -22,6 +20,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.mansao.trianglesneacare.data.network.response.CategoriesItem
 import com.mansao.trianglesneacare.ui.common.UiState
 import com.mansao.trianglesneacare.ui.components.CategoryGridItem
+import com.mansao.trianglesneacare.ui.components.ErrorScreen
 import com.mansao.trianglesneacare.ui.components.LoadingScreen
 import com.mansao.trianglesneacare.ui.screen.SharedViewModel
 
@@ -51,12 +50,14 @@ fun CustomerHomeContent(
 ) {
 
     customerHomeViewModel.uiState.collectAsState(initial = UiState.Standby).value.let { uiState ->
-        val context = LocalContext.current
         when (uiState) {
             UiState.Standby -> {}
             UiState.Loading -> LoadingScreen()
-            is UiState.Error -> Toast.makeText(context, uiState.errorMessage, Toast.LENGTH_SHORT)
-                .show()
+            is UiState.Error -> {
+                ErrorScreen {
+                    customerHomeViewModel.getCategories()
+                }
+            }
 
             is UiState.Success -> CustomerHome(
                 categoryList = uiState.data.categories,

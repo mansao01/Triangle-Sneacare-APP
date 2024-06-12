@@ -29,7 +29,7 @@ class CustomerHomeViewModel @Inject constructor(private val appRepositoryImpl: A
 
     }
 
-    private fun getCategories() = viewModelScope.launch {
+     fun getCategories() = viewModelScope.launch {
         setLoadingState()
         try {
             val result = appRepositoryImpl.getCategories()
