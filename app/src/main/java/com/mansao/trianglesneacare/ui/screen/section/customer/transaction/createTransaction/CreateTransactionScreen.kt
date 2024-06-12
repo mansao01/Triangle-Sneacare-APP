@@ -194,100 +194,102 @@ fun AddressSectionContent(
     var selectedAddressLabel by remember { mutableStateOf("") }
     var selectedAddressId by remember { mutableStateOf("") }
 
-    ExposedDropdownMenuBox(
-        expanded = isExpanded,
-        onExpandedChange = { isExpanded = it },
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp)
-    ) {
-        TextField(
-            value = selectedAddressLabel,
-            onValueChange = {},
-            readOnly = true,
-            trailingIcon = {
-                ExposedDropdownMenuDefaults.TrailingIcon(expanded = isExpanded)
-            },
-            colors = ExposedDropdownMenuDefaults.textFieldColors(),
-            modifier = Modifier
-                .menuAnchor()
-                .fillMaxWidth()
-        )
-        ExposedDropdownMenu(
+    HeaderSection(headerText = "Delivery address") {
+        ExposedDropdownMenuBox(
             expanded = isExpanded,
-            onDismissRequest = { isExpanded = false },
+            onExpandedChange = { isExpanded = it },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
         ) {
-            if (addresses.isEmpty()) {
-                DropdownMenuItem(
-                    text = {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Add,
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.onSurface
-                            )
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Text(
-                                text = "No address found. Please add an address.",
-                                style = TextStyle(
-                                    fontWeight = FontWeight.Bold,
-                                    fontSize = 16.sp,
-                                    color = MaterialTheme.colorScheme.onSurface
-                                )
-                            )
-                        }
-                    },
-                    onClick = {
-                        navigateToAddAddress()
-                    },
-                    modifier = Modifier.fillMaxWidth()
-                )
-            } else {
-                addresses.forEach { addressItem ->
+            TextField(
+                value = selectedAddressLabel,
+                onValueChange = {},
+                readOnly = true,
+                trailingIcon = {
+                    ExposedDropdownMenuDefaults.TrailingIcon(expanded = isExpanded)
+                },
+                colors = ExposedDropdownMenuDefaults.textFieldColors(),
+                modifier = Modifier
+                    .menuAnchor()
+                    .fillMaxWidth()
+            )
+            ExposedDropdownMenu(
+                expanded = isExpanded,
+                onDismissRequest = { isExpanded = false },
+            ) {
+                if (addresses.isEmpty()) {
                     DropdownMenuItem(
                         text = {
-                            AddressListItemSimple(address = addressItem)
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Add,
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.onSurface
+                                )
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text(
+                                    text = "No address found. Please add an address.",
+                                    style = TextStyle(
+                                        fontWeight = FontWeight.Bold,
+                                        fontSize = 16.sp,
+                                        color = MaterialTheme.colorScheme.onSurface
+                                    )
+                                )
+                            }
                         },
                         onClick = {
-                            selectedAddressLabel = addressItem.title
-                            selectedAddressId = addressItem.id
-                            isExpanded = false
-                            createTransactionViewModel.calculateDistance("${addressItem.latitude},${addressItem.longitude}")
-                            createTransactionViewModel.setAddressId(addressItem.id)
-                            Log.d("latLng", "${addressItem.latitude},${addressItem.longitude}")
+                            navigateToAddAddress()
                         },
                         modifier = Modifier.fillMaxWidth()
                     )
+                } else {
+                    addresses.forEach { addressItem ->
+                        DropdownMenuItem(
+                            text = {
+                                AddressListItemSimple(address = addressItem)
+                            },
+                            onClick = {
+                                selectedAddressLabel = addressItem.title
+                                selectedAddressId = addressItem.id
+                                isExpanded = false
+                                createTransactionViewModel.calculateDistance("${addressItem.latitude},${addressItem.longitude}")
+                                createTransactionViewModel.setAddressId(addressItem.id)
+                                Log.d("latLng", "${addressItem.latitude},${addressItem.longitude}")
+                            },
+                            modifier = Modifier.fillMaxWidth()
+                        )
 
-                }
-                DropdownMenuItem(
-                    text = {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Add,
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.onSurface
-                            )
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Text(
-                                text = "Add address.",
-                                style = TextStyle(
-                                    fontWeight = FontWeight.Bold,
-                                    fontSize = 16.sp,
-                                    color = MaterialTheme.colorScheme.onSurface
+                    }
+                    DropdownMenuItem(
+                        text = {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Add,
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.onSurface
                                 )
-                            )
-                        }
-                    },
-                    onClick = {
-                        navigateToAddAddress()
-                    },
-                    modifier = Modifier.fillMaxWidth()
-                )
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text(
+                                    text = "Add address.",
+                                    style = TextStyle(
+                                        fontWeight = FontWeight.Bold,
+                                        fontSize = 16.sp,
+                                        color = MaterialTheme.colorScheme.onSurface
+                                    )
+                                )
+                            }
+                        },
+                        onClick = {
+                            navigateToAddAddress()
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
             }
         }
     }
@@ -318,18 +320,20 @@ fun CartItemsSection(
 fun CartItemSectionContent(
     cart: List<CartItems>,
 ) {
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxWidth()
-            .heightIn(max = 300.dp) // Set your desired max height here
-            .padding(16.dp)
-    ) {
-        items(cart) { cartItem ->
-            CartListItemSimple(
-                image = cartItem.imageUrl,
-                serviceName = cartItem.service.serviceName,
-                price = cartItem.service.price
-            )
+    HeaderSection(headerText = "Items in cart") {
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxWidth()
+                .heightIn(max = 300.dp) // Set your desired max height here
+                .padding(16.dp)
+        ) {
+            items(cart) { cartItem ->
+                CartListItemSimple(
+                    image = cartItem.imageUrl,
+                    serviceName = cartItem.service.serviceName,
+                    price = cartItem.service.price
+                )
+            }
         }
     }
 }
@@ -343,52 +347,55 @@ fun SelectDeliveryMethodSection(
     var isExpanded by remember { mutableStateOf(false) }
     var selectedDeliveryMethod by remember { mutableStateOf("") }
 
-    ExposedDropdownMenuBox(
-        expanded = isExpanded,
-        onExpandedChange = { isExpanded = it },
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp)
-    ) {
-        TextField(
-            value = selectedDeliveryMethod,
-            onValueChange = {},
-            readOnly = true,
-            trailingIcon = {
-                ExposedDropdownMenuDefaults.TrailingIcon(expanded = isExpanded)
-            },
-            colors = ExposedDropdownMenuDefaults.textFieldColors(),
-            modifier = Modifier
-                .menuAnchor()
-                .fillMaxWidth()
-        )
-        ExposedDropdownMenu(
-            expanded = isExpanded,
-            onDismissRequest = { isExpanded = false },
-        ) {
-            DropdownMenuItem(
-                text = {
-                    Text(text = stringResource(R.string.deliver_to_home))
-                },
-                onClick = {
-                    isExpanded = false
-                    selectedDeliveryMethod = context.getString(R.string.deliver_to_home)
-                    createTransactionViewModel.setDeliveryMethod("Deliver to home")
-                    createTransactionViewModel.calculateTotalTransaction()
-                },
-            )
+    HeaderSection(headerText = "Delivery method") {
 
-            DropdownMenuItem(
-                text = {
-                    Text(text = stringResource(R.string.pick_up_at_the_store))
+        ExposedDropdownMenuBox(
+            expanded = isExpanded,
+            onExpandedChange = { isExpanded = it },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        ) {
+            TextField(
+                value = selectedDeliveryMethod,
+                onValueChange = {},
+                readOnly = true,
+                trailingIcon = {
+                    ExposedDropdownMenuDefaults.TrailingIcon(expanded = isExpanded)
                 },
-                onClick = {
-                    isExpanded = false
-                    selectedDeliveryMethod = context.getString(R.string.pick_up_at_the_store)
-                    createTransactionViewModel.setDeliveryMethod("Pick up at the store")
-                    createTransactionViewModel.calculateTotalTransaction()
-                },
+                colors = ExposedDropdownMenuDefaults.textFieldColors(),
+                modifier = Modifier
+                    .menuAnchor()
+                    .fillMaxWidth()
             )
+            ExposedDropdownMenu(
+                expanded = isExpanded,
+                onDismissRequest = { isExpanded = false },
+            ) {
+                DropdownMenuItem(
+                    text = {
+                        Text(text = stringResource(R.string.deliver_to_home))
+                    },
+                    onClick = {
+                        isExpanded = false
+                        selectedDeliveryMethod = context.getString(R.string.deliver_to_home)
+                        createTransactionViewModel.setDeliveryMethod("Deliver to home")
+                        createTransactionViewModel.calculateTotalTransaction()
+                    },
+                )
+
+                DropdownMenuItem(
+                    text = {
+                        Text(text = stringResource(R.string.pick_up_at_the_store))
+                    },
+                    onClick = {
+                        isExpanded = false
+                        selectedDeliveryMethod = context.getString(R.string.pick_up_at_the_store)
+                        createTransactionViewModel.setDeliveryMethod("Pick up at the store")
+                        createTransactionViewModel.calculateTotalTransaction()
+                    },
+                )
+            }
         }
     }
 }
@@ -402,52 +409,55 @@ fun SelectPaymentSection(
     var isExpanded by remember { mutableStateOf(false) }
     var selectedPaymentMethod by remember { mutableStateOf("") }
 
-    ExposedDropdownMenuBox(
-        expanded = isExpanded,
-        onExpandedChange = { isExpanded = it },
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp)
-    ) {
-        TextField(
-            value = selectedPaymentMethod,
-            onValueChange = {},
-            readOnly = true,
-            trailingIcon = {
-                ExposedDropdownMenuDefaults.TrailingIcon(expanded = isExpanded)
-            },
-            colors = ExposedDropdownMenuDefaults.textFieldColors(),
-            modifier = Modifier
-                .menuAnchor()
-                .fillMaxWidth()
-        )
-        ExposedDropdownMenu(
-            expanded = isExpanded,
-            onDismissRequest = { isExpanded = false },
-        ) {
-            DropdownMenuItem(
-                text = {
-                    Text(stringResource(R.string.cod))
-                },
-                onClick = {
-                    isExpanded = false
-                    selectedPaymentMethod = context.getString(R.string.cod)
-                    createTransactionViewModel.setPaymentMethod("Cash on delivery(COD)")
-                    createTransactionViewModel.calculateTotalTransaction()
-                },
-            )
+    HeaderSection(headerText = "Payment method") {
 
-            DropdownMenuItem(
-                text = {
-                    Text(text = stringResource(R.string.online_payment))
+        ExposedDropdownMenuBox(
+            expanded = isExpanded,
+            onExpandedChange = { isExpanded = it },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        ) {
+            TextField(
+                value = selectedPaymentMethod,
+                onValueChange = {},
+                readOnly = true,
+                trailingIcon = {
+                    ExposedDropdownMenuDefaults.TrailingIcon(expanded = isExpanded)
                 },
-                onClick = {
-                    isExpanded = false
-                    selectedPaymentMethod = context.getString(R.string.online_payment)
-                    createTransactionViewModel.setPaymentMethod("Online Payment")
-                    createTransactionViewModel.calculateTotalTransaction()
-                },
+                colors = ExposedDropdownMenuDefaults.textFieldColors(),
+                modifier = Modifier
+                    .menuAnchor()
+                    .fillMaxWidth()
             )
+            ExposedDropdownMenu(
+                expanded = isExpanded,
+                onDismissRequest = { isExpanded = false },
+            ) {
+                DropdownMenuItem(
+                    text = {
+                        Text(stringResource(R.string.cod))
+                    },
+                    onClick = {
+                        isExpanded = false
+                        selectedPaymentMethod = context.getString(R.string.cod)
+                        createTransactionViewModel.setPaymentMethod("Cash on delivery(COD)")
+                        createTransactionViewModel.calculateTotalTransaction()
+                    },
+                )
+
+                DropdownMenuItem(
+                    text = {
+                        Text(text = stringResource(R.string.online_payment))
+                    },
+                    onClick = {
+                        isExpanded = false
+                        selectedPaymentMethod = context.getString(R.string.online_payment)
+                        createTransactionViewModel.setPaymentMethod("Online Payment")
+                        createTransactionViewModel.calculateTotalTransaction()
+                    },
+                )
+            }
         }
     }
 }
@@ -504,10 +514,12 @@ fun CreateTransactionButton(
                     "Cash on delivery(COD)" -> {
                         createTransactionViewModel.updateDeliveryStatusById(uiState.data.transaction.id)
                     }
+
                     "Online Payment" -> {
                         sharedViewModel.addTransactionId(uiState.data.transaction.id)
                         createTransactionViewModel.chargeTransaction(uiState.data.transaction.id)
                     }
+
                     else -> {
 
                     }
@@ -677,6 +689,19 @@ fun CalculateDistanceUiEvent(
     }
 }
 
+
+@Composable
+fun HeaderSection(
+    headerText: String,
+    content: @Composable () -> Unit
+) {
+    Column {
+        Text(text = headerText, modifier = Modifier.padding(start = 8.dp))
+        Spacer(modifier = Modifier.height(4.dp))
+        content()
+    }
+
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

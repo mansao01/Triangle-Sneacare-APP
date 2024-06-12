@@ -136,6 +136,7 @@ fun MainScreenContent(
                 currentRoute != Screen.PickUpDetail.route &&
                 currentRoute != Screen.DetailTransaction.route &&
                 currentRoute != Screen.DeliverDetail.route &&
+                currentRoute != Screen.CreateTransaction.route &&
                 currentRoute != Screen.UploadImage.route
             ) {
                 MainBottomBar(

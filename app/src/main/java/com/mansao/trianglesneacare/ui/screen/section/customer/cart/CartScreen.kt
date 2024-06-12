@@ -27,6 +27,7 @@ import com.mansao.trianglesneacare.R
 import com.mansao.trianglesneacare.data.network.response.CartItems
 import com.mansao.trianglesneacare.ui.common.UiState
 import com.mansao.trianglesneacare.ui.components.CartListItem
+import com.mansao.trianglesneacare.ui.components.EmptyData
 import com.mansao.trianglesneacare.ui.components.LoadingScreen
 import com.mansao.trianglesneacare.ui.screen.SharedViewModel
 import java.text.NumberFormat
@@ -51,8 +52,13 @@ fun CartScreen(
     }
     cartViewModel.uiState.collectAsState(initial = UiState.Standby).value.let { uiState ->
         when (uiState) {
-            is UiState.Error -> Toast.makeText(context, uiState.errorMessage, Toast.LENGTH_SHORT)
-                .show()
+            is UiState.Error -> {
+                if (!cartViewModel.cartNotFound.collectAsState(initial = false).value) {
+                    Toast.makeText(context, uiState.errorMessage, Toast.LENGTH_SHORT).show()
+                } else {
+                    EmptyData()
+                }
+            }
 
             UiState.Loading -> {
                 LoadingScreen()
@@ -82,54 +88,58 @@ fun CartContent(
     navigateToCreateTransaction: () -> Unit,
     sharedViewModel: SharedViewModel
 ) {
-    Column(
-        modifier = modifier.fillMaxWidth()
-    ) {
-        val formattedPrice =
-            NumberFormat.getNumberInstance(Locale.GERMAN).format(totalPrice.toInt())
-
-        Box(modifier = Modifier.weight(0.9f)) {
-            CartList(cart = cart, cartViewModel = cartViewModel)
-        }
-        Row(
-            modifier.padding(top = 22.dp, bottom = 16.dp)
+    if (cart.isEmpty()) {
+        EmptyData()
+    } else {
+        Column(
+            modifier = modifier.fillMaxWidth()
         ) {
-            Column(modifier = Modifier.padding(start = 16.dp)) {
+            val formattedPrice =
+                NumberFormat.getNumberInstance(Locale.GERMAN).format(totalPrice.toInt())
 
-                Text(
-                    text = "Total in cart",
-                    style = TextStyle(
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        color = MaterialTheme.colorScheme.primary
-                    ),
-                )
-                Text(
-                    text = stringResource(R.string.rp, formattedPrice),
-                    style = TextStyle(
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        color = MaterialTheme.colorScheme.primary
-                    )
-                )
+            Box(modifier = Modifier.weight(0.9f)) {
+                CartList(cart = cart, cartViewModel = cartViewModel)
             }
-            Box(modifier = Modifier.weight(0.1f)) {
-                if (totalPrice != 0.toString()) {
-                    Button(
-                        onClick = {
-                            navigateToCreateTransaction()
-                            sharedViewModel.addTotalPrice(totalPrice.toInt())
-                        },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp)
-                    ) {
-                        Text(text = stringResource(R.string.checkout))
+            Row(
+                modifier.padding(top = 22.dp, bottom = 16.dp)
+            ) {
+                Column(modifier = Modifier.padding(start = 16.dp)) {
+
+                    Text(
+                        text = "Total in cart",
+                        style = TextStyle(
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            color = MaterialTheme.colorScheme.primary
+                        ),
+                    )
+                    Text(
+                        text = stringResource(R.string.rp, formattedPrice),
+                        style = TextStyle(
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                    )
+                }
+                Box(modifier = Modifier.weight(0.1f)) {
+                    if (totalPrice != 0.toString()) {
+                        Button(
+                            onClick = {
+                                navigateToCreateTransaction()
+                                sharedViewModel.addTotalPrice(totalPrice.toInt())
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp)
+                        ) {
+                            Text(text = stringResource(R.string.checkout))
+                        }
                     }
                 }
             }
-        }
 
+        }
     }
 
 }
@@ -157,3 +167,4 @@ fun CartList(cart: List<CartItems>, cartViewModel: CartViewModel) {
 
     }
 }
+
