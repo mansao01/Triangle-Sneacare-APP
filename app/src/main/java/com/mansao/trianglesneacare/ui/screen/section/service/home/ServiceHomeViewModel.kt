@@ -19,6 +19,7 @@ class ServiceHomeViewModel @Inject constructor(private val appRepositoryImpl: Ap
         MutableStateFlow(UiState.Standby)
     val uiState: Flow<UiState<GetTransactionByDeliveryStatusResponse>> = _uiState
     fun getTransactionsByDeliveryStatus(deliveryStatus:String) = viewModelScope.launch {
+        _uiState.value = UiState.Loading
         try {
             val result = appRepositoryImpl.getTransactionByDeliveryStatus(deliveryStatus)
             _uiState.value = UiState.Success(result)

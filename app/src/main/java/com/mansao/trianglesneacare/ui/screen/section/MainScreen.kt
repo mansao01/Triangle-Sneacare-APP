@@ -348,7 +348,6 @@ fun MainScreenContent(
                     ServiceHomeScreen(
                         sharedViewModel = sharedViewModel,
                         navigateToDetail = { navController.navigate(Screen.DetailTransaction.route) },
-                        navigateToAddOrder = {navController.navigate(Screen.CustomerHome.route)}
                     )
                 }
 

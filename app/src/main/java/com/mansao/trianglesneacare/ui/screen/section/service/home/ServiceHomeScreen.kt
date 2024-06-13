@@ -15,18 +15,24 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AssistChip
+import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LargeTopAppBar
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -42,8 +48,9 @@ import com.mansao.trianglesneacare.R
 import com.mansao.trianglesneacare.data.network.response.dto.ItemsItem
 import com.mansao.trianglesneacare.data.network.response.dto.TransactionsItem
 import com.mansao.trianglesneacare.ui.common.UiState
+import com.mansao.trianglesneacare.ui.components.EmptyData
 import com.mansao.trianglesneacare.ui.components.HeaderText
-import com.mansao.trianglesneacare.ui.components.LoadingDialog
+import com.mansao.trianglesneacare.ui.components.LoadingScreen
 import com.mansao.trianglesneacare.ui.screen.SharedViewModel
 
 
@@ -51,7 +58,6 @@ import com.mansao.trianglesneacare.ui.screen.SharedViewModel
 fun ServiceHomeScreen(
     serviceHomeViewModel: ServiceHomeViewModel = hiltViewModel(),
     navigateToDetail: () -> Unit,
-    navigateToAddOrder: () -> Unit,
     sharedViewModel: SharedViewModel
 ) {
     LaunchedEffect(Unit) {
@@ -61,7 +67,6 @@ fun ServiceHomeScreen(
         serviceHomeViewModel = serviceHomeViewModel,
         navigateToDetail = navigateToDetail,
         sharedViewModel = sharedViewModel,
-        navigateToAddOrder = navigateToAddOrder
     )
 }
 
@@ -71,7 +76,6 @@ fun ServiceHome(
     modifier: Modifier = Modifier,
     serviceHomeViewModel: ServiceHomeViewModel,
     navigateToDetail: () -> Unit,
-    navigateToAddOrder: () -> Unit,
     sharedViewModel: SharedViewModel
 ) {
     Scaffold(
@@ -92,6 +96,8 @@ fun ServiceHome(
 
 @Composable
 fun ChipsSection(serviceHomeViewModel: ServiceHomeViewModel) {
+    var selectedChip by remember { mutableStateOf<String?>(null) }
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -99,24 +105,36 @@ fun ChipsSection(serviceHomeViewModel: ServiceHomeViewModel) {
             .horizontalScroll(rememberScrollState()),
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        AssistChip(
-            onClick = { serviceHomeViewModel.getTransactionsByDeliveryStatus("already picked up") },
-            label = { Text(text = "Already picked up") }
+        val chips = listOf(
+            "already picked up",
+            "ready to pick up",
+            "ready to deliver",
+            "already delivered to customer"
         )
-        AssistChip(
-            onClick = { serviceHomeViewModel.getTransactionsByDeliveryStatus("ready to pick up") },
-            label = { Text(text = "Ready to pick up") }
-        )
-        AssistChip(
-            onClick = { serviceHomeViewModel.getTransactionsByDeliveryStatus("ready to deliver") },
-            label = { Text(text = "Ready to deliver") }
-        )
-        AssistChip(
-            onClick = { serviceHomeViewModel.getTransactionsByDeliveryStatus("already delivered to customer") },
-            label = { Text(text = "Already delivered to customer") }
-        )
+
+        chips.forEach { chipLabel ->
+            AssistChip(
+                onClick = {
+                    selectedChip = chipLabel
+                    serviceHomeViewModel.getTransactionsByDeliveryStatus(chipLabel)
+                },
+                label = { Text(text = chipLabel) },
+                colors = if (selectedChip == chipLabel) {
+                    // Change the background color when selected
+                    AssistChipDefaults.assistChipColors(
+                        containerColor = MaterialTheme.colorScheme.primaryContainer,
+                        labelColor = MaterialTheme.colorScheme.onPrimaryContainer,
+
+                        )
+                } else {
+                    // Default chip colors
+                    AssistChipDefaults.assistChipColors()
+                }
+            )
+        }
     }
 }
+
 
 @Composable
 fun ServiceHomeContent(
@@ -133,7 +151,7 @@ fun ServiceHomeContent(
                 Toast.LENGTH_SHORT
             ).show()
 
-            UiState.Loading -> LoadingDialog()
+            UiState.Loading -> LoadingScreen()
             UiState.Standby -> {}
             is UiState.Success -> TransactionListSectionComponent(
                 transaction = uiState.data.transactions,
@@ -151,19 +169,23 @@ fun TransactionListSectionComponent(
     navigateToDetail: () -> Unit,
     sharedViewModel: SharedViewModel
 ) {
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(horizontal = 16.dp)
-    ) {
-        items(transaction) {
-            TransactionListItem(
-                transaction = it,
-                clickAction = {
-                    navigateToDetail()
-                    sharedViewModel.addTransactionItem(it)
-                }
-            )
+    if (transaction.isEmpty()) {
+        EmptyData()
+    } else {
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 16.dp)
+        ) {
+            items(transaction) {
+                TransactionListItem(
+                    transaction = it,
+                    clickAction = {
+                        navigateToDetail()
+                        sharedViewModel.addTransactionItem(it)
+                    }
+                )
+            }
         }
     }
 }
