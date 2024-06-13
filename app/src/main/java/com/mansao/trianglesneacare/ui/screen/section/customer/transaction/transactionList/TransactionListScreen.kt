@@ -2,7 +2,7 @@ package com.mansao.trianglesneacare.ui.screen.section.customer.transaction.trans
 
 import android.content.Context
 import android.widget.Toast
-import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,15 +11,22 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.DeliveryDining
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -27,10 +34,13 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
+import com.mansao.trianglesneacare.R
 import com.mansao.trianglesneacare.data.network.response.dto.ItemsItem
 import com.mansao.trianglesneacare.data.network.response.dto.TransactionsItem
 import com.mansao.trianglesneacare.ui.common.UiState
 import com.mansao.trianglesneacare.ui.components.LoadingScreen
+import java.text.NumberFormat
+import java.util.Locale
 
 
 @Composable
@@ -49,8 +59,9 @@ fun TransactionListContent(
         when (uiState) {
             is UiState.Error -> Toast.makeText(context, uiState.errorMessage, Toast.LENGTH_SHORT)
                 .show()
+
             UiState.Loading -> LoadingScreen()
-            UiState.Standby -> { }
+            UiState.Standby -> {}
             is UiState.Success -> {
                 TransactionListSectionComponent(
                     transaction = uiState.data.transactions,
@@ -64,9 +75,11 @@ fun TransactionListContent(
 fun TransactionListSectionComponent(
     transaction: List<TransactionsItem>,
 ) {
-    LazyColumn(modifier = Modifier
-        .fillMaxSize()
-        .padding(16.dp)) {  // Adding padding to the LazyColumn
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+    ) {  // Adding padding to the LazyColumn
         items(transaction) {
             TransactionListItem(
                 transaction = it,
@@ -79,25 +92,40 @@ fun TransactionListSectionComponent(
 fun TransactionListItem(
     transaction: TransactionsItem,
 ) {
-    Column(
+    val price = transaction.totalPurchasePrice
+    val formattedPrice =
+        NumberFormat.getNumberInstance(Locale.GERMAN).format(price)
+    Card(
         modifier = Modifier
-            .padding(bottom = 16.dp)
             .fillMaxWidth()
-            .background(Color.White)
-            .padding(16.dp)  // Adding padding inside the column
+            .padding(8.dp),
+        shape = RoundedCornerShape(8.dp),
+        elevation = CardDefaults.elevatedCardElevation(8.dp)
     ) {
-        Text(
-            text = "Total Purchase Price: ${transaction.totalPurchasePrice}",
-            style = TextStyle(
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.Black
-            ),
-            modifier = Modifier.padding(bottom = 8.dp)  // Padding below the title
-        )
-        Text(text = transaction.deliveryStatus)
+        Column(
+            modifier = Modifier
+                .padding(bottom = 16.dp)
+                .fillMaxWidth()
+                .padding(16.dp)  // Adding padding inside the column
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Icon(imageVector = Icons.Outlined.DeliveryDining, contentDescription = null)
+                Text(text = transaction.deliveryStatus)
+            }
 
-        OrderList(orders = transaction.items)
+            OrderList(orders = transaction.items)
+            Text(
+                text = "Total Purchase Price: ${stringResource(id = R.string.rp, formattedPrice)}",
+                style = TextStyle(
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                ),
+                modifier = Modifier.padding(bottom = 8.dp)  // Padding below the title
+            )
+        }
     }
 }
 
@@ -146,7 +174,6 @@ fun OrderListItem(order: ItemsItem) {
                 style = TextStyle(
                     fontSize = 16.sp,
                     fontWeight = FontWeight.SemiBold,
-                    color = Color.Black
                 ),
                 modifier = Modifier.padding(bottom = 4.dp)  // Padding below the service name
             )
@@ -168,7 +195,6 @@ fun OrderListItemContentRow(key: String, value: String) {
             style = TextStyle(
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Normal,
-                color = Color.Gray
             ),
             modifier = Modifier.weight(1f)  // Weight to divide space evenly
         )
@@ -177,7 +203,6 @@ fun OrderListItemContentRow(key: String, value: String) {
             style = TextStyle(
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Normal,
-                color = Color.Gray
             ),
             modifier = Modifier.weight(1f)  // Weight to divide space evenly
         )
