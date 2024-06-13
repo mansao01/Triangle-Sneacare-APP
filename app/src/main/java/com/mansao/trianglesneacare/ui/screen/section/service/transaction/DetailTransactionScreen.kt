@@ -74,7 +74,9 @@ fun DetailTransactionScreen(
                 detailTransactionViewModel = detailTransactionViewModel,
                 transactionId = transaction?.id ?: "",
                 deliveryMethod = transaction?.deliveryMethod ?: "",
-                deliveryStatus = transaction?.deliveryStatus ?: ""
+                deliveryStatus = transaction?.deliveryStatus ?: "",
+                email = transaction?.email ?: "",
+                username = transaction?.user ?: ""
             )
 
         }
@@ -84,6 +86,11 @@ fun DetailTransactionScreen(
     UpdateDeliveryStatusUiEvent(
         detailTransactionViewModel = detailTransactionViewModel,
         navigateBack = navigateBack
+    )
+
+    SendFinishEmailUiEvent(
+        detailTransactionViewModel = detailTransactionViewModel,
+        transactionId = transaction?.id ?: ""
     )
 }
 
@@ -164,7 +171,9 @@ fun DetailBottomSection(
     detailTransactionViewModel: DetailTransactionViewModel,
     transactionId: String,
     deliveryMethod: String,
-    deliveryStatus: String
+    deliveryStatus: String,
+    email: String,
+    username: String
 ) {
     val centerModifier = modifier
         .fillMaxWidth()
@@ -174,7 +183,10 @@ fun DetailBottomSection(
     ) {
         if (deliveryMethod == "Deliver to home") {
             if (deliveryStatus == "ready to deliver") {
-                Text(text = "Waiting for driver to deliver ...", modifier = centerModifier.align(Alignment.CenterHorizontally))
+                Text(
+                    text = "Waiting for driver to deliver ...",
+                    modifier = centerModifier.align(Alignment.CenterHorizontally)
+                )
             } else {
                 Button(
                     onClick = {
@@ -193,10 +205,8 @@ fun DetailBottomSection(
             if (deliveryStatus == "already picked up") {
                 Button(
                     onClick = {
-                        detailTransactionViewModel.updateDeliveryStatusById(
-                            transactionId,
-                            "ready to pick up"
-                        )
+                        detailTransactionViewModel.sendFinishEmail(email, username)
+
                     },
                     modifier = centerModifier
                 ) {
@@ -224,7 +234,7 @@ fun DetailBottomSection(
 @Composable
 fun UpdateDeliveryStatusUiEvent(
     detailTransactionViewModel: DetailTransactionViewModel,
-    navigateBack: () -> Unit
+    navigateBack: () -> Unit,
 ) {
     detailTransactionViewModel.updateDeliveryStatusUiState.collectAsState(initial = UiState.Standby).value.let { uiState ->
         when (uiState) {
@@ -234,11 +244,38 @@ fun UpdateDeliveryStatusUiEvent(
 
             }
 
-            is UiState.Success -> navigateBack()
+            is UiState.Success -> {
+                navigateBack()
+            }
         }
 
     }
 }
+
+@Composable
+fun SendFinishEmailUiEvent(
+    detailTransactionViewModel: DetailTransactionViewModel,
+    transactionId: String
+) {
+    detailTransactionViewModel.sendFinishEmailUiState.collectAsState(initial = UiState.Standby).value.let { uiState ->
+        when (uiState) {
+            is UiState.Error -> Log.e("Error update delivery status", uiState.errorMessage)
+            UiState.Loading -> LoadingDialog()
+            UiState.Standby -> {
+
+            }
+
+            is UiState.Success -> {
+                detailTransactionViewModel.updateDeliveryStatusById(
+                    transactionId,
+                    "ready to pick up"
+                )
+            }
+        }
+
+    }
+}
+
 
 @Composable
 fun UpdateWashStatusUiEvent(

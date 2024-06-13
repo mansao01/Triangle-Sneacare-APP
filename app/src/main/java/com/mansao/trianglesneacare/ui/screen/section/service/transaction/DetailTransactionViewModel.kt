@@ -3,6 +3,7 @@ package com.mansao.trianglesneacare.ui.screen.section.service.transaction
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mansao.trianglesneacare.data.AppRepositoryImpl
+import com.mansao.trianglesneacare.data.network.request.SendFinishRequest
 import com.mansao.trianglesneacare.data.network.response.OnlyMsgResponse
 import com.mansao.trianglesneacare.ui.common.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -54,13 +55,11 @@ class DetailTransactionViewModel @Inject constructor(private val appRepositoryIm
         }
     }
 
-    fun sendFinishEmail() = viewModelScope.launch {
+    fun sendFinishEmail(email:String, username:String) = viewModelScope.launch {
         _sendFinishEmailUiState.value = UiState.Loading
         try {
-            val email = appRepositoryImpl.getUserEmail() ?: ""
-            val username = appRepositoryImpl.getUsername() ?: ""
             val result =
-                appRepositoryImpl.updateWashStatus(email, username)
+                appRepositoryImpl.sendFinishEmail(SendFinishRequest(email, username))
             _sendFinishEmailUiState.value = UiState.Success(result)
         } catch (e: Exception) {
             _sendFinishEmailUiState.value = UiState.Error(e.message.toString())

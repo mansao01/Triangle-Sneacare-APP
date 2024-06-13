@@ -13,6 +13,9 @@ data class TransactionsItem(
     @field:SerializedName("user")
     val user: String,
 
+    @field:SerializedName("email")
+    val email: String,
+
     @field:SerializedName("totalPurchasePrice")
     val totalPurchasePrice: Int,
 
