@@ -8,6 +8,7 @@ import com.mansao.trianglesneacare.data.network.request.CreateCustomerAddressReq
 import com.mansao.trianglesneacare.data.network.request.CreateTransactionRequest
 import com.mansao.trianglesneacare.data.network.request.LoginRequest
 import com.mansao.trianglesneacare.data.network.request.RegisterRequest
+import com.mansao.trianglesneacare.data.network.request.SendFinishRequest
 import com.mansao.trianglesneacare.data.network.request.UpdateServiceRequest
 import com.mansao.trianglesneacare.data.network.response.AddOrderResponse
 import com.mansao.trianglesneacare.data.network.response.AutoCompleteAddressResponse
@@ -285,4 +286,8 @@ interface ApiService {
     suspend fun getTransactionByDeliveryStatus(
         @Query("status") status: String
     ): GetTransactionByDeliveryStatusResponse
+    @POST(ApiConst.SEND_EMAIL_FINISH)
+    suspend fun sendFinishEmail(
+        @Body finishEmailRequest: SendFinishRequest
+    ): OnlyMsgResponse
 }

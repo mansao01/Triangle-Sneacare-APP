@@ -27,6 +27,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
@@ -71,7 +72,9 @@ fun DetailTransactionScreen(
             Spacer(modifier = Modifier.height(16.dp))
             DetailBottomSection(
                 detailTransactionViewModel = detailTransactionViewModel,
-                transactionId = transaction?.id ?: ""
+                transactionId = transaction?.id ?: "",
+                deliveryMethod = transaction?.deliveryMethod ?: "",
+                deliveryStatus = transaction?.deliveryStatus ?: ""
             )
 
         }
@@ -90,7 +93,7 @@ fun PricingDetailSection(modifier: Modifier = Modifier, transactionItem: Transac
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .padding(8.dp),
+            .padding(16.dp),
         shape = RoundedCornerShape(8.dp),
         elevation = CardDefaults.elevatedCardElevation(8.dp)
     ) {
@@ -159,20 +162,62 @@ fun OrderItemListSection(
 fun DetailBottomSection(
     modifier: Modifier = Modifier,
     detailTransactionViewModel: DetailTransactionViewModel,
-    transactionId: String
+    transactionId: String,
+    deliveryMethod: String,
+    deliveryStatus: String
 ) {
+    val centerModifier = modifier
+        .fillMaxWidth()
+        .padding(horizontal = 16.dp)
     Column(
         modifier = modifier.fillMaxWidth(),
     ) {
+        if (deliveryMethod == "Deliver to home") {
+            if (deliveryStatus == "ready to deliver") {
+                Text(text = "Waiting for driver to deliver ...", modifier = centerModifier.align(Alignment.CenterHorizontally))
+            } else {
+                Button(
+                    onClick = {
+                        detailTransactionViewModel.updateDeliveryStatusById(
+                            transactionId,
+                            "ready to deliver"
+                        )
+                    },
+                    modifier = centerModifier
+                ) {
+                    Text(text = "Ready to deliver")
+                }
+            }
+        } else if (deliveryMethod == "Pick up at the store") {
+            Log.d("delivery status", deliveryStatus)
+            if (deliveryStatus == "already picked up") {
+                Button(
+                    onClick = {
+                        detailTransactionViewModel.updateDeliveryStatusById(
+                            transactionId,
+                            "ready to pick up"
+                        )
+                    },
+                    modifier = centerModifier
+                ) {
+                    Text(text = "Ready to pick up")
+                }
+            } else if (deliveryStatus == "ready to pick up") {
+                Button(
+                    onClick = {
+                        detailTransactionViewModel.updateDeliveryStatusById(
+                            transactionId,
+                            "already delivered to customer"
+                        )
+                    },
+                    modifier = centerModifier
+                ) {
+                    Text(text = "Finish")
+                }
+            }
 
-        Button(
-            onClick = {
-                detailTransactionViewModel.updateDeliveryStatusById(transactionId)
-            },
-            modifier = modifier
-        ) {
-            Text(text = "Finish process")
         }
+
     }
 }
 

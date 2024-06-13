@@ -47,6 +47,7 @@ object ApiConst {
     const val GET_TRANSACTION_BY_DELIVERY_STATUS = "transactionsByDeliveryStatus"
     const val GET_CART = "getCart/{userId}"
     const val UPDATE_DELIVERY_STATUS_BY_ID = "transaction"
+    const val SEND_EMAIL_FINISH = "sendFinishCleaningEmailToCustomer"
 //    payment
     const val CHARGE = "transaction/charge"
     const val GET_PAYMENT_STATUS = "transaction/status"

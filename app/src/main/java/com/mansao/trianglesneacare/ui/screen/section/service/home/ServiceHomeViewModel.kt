@@ -18,9 +18,9 @@ class ServiceHomeViewModel @Inject constructor(private val appRepositoryImpl: Ap
     private var _uiState: MutableStateFlow<UiState<GetTransactionByDeliveryStatusResponse>> =
         MutableStateFlow(UiState.Standby)
     val uiState: Flow<UiState<GetTransactionByDeliveryStatusResponse>> = _uiState
-    fun getTransactionWhereAlreadyPickedUp() = viewModelScope.launch {
+    fun getTransactionsByDeliveryStatus(deliveryStatus:String) = viewModelScope.launch {
         try {
-            val result = appRepositoryImpl.getTransactionByDeliveryStatus("already picked up")
+            val result = appRepositoryImpl.getTransactionByDeliveryStatus(deliveryStatus)
             _uiState.value = UiState.Success(result)
         }catch (e:Exception){
             _uiState.value = UiState.Error(e.message.toString())
