@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.mansao.trianglesneacare.data.network.response.dto.TransactionsItem
 import com.mansao.trianglesneacare.ui.common.UiState
+import com.mansao.trianglesneacare.ui.components.EmptyData
 import com.mansao.trianglesneacare.ui.components.HeaderText
 import com.mansao.trianglesneacare.ui.components.LoadingDialog
 import com.mansao.trianglesneacare.ui.screen.SharedViewModel
@@ -95,12 +96,16 @@ fun PickUpList(
     navigateToDetailPickUp: () -> Unit,
     sharedViewModel: SharedViewModel
 ) {
-    LazyColumn {
-        items(transactions) {
-            PickUpListItem(
-                transaction = it,
-                modifier = modifier.clickable { navigateToDetailPickUp() })
-            sharedViewModel.addTransactionItem(it)
+    if (transactions.isEmpty()) {
+        EmptyData()
+    } else {
+        LazyColumn {
+            items(transactions) {
+                PickUpListItem(
+                    transaction = it,
+                    modifier = modifier.clickable { navigateToDetailPickUp() })
+                sharedViewModel.addTransactionItem(it)
+            }
         }
     }
 
