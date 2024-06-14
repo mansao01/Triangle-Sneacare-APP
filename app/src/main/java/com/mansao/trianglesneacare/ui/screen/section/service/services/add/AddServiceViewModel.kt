@@ -2,6 +2,7 @@ package com.mansao.trianglesneacare.ui.screen.section.service.services.add
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.gson.Gson
 import com.mansao.trianglesneacare.data.AppRepositoryImpl
 import com.mansao.trianglesneacare.data.network.request.AddServiceRequest
 import com.mansao.trianglesneacare.data.network.response.OnlyMsgResponse
@@ -10,9 +11,11 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
+import java.io.IOException
 import javax.inject.Inject
 
-@HiltViewModel()
+@HiltViewModel
 class AddServiceViewModel @Inject constructor(private val appRepositoryImpl: AppRepositoryImpl) :
     ViewModel() {
     private var _uiState: MutableStateFlow<UiState<OnlyMsgResponse>> =
@@ -42,7 +45,27 @@ class AddServiceViewModel @Inject constructor(private val appRepositoryImpl: App
                 )
             _uiState.value = UiState.Success(result)
         } catch (e: Exception) {
-            _uiState.value = UiState.Error(e.message.toString())
+            val errorMessage = when (e) {
+                is IOException -> """
+                        {"msg": "Service unavailable"}
+                    """.trimIndent()
+                is HttpException -> {
+                    when (e.code()) {
+                        400 -> e.response()?.errorBody()?.string().toString()
+                        // Add more cases for specific HTTP error codes if needed
+                        else ->  """
+                                {"msg": "Error code ${e.message()}"}
+                            """.trimIndent()
+                    }
+                }
+                else -> """
+                        {"msg": "Service unavailable"}
+                    """.trimIndent()
+            }
+            val gson = Gson()
+            val jsonObject = gson.fromJson(errorMessage, Map::class.java) as Map<*, *>
+            val msg = jsonObject["msg"]
+            _uiState.value = UiState.Error(msg.toString())
         }
     }
 }
