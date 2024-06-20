@@ -168,7 +168,7 @@ fun UploadImageContent(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "Upload your $categoryName/'s image .",
+                    text = "Upload your $categoryName\'s image .",
                     style = MaterialTheme.typography.labelMedium,
                 )
                 Spacer(modifier = Modifier.height(16.dp))

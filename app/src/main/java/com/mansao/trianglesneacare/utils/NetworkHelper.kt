@@ -33,7 +33,7 @@ object NetworkHelper {
         val connectivityManager =
             getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
-        val callback = NetworkCallback { connectionState -> trySend(connectionState) }
+        val callback = networkCallback { connectionState -> trySend(connectionState) }
 
         val networkResult = NetworkRequest.Builder()
             .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
@@ -49,7 +49,7 @@ object NetworkHelper {
         }
     }
 
-    fun NetworkCallback(callback: (ConnectionStatus) -> Unit): ConnectivityManager.NetworkCallback {
+    private fun networkCallback(callback: (ConnectionStatus) -> Unit): ConnectivityManager.NetworkCallback {
         return object : ConnectivityManager.NetworkCallback() {
             override fun onAvailable(network: Network) {
                 callback(ConnectionStatus.Available)

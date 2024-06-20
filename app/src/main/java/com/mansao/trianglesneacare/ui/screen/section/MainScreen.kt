@@ -11,9 +11,12 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.produceState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -61,6 +64,9 @@ import com.mansao.trianglesneacare.ui.screen.section.service.services.ServicesSc
 import com.mansao.trianglesneacare.ui.screen.section.service.services.add.AddServiceScreen
 import com.mansao.trianglesneacare.ui.screen.section.service.services.update.UpdateServiceScreen
 import com.mansao.trianglesneacare.ui.screen.section.service.transaction.DetailTransactionScreen
+import com.mansao.trianglesneacare.utils.ConnectionStatus
+import com.mansao.trianglesneacare.utils.NetworkHelper.currentConnectivityStatus
+import com.mansao.trianglesneacare.utils.NetworkHelper.observeConnectivityAsFlow
 import com.mansao.trianglesneacare.utils.canGoBack
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -116,322 +122,343 @@ fun MainScreenContent(
         stringResource(id = R.string.driver) -> Screen.PickUp.route
         else -> Screen.BlankScreen.route
     }
-    Scaffold(
-        bottomBar = {
-            if (
-                currentRoute != Screen.DriverRegistration.route &&
-                currentRoute != Screen.SearchAddress.route &&
-                currentRoute != Screen.AddressList.route &&
-                currentRoute != Screen.Maps.route &&
-                currentRoute != Screen.AddAddress.route &&
-                currentRoute != Screen.ProfileEdit.route &&
-                currentRoute != Screen.UpdateAddress.route &&
-                currentRoute != Screen.AddCategory.route &&
-                currentRoute != Screen.Services.route &&
-                currentRoute != Screen.AddService.route &&
-                currentRoute != Screen.ServiceSelection.route &&
-                currentRoute != Screen.TransactionSuccess.route &&
-                currentRoute != Screen.PaymentChecking.route &&
-                currentRoute != Screen.Payment.route &&
-                currentRoute != Screen.PickUpDetail.route &&
-                currentRoute != Screen.DetailTransaction.route &&
-                currentRoute != Screen.DeliverDetail.route &&
-                currentRoute != Screen.CreateTransaction.route &&
-                currentRoute != Screen.UploadImage.route
-            ) {
-                MainBottomBar(
-                    navController = navController,
-                    role = role,
-                    currentRoute = currentRoute
-                )
+    if (CheckConnectionStatus()) {
+        Scaffold(
+            bottomBar = {
+                if (
+                    currentRoute != Screen.DriverRegistration.route &&
+                    currentRoute != Screen.SearchAddress.route &&
+                    currentRoute != Screen.AddressList.route &&
+                    currentRoute != Screen.Maps.route &&
+                    currentRoute != Screen.AddAddress.route &&
+                    currentRoute != Screen.ProfileEdit.route &&
+                    currentRoute != Screen.UpdateAddress.route &&
+                    currentRoute != Screen.AddCategory.route &&
+                    currentRoute != Screen.Services.route &&
+                    currentRoute != Screen.AddService.route &&
+                    currentRoute != Screen.ServiceSelection.route &&
+                    currentRoute != Screen.TransactionSuccess.route &&
+                    currentRoute != Screen.PaymentChecking.route &&
+                    currentRoute != Screen.Payment.route &&
+                    currentRoute != Screen.PickUpDetail.route &&
+                    currentRoute != Screen.DetailTransaction.route &&
+                    currentRoute != Screen.DeliverDetail.route &&
+                    currentRoute != Screen.CreateTransaction.route &&
+                    currentRoute != Screen.UploadImage.route
+                ) {
+                    MainBottomBar(
+                        navController = navController,
+                        role = role,
+                        currentRoute = currentRoute
+                    )
+                }
             }
-        }
-    ) {
-        Surface(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(it)
         ) {
-            NavHost(
-                navController = navController,
-                startDestination = startDestination,
+            Surface(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(it)
             ) {
+                NavHost(
+                    navController = navController,
+                    startDestination = startDestination,
+                ) {
 
-                composable(Screen.BlankScreen.route) {
-                    BlankScreen()
-                }
-                composable(Screen.Profile.route) {
-                    val profileViewModel: ProfileViewModel = hiltViewModel()
-                    ProfileScreen(
-                        uiState = profileViewModel.uiState,
-                        navigateToProfileEdit = { navController.navigate(Screen.ProfileEdit.route) },
-                        navigateToAddressList = { navController.navigate(Screen.AddressList.route) }
-                    )
-                }
+                    composable(Screen.BlankScreen.route) {
+                        BlankScreen()
+                    }
+                    composable(Screen.Profile.route) {
+                        val profileViewModel: ProfileViewModel = hiltViewModel()
+                        ProfileScreen(
+                            uiState = profileViewModel.uiState,
+                            navigateToProfileEdit = { navController.navigate(Screen.ProfileEdit.route) },
+                            navigateToAddressList = { navController.navigate(Screen.AddressList.route) }
+                        )
+                    }
 
-                composable(Screen.ProfileEdit.route) {
-                    ProfileEditScreen(
-                        navigateBack = { if (navController.canGoBack) navController.popBackStack() }
-                    )
-                }
+                    composable(Screen.ProfileEdit.route) {
+                        ProfileEditScreen(
+                            navigateBack = { if (navController.canGoBack) navController.popBackStack() }
+                        )
+                    }
 
 //                customer
-                composable(Screen.CustomerHome.route) {
-                    CustomerHomeScreen(
-                        navigateToServiceSelection = { navController.navigate(Screen.ServiceSelection.route) },
-                        sharedViewModel = sharedViewModel
-                    )
-                }
-                composable(Screen.ServiceSelection.route) {
-                    ServiceSelectionScreen(
-                        sharedViewModel = sharedViewModel,
-                        navigateBack = { if (navController.canGoBack) navController.popBackStack() },
-                        navigateToUploadImage = { navController.navigate(Screen.UploadImage.route) }
-                    )
-                }
-                composable(Screen.UploadImage.route) {
-                    UploadImageScreen(
-                        sharedViewModel = sharedViewModel,
-                        navigateBack = { if (navController.canGoBack) navController.popBackStack() },
-                        navigateToHome = {
-                            navController.popBackStack(Screen.CustomerHome.route, false)
+                    composable(Screen.CustomerHome.route) {
+                        CustomerHomeScreen(
+                            navigateToServiceSelection = { navController.navigate(Screen.ServiceSelection.route) },
+                            sharedViewModel = sharedViewModel
+                        )
+                    }
+                    composable(Screen.ServiceSelection.route) {
+                        ServiceSelectionScreen(
+                            sharedViewModel = sharedViewModel,
+                            navigateBack = { if (navController.canGoBack) navController.popBackStack() },
+                            navigateToUploadImage = { navController.navigate(Screen.UploadImage.route) }
+                        )
+                    }
+                    composable(Screen.UploadImage.route) {
+                        UploadImageScreen(
+                            sharedViewModel = sharedViewModel,
+                            navigateBack = { if (navController.canGoBack) navController.popBackStack() },
+                            navigateToHome = {
+                                navController.popBackStack(Screen.CustomerHome.route, false)
 
-                        })
-                }
+                            })
+                    }
 
-                composable(Screen.CustomerCart.route) {
-                    CartScreen(
-                        navigateToCreateTransaction = {
-                            navController.navigate(Screen.CreateTransaction.route)
-                        },
-                        sharedViewModel = sharedViewModel
-                    )
-                }
+                    composable(Screen.CustomerCart.route) {
+                        CartScreen(
+                            navigateToCreateTransaction = {
+                                navController.navigate(Screen.CreateTransaction.route)
+                            },
+                            sharedViewModel = sharedViewModel
+                        )
+                    }
 
-                composable(Screen.CreateTransaction.route) {
-                    CreateTransactionScreen(
-                        navigateToAddAddress = { navController.navigate(Screen.AddAddress.route) },
-                        sharedViewModel = sharedViewModel,
-                        navigateBack = { if (navController.canGoBack) navController.popBackStack() },
-                        navigateToPaymentChecking = {
-                            navController.navigate(Screen.PaymentChecking.route) {
-                                popUpTo(navController.graph.startDestinationId) {
-                                    inclusive = true
-                                    saveState = true
+                    composable(Screen.CreateTransaction.route) {
+                        CreateTransactionScreen(
+                            navigateToAddAddress = { navController.navigate(Screen.AddAddress.route) },
+                            sharedViewModel = sharedViewModel,
+                            navigateBack = { if (navController.canGoBack) navController.popBackStack() },
+                            navigateToPaymentChecking = {
+                                navController.navigate(Screen.PaymentChecking.route) {
+                                    popUpTo(navController.graph.startDestinationId) {
+                                        inclusive = true
+                                        saveState = true
+                                    }
+                                    launchSingleTop = true
+                                    restoreState = true
                                 }
-                                launchSingleTop = true
-                                restoreState = true
-                            }
-                        },
-                        navigateToTransactionSuccess = { navController.navigate(Screen.TransactionSuccess.route) }
-                    )
-                }
+                            },
+                            navigateToTransactionSuccess = { navController.navigate(Screen.TransactionSuccess.route) }
+                        )
+                    }
 
-                composable(Screen.PaymentChecking.route) {
-                    PaymentCheckingScreen(
-                        sharedViewModel = sharedViewModel,
-                        navigateToPayment = {
-                            navController.navigate(Screen.Payment.route)
-                        },
-                        navigateToPaymentSuccess = {
-                            navController.navigate(Screen.TransactionSuccess.route) {
-                                popUpTo(navController.graph.startDestinationId) {
-                                    saveState = true
-                                    inclusive = true
+                    composable(Screen.PaymentChecking.route) {
+                        PaymentCheckingScreen(
+                            sharedViewModel = sharedViewModel,
+                            navigateToPayment = {
+                                navController.navigate(Screen.Payment.route)
+                            },
+                            navigateToPaymentSuccess = {
+                                navController.navigate(Screen.TransactionSuccess.route) {
+                                    popUpTo(navController.graph.startDestinationId) {
+                                        saveState = true
+                                        inclusive = true
 
+                                    }
+                                    launchSingleTop = true
+                                    restoreState = true
                                 }
-                                launchSingleTop = true
-                                restoreState = true
-                            }
-                        },
-                        navigateToTransactionList = {
-                            navController.navigate(Screen.TransactionList.route) {
-                                popUpTo(navController.graph.startDestinationId) {
-                                    saveState = true
-                                    inclusive = true
+                            },
+                            navigateToTransactionList = {
+                                navController.navigate(Screen.TransactionList.route) {
+                                    popUpTo(navController.graph.startDestinationId) {
+                                        saveState = true
+                                        inclusive = true
+                                    }
+                                    launchSingleTop = true
+                                    restoreState = true
                                 }
-                                launchSingleTop = true
-                                restoreState = true
                             }
-                        }
-                    )
-                }
+                        )
+                    }
 
 
-                composable(Screen.Payment.route) {
-                    PaymentScreen(
-                        sharedViewModel = sharedViewModel,
-                        navigateBack = { if (navController.canGoBack) navController.popBackStack() },
-                    )
-                }
+                    composable(Screen.Payment.route) {
+                        PaymentScreen(
+                            sharedViewModel = sharedViewModel,
+                            navigateBack = { if (navController.canGoBack) navController.popBackStack() },
+                        )
+                    }
 
-                composable(Screen.TransactionSuccess.route) {
-                    TransactionSuccessScreen(
+                    composable(Screen.TransactionSuccess.route) {
+                        TransactionSuccessScreen(
 
-                        navigateToTransactionList = {
-                            navController.navigate(Screen.TransactionList.route) {
-                                popUpTo(navController.graph.startDestinationId) {
-                                    inclusive = true
+                            navigateToTransactionList = {
+                                navController.navigate(Screen.TransactionList.route) {
+                                    popUpTo(navController.graph.startDestinationId) {
+                                        inclusive = true
+                                    }
+                                    launchSingleTop = true
                                 }
-                                launchSingleTop = true
                             }
-                        }
-                    )
-                }
-                composable(Screen.TransactionList.route) {
-                    TransactionListScreen()
-                }
-                composable(Screen.AddressList.route) {
-                    AddressListScreen(
-                        navigateBack = {
-                            if (navController.canGoBack) navController.popBackStack()
+                        )
+                    }
+                    composable(Screen.TransactionList.route) {
+                        TransactionListScreen()
+                    }
+                    composable(Screen.AddressList.route) {
+                        AddressListScreen(
+                            navigateBack = {
+                                if (navController.canGoBack) navController.popBackStack()
 
-                        },
-                        navigateToSearchAddress = {
-                            navController.navigate(Screen.SearchAddress.route)
-                        }, navigateToEditAddress = {
-                            navController.navigate(Screen.UpdateAddress.route)
-                        },
-                        sharedViewModel = sharedViewModel
-                    )
-                }
+                            },
+                            navigateToSearchAddress = {
+                                navController.navigate(Screen.SearchAddress.route)
+                            }, navigateToEditAddress = {
+                                navController.navigate(Screen.UpdateAddress.route)
+                            },
+                            sharedViewModel = sharedViewModel
+                        )
+                    }
 
-                composable(Screen.AddAddress.route) {
-                    AddAddressScreen(
-                        navigateBack = {
-                            if (navController.canGoBack) navController.popBackStack()
-                        },
-                        sharedViewModel = sharedViewModel,
-                        navigateToListAddress = {
+                    composable(Screen.AddAddress.route) {
+                        AddAddressScreen(
+                            navigateBack = {
+                                if (navController.canGoBack) navController.popBackStack()
+                            },
+                            sharedViewModel = sharedViewModel,
+                            navigateToListAddress = {
+                                if (navController.canGoBack) {
+                                    navController.popBackStack(Screen.AddressList.route, false)
+                                }
+
+                            }
+                        )
+                    }
+                    composable(Screen.SearchAddress.route) {
+                        SearchAddressScreen(
+                            navigateBack = {
+                                if (navController.canGoBack) navController.popBackStack()
+                            },
+                            navigateToMap = {
+                                navController.navigate(Screen.Maps.route)
+                            },
+                            sharedViewModel = sharedViewModel
+                        )
+                    }
+
+                    composable(Screen.UpdateAddress.route) {
+                        UpdateAddressScreen(sharedViewModel = sharedViewModel, navigateBack = {
                             if (navController.canGoBack) {
-                                navController.popBackStack(Screen.AddressList.route, false)
+                                navController.popBackStack()
                             }
+                        })
+                    }
 
-                        }
-                    )
-                }
-                composable(Screen.SearchAddress.route) {
-                    SearchAddressScreen(
-                        navigateBack = {
-                            if (navController.canGoBack) navController.popBackStack()
-                        },
-                        navigateToMap = {
-                            navController.navigate(Screen.Maps.route)
-                        },
-                        sharedViewModel = sharedViewModel
-                    )
-                }
+                    composable(Screen.Maps.route) {
+                        MapsScreen(
+                            sharedViewModel = sharedViewModel,
+                            navigateBack = {
+                                if (navController.canGoBack) navController.popBackStack()
 
-                composable(Screen.UpdateAddress.route) {
-                    UpdateAddressScreen(sharedViewModel = sharedViewModel, navigateBack = {
-                        if (navController.canGoBack) {
-                            navController.popBackStack()
-                        }
-                    })
-                }
-
-                composable(Screen.Maps.route) {
-                    MapsScreen(
-                        sharedViewModel = sharedViewModel,
-                        navigateBack = {
-                            if (navController.canGoBack) navController.popBackStack()
-
-                        },
-                        navigateToAddAddress = {
-                            navController.navigate(Screen.AddAddress.route)
-                        },
-                    )
-                }
+                            },
+                            navigateToAddAddress = {
+                                navController.navigate(Screen.AddAddress.route)
+                            },
+                        )
+                    }
 
 //                service section
-                composable(Screen.ServiceHome.route) {
-                    ServiceHomeScreen(
-                        sharedViewModel = sharedViewModel,
-                        navigateToDetail = { navController.navigate(Screen.DetailTransaction.route) },
-                    )
-                }
+                    composable(Screen.ServiceHome.route) {
+                        ServiceHomeScreen(
+                            sharedViewModel = sharedViewModel,
+                            navigateToDetail = { navController.navigate(Screen.DetailTransaction.route) },
+                        )
+                    }
 
 
-                composable(Screen.DetailTransaction.route) {
-                    DetailTransactionScreen(
-                        sharedViewModel = sharedViewModel,
-                        navigateBack = { if (navController.canGoBack) navController.popBackStack() })
-                }
-                composable(Screen.Categories.route) {
-                    CategoriesScreen(
-                        sharedViewModel = sharedViewModel,
-                        navigateToServiceList = {
-                            navController.navigate(Screen.Services.route)
-                        },
-                        navigateToAddCategory = { navController.navigate(Screen.AddCategory.route) }
-                    )
-                }
-                composable(Screen.AddCategory.route) {
-                    AddCategoryScreen(navigateBack = { if (navController.canGoBack) navController.popBackStack() })
-                }
-                composable(Screen.Services.route) {
-                    ServicesScreen(
-                        sharedViewModel = sharedViewModel,
-                        navigateToAddService = {
-                            navController.navigate(Screen.AddService.route)
-                        },
-                        navigateToUpdateService = { navController.navigate(Screen.UpdateService.route) },
-                        navigateBack = { if (navController.canGoBack) navController.popBackStack() }
-                    )
-                }
+                    composable(Screen.DetailTransaction.route) {
+                        DetailTransactionScreen(
+                            sharedViewModel = sharedViewModel,
+                            navigateBack = { if (navController.canGoBack) navController.popBackStack() })
+                    }
+                    composable(Screen.Categories.route) {
+                        CategoriesScreen(
+                            sharedViewModel = sharedViewModel,
+                            navigateToServiceList = {
+                                navController.navigate(Screen.Services.route)
+                            },
+                            navigateToAddCategory = { navController.navigate(Screen.AddCategory.route) }
+                        )
+                    }
+                    composable(Screen.AddCategory.route) {
+                        AddCategoryScreen(navigateBack = { if (navController.canGoBack) navController.popBackStack() })
+                    }
+                    composable(Screen.Services.route) {
+                        ServicesScreen(
+                            sharedViewModel = sharedViewModel,
+                            navigateToAddService = {
+                                navController.navigate(Screen.AddService.route)
+                            },
+                            navigateToUpdateService = { navController.navigate(Screen.UpdateService.route) },
+                            navigateBack = { if (navController.canGoBack) navController.popBackStack() }
+                        )
+                    }
 
-                composable(Screen.AddService.route) {
-                    AddServiceScreen(
-                        navigateBack = { if (navController.canGoBack) navController.popBackStack() },
-                        sharedViewModel = sharedViewModel
-                    )
-                }
-                composable(Screen.UpdateService.route) {
-                    UpdateServiceScreen(
-                        sharedViewModel = sharedViewModel,
-                        navigateBack = { if (navController.canGoBack) navController.popBackStack() })
-                }
+                    composable(Screen.AddService.route) {
+                        AddServiceScreen(
+                            navigateBack = { if (navController.canGoBack) navController.popBackStack() },
+                            sharedViewModel = sharedViewModel
+                        )
+                    }
+                    composable(Screen.UpdateService.route) {
+                        UpdateServiceScreen(
+                            sharedViewModel = sharedViewModel,
+                            navigateBack = { if (navController.canGoBack) navController.popBackStack() })
+                    }
 
 
-                composable(Screen.DriverRegistration.route) {
-                    DriverRegistrationScreen(
-                        navigateToDriverManagement = {
-                            navController.popBackStack()
-                            navController.navigate(Screen.DriverManagement.route)
-                        })
-                }
+                    composable(Screen.DriverRegistration.route) {
+                        DriverRegistrationScreen(
+                            navigateToDriverManagement = {
+                                navController.popBackStack()
+                                navController.navigate(Screen.DriverManagement.route)
+                            })
+                    }
 
 //                driver
-                composable(Screen.PickUp.route) {
-                    PickUpScreen(
-                        sharedViewModel = sharedViewModel,
-                        navigateToDetailPickUp = { navController.navigate(Screen.PickUpDetail.route) }
-                    )
-                }
-                composable(Screen.PickUpDetail.route) {
-                    PickUpDetailScreen(
-                        sharedViewModel = sharedViewModel,
-                        navigateBack = { if (navController.canGoBack) navController.popBackStack() })
-                }
+                    composable(Screen.PickUp.route) {
+                        PickUpScreen(
+                            sharedViewModel = sharedViewModel,
+                            navigateToDetailPickUp = { navController.navigate(Screen.PickUpDetail.route) }
+                        )
+                    }
+                    composable(Screen.PickUpDetail.route) {
+                        PickUpDetailScreen(
+                            sharedViewModel = sharedViewModel,
+                            navigateBack = { if (navController.canGoBack) navController.popBackStack() })
+                    }
 
-                composable(Screen.Deliver.route) {
-                    DeliverScreen(
-                        sharedViewModel = sharedViewModel,
-                        navigateToDetailDeliver = { navController.navigate(Screen.DeliverDetail.route) })
-                }
+                    composable(Screen.Deliver.route) {
+                        DeliverScreen(
+                            sharedViewModel = sharedViewModel,
+                            navigateToDetailDeliver = { navController.navigate(Screen.DeliverDetail.route) })
+                    }
 
-                composable(Screen.DeliverDetail.route) {
-                    DeliverDetailScreen(
-                        sharedViewModel = sharedViewModel,
-                        navigateBack = { navController.popBackStack() })
-                }
+                    composable(Screen.DeliverDetail.route) {
+                        DeliverDetailScreen(
+                            sharedViewModel = sharedViewModel,
+                            navigateBack = { navController.popBackStack() })
+                    }
 //                owner
-                composable(Screen.OwnerHome.route) {
-                    OwnerHomeScreen()
-                }
+                    composable(Screen.OwnerHome.route) {
+                        OwnerHomeScreen()
+                    }
 
+                }
             }
         }
+    }else{
+        ServiceNotAvailable {
+
+        }
+    }
+}
+
+@Composable
+fun CheckConnectionStatus():Boolean {
+    val connection by connectivityStatus()
+    val isConnected = connection === ConnectionStatus.Available
+    return isConnected
+}
+
+@Composable
+fun connectivityStatus(): State<ConnectionStatus> {
+    val context = LocalContext.current
+    return produceState(initialValue = context.currentConnectivityStatus) {
+        context.observeConnectivityAsFlow().collect { value = it }
     }
 }
 

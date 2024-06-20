@@ -16,6 +16,7 @@ import com.mansao.trianglesneacare.ui.screen.register.RegisterScreen
 import com.mansao.trianglesneacare.ui.screen.section.MainScreen
 import com.mansao.trianglesneacare.utils.canGoBack
 
+
 @Composable
 fun TriangleApp(
     navController: NavHostController = rememberNavController(),
