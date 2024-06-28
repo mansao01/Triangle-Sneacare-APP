@@ -38,6 +38,7 @@ import com.mansao.trianglesneacare.R
 import com.mansao.trianglesneacare.data.network.response.dto.ItemsItem
 import com.mansao.trianglesneacare.data.network.response.dto.TransactionsItem
 import com.mansao.trianglesneacare.ui.common.UiState
+import com.mansao.trianglesneacare.ui.components.EmptyData
 import com.mansao.trianglesneacare.ui.components.LoadingScreen
 import java.text.NumberFormat
 import java.util.Locale
@@ -75,17 +76,20 @@ fun TransactionListContent(
 fun TransactionListSectionComponent(
     transaction: List<TransactionsItem>,
 ) {
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-    ) {  // Adding padding to the LazyColumn
-        items(transaction) {
-            TransactionListItem(
-                transaction = it,
-            )
+    if (transaction.isEmpty()) EmptyData()
+    else
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp)
+        ) {  // Adding padding to the LazyColumn
+
+            items(transaction) {
+                TransactionListItem(
+                    transaction = it,
+                )
+            }
         }
-    }
 }
 
 @Composable
