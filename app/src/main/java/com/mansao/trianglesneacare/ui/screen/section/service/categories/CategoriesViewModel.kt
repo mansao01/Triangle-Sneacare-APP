@@ -16,6 +16,14 @@ class CategoriesViewModel @Inject constructor(private val appRepositoryImpl: App
     private var _uiState: MutableStateFlow<UiState<GetCategoriesResponse>> =
         MutableStateFlow(UiState.Standby)
     val uiState: Flow<UiState<GetCategoriesResponse>> = _uiState
+
+    private var _role: MutableStateFlow<String> = MutableStateFlow("")
+    val role: Flow<String> = _role
+
+
+    init {
+        getRole()
+    }
     private fun setLoadingState() {
         _uiState.value = UiState.Loading
 
@@ -31,5 +39,9 @@ class CategoriesViewModel @Inject constructor(private val appRepositoryImpl: App
             _uiState.value = UiState.Error(e.message.toString())
         }
 
+    }
+    private fun getRole() = viewModelScope.launch {
+        val result = appRepositoryImpl.getRole()
+        _role.value = result ?: ""
     }
 }

@@ -38,6 +38,7 @@ fun CategoriesScreen(
 
     }
     val context = LocalContext.current
+    val role = viewModel.role.collectAsState(initial = "").value
     viewModel.uiState.collectAsState(initial = UiState.Standby).value.let { uiState ->
         when (uiState) {
             is UiState.Error -> Toast.makeText(context, uiState.errorMessage, Toast.LENGTH_SHORT)
@@ -52,7 +53,8 @@ fun CategoriesScreen(
                     categories = uiState.data.categories,
                     navigateToServiceList = navigateToServiceList,
                     navigateToAddCategory = navigateToAddCategory,
-                    sharedViewModel =  sharedViewModel
+                    sharedViewModel =  sharedViewModel,
+                    role = role
                 )
             }
         }
@@ -65,11 +67,11 @@ fun CategoriesContent(
     categories: List<CategoriesItem>,
     navigateToServiceList: () -> Unit,
     navigateToAddCategory: () -> Unit,
-    sharedViewModel: SharedViewModel
-
+    sharedViewModel: SharedViewModel,
+    role: String
 ) {
     Scaffold(
-        topBar = { CategoriesTopBar(navigateToAddCategory) }
+        topBar = { CategoriesTopBar(navigateToAddCategory = navigateToAddCategory, role = role) }
     ) { scaffoldPadding ->
         Surface(
             modifier = Modifier.padding(scaffoldPadding)
@@ -92,7 +94,8 @@ fun CategoriesContent(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CategoriesTopBar(
-    navigateToAddCategory: () -> Unit
+    navigateToAddCategory: () -> Unit,
+    role:String
 ) {
     LargeTopAppBar(
         title = {
@@ -102,7 +105,9 @@ fun CategoriesTopBar(
                 showDescription = false
             )
         },
+
         actions = {
+            if (role == "service")
             IconButton(onClick = { navigateToAddCategory() }) {
                 Icon(imageVector = Icons.Outlined.Add, contentDescription = null)
 

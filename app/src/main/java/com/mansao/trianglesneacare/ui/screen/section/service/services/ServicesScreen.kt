@@ -50,6 +50,8 @@ fun ServicesScreen(
         viewModel.getServicesByCategoryId(categoryId)
 
     }
+    val role = viewModel.role.collectAsState(initial = "").value
+
 
     viewModel.uiState.collectAsState(initial = UiState.Standby).value.let { uiState ->
         when (uiState) {
@@ -65,7 +67,8 @@ fun ServicesScreen(
                     navigateBack = navigateBack,
                     navigateToUpdateService = navigateToUpdateService,
                     sharedViewModel = sharedViewModel,
-                    scrollBehavior = scrollBehavior
+                    scrollBehavior = scrollBehavior,
+                    role = role
                 )
             }
         }
@@ -80,7 +83,8 @@ fun ServicesContent(
     navigateToUpdateService: () -> Unit,
     navigateBack: () -> Unit,
     sharedViewModel: SharedViewModel,
-    scrollBehavior: TopAppBarScrollBehavior
+    scrollBehavior: TopAppBarScrollBehavior,
+    role: String
 
 ) {
     Scaffold(
@@ -88,11 +92,12 @@ fun ServicesContent(
             ServicesTopBar(
                 navigateToAddService = navigateToAddService,
                 navigateBack = navigateBack,
-                scrollBehavior = scrollBehavior
+                scrollBehavior = scrollBehavior,
+                role = role
             )
         },
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
-    ) {scaffoldPadding ->
+    ) { scaffoldPadding ->
         Surface(
             modifier = Modifier.padding(scaffoldPadding)
         ) {
@@ -138,7 +143,8 @@ fun ServiceList(
 fun ServicesTopBar(
     navigateToAddService: () -> Unit,
     navigateBack: () -> Unit,
-    scrollBehavior: TopAppBarScrollBehavior
+    scrollBehavior: TopAppBarScrollBehavior,
+    role: String
 ) {
     LargeTopAppBar(
         scrollBehavior = scrollBehavior,
@@ -155,12 +161,12 @@ fun ServicesTopBar(
             }
         },
         actions = {
-            IconButton(onClick = {
+            if (role == "service"){
+                IconButton(
+                    onClick = { navigateToAddService() }) {
+                    Icon(imageVector = Icons.Outlined.Add, contentDescription = null)
 
-                navigateToAddService()
-            }) {
-                Icon(imageVector = Icons.Outlined.Add, contentDescription = null)
-
+                }
             }
         })
 }
