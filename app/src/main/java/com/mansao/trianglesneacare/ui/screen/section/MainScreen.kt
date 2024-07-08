@@ -122,7 +122,7 @@ fun MainScreenContent(
         stringResource(id = R.string.driver) -> Screen.PickUp.route
         else -> Screen.BlankScreen.route
     }
-    if (CheckConnectionStatus()) {
+    if (checkConnectionStatus()) {
         Scaffold(
             bottomBar = {
                 if (
@@ -217,7 +217,7 @@ fun MainScreenContent(
 
                     composable(Screen.CreateTransaction.route) {
                         CreateTransactionScreen(
-                            navigateToAddAddress = { navController.navigate(Screen.AddAddress.route) },
+                            navigateToAddAddress = { navController.navigate(Screen.AddressList.route) },
                             sharedViewModel = sharedViewModel,
                             navigateBack = { if (navController.canGoBack) navController.popBackStack() },
                             navigateToPaymentChecking = {
@@ -448,7 +448,7 @@ fun MainScreenContent(
 }
 
 @Composable
-fun CheckConnectionStatus():Boolean {
+fun checkConnectionStatus():Boolean {
     val connection by connectivityStatus()
     val isConnected = connection === ConnectionStatus.Available
     return isConnected
