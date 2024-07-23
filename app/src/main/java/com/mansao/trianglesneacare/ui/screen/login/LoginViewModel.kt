@@ -10,6 +10,7 @@ import com.mansao.trianglesneacare.ui.common.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.io.IOException
@@ -22,7 +23,7 @@ class LoginViewModel @Inject constructor(
 
     private val _uiState: MutableStateFlow<UiState<LoginResponse>> =
         MutableStateFlow(UiState.Standby)
-    val uiState: StateFlow<UiState<LoginResponse>> = _uiState
+    val uiState = _uiState.asStateFlow()
 
     private val _showDialog: MutableStateFlow<Boolean> =
         MutableStateFlow(false)

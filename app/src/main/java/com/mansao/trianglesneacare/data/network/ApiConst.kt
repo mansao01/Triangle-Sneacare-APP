@@ -32,6 +32,7 @@ object ApiConst {
     const val GET_CATEGORIES = "categories"
     const val CREATE_NEW_SERVICE = "addService"
     const val DELETE_SERVICE = "deleteService/{id}"
+    const val DELETE_CATEGORY = "deleteCategory/{id}"
     const val GET_SERVICES_BY_CATEGORY = "servicesByCategory"
     const val UPDATE_SERVICE = "updateService"
     const val UPDATE_WASH_STATUS = "updateWashStatus"

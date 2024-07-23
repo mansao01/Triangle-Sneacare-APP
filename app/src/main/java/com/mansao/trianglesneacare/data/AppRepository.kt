@@ -135,6 +135,7 @@ interface AppRepository {
     suspend fun addCategory(addCategoryRequest: AddCategoryRequest): OnlyMsgResponse
     suspend fun addService(addServiceRequest: AddServiceRequest): OnlyMsgResponse
     suspend fun deleteService(serviceId: String): OnlyMsgResponse
+    suspend fun deleteCategory(categoryId: String): OnlyMsgResponse
     suspend fun updateService(updateServiceRequest: UpdateServiceRequest): OnlyMsgResponse
 
     suspend fun sendFinishEmail(sendFinishRequest: SendFinishRequest): OnlyMsgResponse
@@ -359,6 +360,10 @@ class AppRepositoryImpl @Inject constructor(
 
     override suspend fun deleteService(serviceId: String): OnlyMsgResponse {
         return apiService.deleteService(serviceId)
+    }
+
+    override suspend fun deleteCategory(categoryId: String): OnlyMsgResponse {
+        return apiService.deleteCategory(categoryId)
     }
 
     override suspend fun updateService(updateServiceRequest: UpdateServiceRequest): OnlyMsgResponse {

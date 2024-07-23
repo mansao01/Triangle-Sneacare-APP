@@ -192,6 +192,11 @@ interface ApiService {
         @Path("id") id: String
     ): OnlyMsgResponse
 
+    @DELETE(ApiConst.DELETE_CATEGORY)
+    suspend fun deleteCategory(
+        @Path("id") id: String
+    ): OnlyMsgResponse
+
     @PATCH(ApiConst.UPDATE_SERVICE)
     suspend fun updateService(
         @Body updateServiceRequest: UpdateServiceRequest

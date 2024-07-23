@@ -22,7 +22,7 @@ import com.mansao.trianglesneacare.data.network.response.CategoriesItem
 import com.mansao.trianglesneacare.ui.common.UiState
 import com.mansao.trianglesneacare.ui.components.CategoryMenuItem
 import com.mansao.trianglesneacare.ui.components.HeaderText
-import com.mansao.trianglesneacare.ui.components.LoadingDialog
+import com.mansao.trianglesneacare.ui.components.LoadingScreen
 import com.mansao.trianglesneacare.ui.screen.SharedViewModel
 
 @Composable
@@ -44,7 +44,7 @@ fun CategoriesScreen(
             is UiState.Error -> Toast.makeText(context, uiState.errorMessage, Toast.LENGTH_SHORT)
                 .show()
 
-            UiState.Loading -> LoadingDialog()
+            UiState.Loading -> LoadingScreen()
             UiState.Standby -> {
             }
 
@@ -82,6 +82,7 @@ fun CategoriesContent(
                         categoryName = it.itemType,
                         onClick = {
                             sharedViewModel.addCategoryId(it.id)
+                            sharedViewModel.addCategoryName(it.itemType)
                             navigateToServiceList()
                         })
                 }

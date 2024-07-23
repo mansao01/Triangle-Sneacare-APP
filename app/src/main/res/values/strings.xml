@@ -86,4 +86,5 @@
     <string name="washing">washing</string>
     <string name="drying">drying</string>
     <string name="finished">finish</string>
+    <string name="no_connection">Please check your internet conecction</string>
 </resources>

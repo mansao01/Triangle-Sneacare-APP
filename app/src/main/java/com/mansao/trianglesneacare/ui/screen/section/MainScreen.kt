@@ -29,6 +29,7 @@ import com.mansao.trianglesneacare.R
 import com.mansao.trianglesneacare.ui.AuthViewModel
 import com.mansao.trianglesneacare.ui.common.UiState
 import com.mansao.trianglesneacare.ui.components.LoadingDialog
+import com.mansao.trianglesneacare.ui.components.NoInternetConnectionDialog
 import com.mansao.trianglesneacare.ui.components.ServiceNotAvailable
 import com.mansao.trianglesneacare.ui.navigation.BottomNavigationItem
 import com.mansao.trianglesneacare.ui.navigation.Screen
@@ -114,7 +115,11 @@ fun MainScreenContent(
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
-
+//    if (role != "customer" && role != "service" && role != "driver" && role != "owner") {
+//        navigateToLogin()
+//        mainViewModel.logout()
+//        sharedViewModel.changeSessionExpiredState(true)
+//    }
     val startDestination = when (role) {
         stringResource(id = R.string.customer) -> Screen.CustomerHome.route
         stringResource(id = R.string.service) -> Screen.ServiceHome.route
@@ -144,6 +149,7 @@ fun MainScreenContent(
                     currentRoute != Screen.DetailTransaction.route &&
                     currentRoute != Screen.DeliverDetail.route &&
                     currentRoute != Screen.CreateTransaction.route &&
+                    currentRoute != Screen.BlankScreen.route &&
                     currentRoute != Screen.UploadImage.route
                 ) {
                     MainBottomBar(
@@ -430,7 +436,7 @@ fun MainScreenContent(
                     composable(Screen.DeliverDetail.route) {
                         DeliverDetailScreen(
                             sharedViewModel = sharedViewModel,
-                            navigateBack = { navController.popBackStack() })
+                            navigateBack = { navController.navigateUp() })
                     }
 //                owner
                     composable(Screen.OwnerHome.route) {
@@ -440,15 +446,13 @@ fun MainScreenContent(
                 }
             }
         }
-    }else{
-        ServiceNotAvailable {
-
-        }
+    } else {
+        NoInternetConnectionDialog()
     }
 }
 
 @Composable
-fun checkConnectionStatus():Boolean {
+fun checkConnectionStatus(): Boolean {
     val connection by connectivityStatus()
     val isConnected = connection === ConnectionStatus.Available
     return isConnected

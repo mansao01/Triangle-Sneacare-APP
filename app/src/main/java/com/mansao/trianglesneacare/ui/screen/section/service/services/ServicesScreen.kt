@@ -1,6 +1,7 @@
 package com.mansao.trianglesneacare.ui.screen.section.service.services
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -8,6 +9,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.ArrowBack
+import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -28,6 +30,7 @@ import com.mansao.trianglesneacare.data.network.response.ServiceItem
 import com.mansao.trianglesneacare.ui.common.UiState
 import com.mansao.trianglesneacare.ui.components.HeaderText
 import com.mansao.trianglesneacare.ui.components.LoadingDialog
+import com.mansao.trianglesneacare.ui.components.LoadingScreen
 import com.mansao.trianglesneacare.ui.components.ServiceMenuItem
 import com.mansao.trianglesneacare.ui.screen.SharedViewModel
 
@@ -45,34 +48,28 @@ fun ServicesScreen(
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
 
     val categoryId = sharedViewModel.categoryId
+    val categoryName = sharedViewModel.categoryName
+    val role = viewModel.role.collectAsState(initial = "").value
     val context = LocalContext.current
     LaunchedEffect(Unit) {
         viewModel.getServicesByCategoryId(categoryId)
 
     }
-    val role = viewModel.role.collectAsState(initial = "").value
 
+    GetServicesByCategoryIdUiState(
+        viewModel = viewModel,
+        context = context,
+        navigateToAddService = navigateToAddService,
+        navigateBack = navigateBack,
+        navigateToUpdateService = navigateToUpdateService,
+        role = role,
+        categoryId = categoryId,
+        sharedViewModel = sharedViewModel,
+        scrollBehavior = scrollBehavior,
+        categoryName = categoryName
+    )
 
-    viewModel.uiState.collectAsState(initial = UiState.Standby).value.let { uiState ->
-        when (uiState) {
-            is UiState.Error -> Toast.makeText(context, uiState.errorMessage, Toast.LENGTH_SHORT)
-                .show()
-
-            UiState.Loading -> LoadingDialog()
-            UiState.Standby -> {}
-            is UiState.Success -> {
-                ServicesContent(
-                    services = uiState.data.service,
-                    navigateToAddService = navigateToAddService,
-                    navigateBack = navigateBack,
-                    navigateToUpdateService = navigateToUpdateService,
-                    sharedViewModel = sharedViewModel,
-                    scrollBehavior = scrollBehavior,
-                    role = role
-                )
-            }
-        }
-    }
+    DeleteCategoryUiState(viewModel = viewModel, context = context, navigateBack = navigateBack)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -81,10 +78,12 @@ fun ServicesContent(
     services: List<ServiceItem>,
     navigateToAddService: () -> Unit,
     navigateToUpdateService: () -> Unit,
+    deleteCategory: () -> Unit,
     navigateBack: () -> Unit,
     sharedViewModel: SharedViewModel,
     scrollBehavior: TopAppBarScrollBehavior,
-    role: String
+    role: String,
+    categoryName: String
 
 ) {
     Scaffold(
@@ -93,7 +92,9 @@ fun ServicesContent(
                 navigateToAddService = navigateToAddService,
                 navigateBack = navigateBack,
                 scrollBehavior = scrollBehavior,
-                role = role
+                role = role,
+                deleteCategory = deleteCategory,
+                categoryName = categoryName
             )
         },
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
@@ -140,17 +141,82 @@ fun ServiceList(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
+fun GetServicesByCategoryIdUiState(
+    viewModel: ServicesViewModel,
+    context: Context,
+    navigateToAddService: () -> Unit,
+    navigateBack: () -> Unit,
+    navigateToUpdateService: () -> Unit,
+    role: String,
+    categoryId: String,
+    categoryName: String,
+    sharedViewModel: SharedViewModel,
+    scrollBehavior: TopAppBarScrollBehavior
+) {
+    viewModel.getServiceByCategoryUiState.collectAsState(initial = UiState.Standby).value.let { uiState ->
+        when (uiState) {
+            is UiState.Error -> Toast.makeText(context, uiState.errorMessage, Toast.LENGTH_SHORT)
+                .show()
+
+            UiState.Loading -> LoadingScreen()
+            UiState.Standby -> {}
+            is UiState.Success -> {
+                ServicesContent(
+                    services = uiState.data.service,
+                    navigateToAddService = navigateToAddService,
+                    navigateBack = navigateBack,
+                    navigateToUpdateService = navigateToUpdateService,
+                    sharedViewModel = sharedViewModel,
+                    scrollBehavior = scrollBehavior,
+                    role = role,
+                    deleteCategory = {
+                        viewModel.deleteCategory(categoryId)
+                    },
+                    categoryName = categoryName
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun DeleteCategoryUiState(
+    viewModel: ServicesViewModel,
+    context: Context,
+    navigateBack: () -> Unit
+) {
+    viewModel.deleteCategoryUiState.collectAsState().value.let { uiState ->
+        when (uiState) {
+            is UiState.Error -> Toast.makeText(context, uiState.errorMessage, Toast.LENGTH_SHORT)
+                .show()
+
+            UiState.Loading -> LoadingDialog()
+            UiState.Standby -> {}
+            is UiState.Success -> {
+                LaunchedEffect(Unit) {
+                    navigateBack()
+                    Toast.makeText(context, uiState.data.msg, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
 fun ServicesTopBar(
     navigateToAddService: () -> Unit,
     navigateBack: () -> Unit,
     scrollBehavior: TopAppBarScrollBehavior,
-    role: String
+    deleteCategory: () -> Unit,
+    role: String,
+    categoryName: String
 ) {
     LargeTopAppBar(
         scrollBehavior = scrollBehavior,
         title = {
             HeaderText(
-                text = "Services",
+                text = "$categoryName Services",
                 description = "",
                 showDescription = false
             )
@@ -161,11 +227,14 @@ fun ServicesTopBar(
             }
         },
         actions = {
-            if (role == "service"){
+            if (role == "service") {
                 IconButton(
                     onClick = { navigateToAddService() }) {
                     Icon(imageVector = Icons.Outlined.Add, contentDescription = null)
 
+                }
+                IconButton(onClick = { deleteCategory() }) {
+                    Icon(imageVector = Icons.Outlined.Delete, contentDescription = null)
                 }
             }
         })
