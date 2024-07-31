@@ -12,6 +12,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Dry
+import androidx.compose.material.icons.filled.Wash
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenuItem
@@ -245,7 +248,11 @@ fun WashStatusDropDown(
         ) {
             DropdownMenuItem(
                 text = {
-                    Text(stringResource(R.string.washing))
+                    Row {
+                        Icon(imageVector = Icons.Default.Wash, contentDescription = null)
+                        Text(stringResource(R.string.washing))
+
+                    }
                 },
                 onClick = {
                     isExpanded = false
@@ -256,7 +263,12 @@ fun WashStatusDropDown(
 
             DropdownMenuItem(
                 text = {
-                    Text(stringResource(R.string.drying))
+                    Row {
+                        Icon(imageVector = Icons.Default.Dry, contentDescription = null)
+
+                        Text(stringResource(R.string.drying))
+
+                    }
                 },
                 onClick = {
                     isExpanded = false
@@ -267,7 +279,11 @@ fun WashStatusDropDown(
 
             DropdownMenuItem(
                 text = {
-                    Text(stringResource(R.string.finished))
+                    Row {
+                        Icon(imageVector = Icons.Default.Check, contentDescription = null)
+
+                        Text(stringResource(R.string.finished))
+                    }
                 },
                 onClick = {
                     isExpanded = false

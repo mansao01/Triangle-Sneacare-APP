@@ -261,16 +261,16 @@ fun OrderListItem(order: ItemsItem) {
         Column(
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text(
-                text = order.serviceName,
-                style = TextStyle(
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.SemiBold,
-                ),
-                modifier = Modifier.padding(bottom = 4.dp)  // Padding below the service name
-            )
+                Text(
+                    text = order.serviceName,
+                    style = TextStyle(
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.SemiBold,
+                    ),
+                    modifier = Modifier.padding(bottom = 4.dp)  // Padding below the service name
+                )
             OrderListItemContentRow(key = "Wash status", value = order.washStatus)
-            OrderListItemContentRow(key = "Price", value = order.price.toString())
+            OrderListItemContentRow(key = "Price", value = stringResource(R.string.rp, order.price))
         }
     }
 }
